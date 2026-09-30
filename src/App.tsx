@@ -6,6 +6,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { ExploreTrose } from './components/ExploreTrose';
 import { TroseBestSellers } from './components/TroseBestSellers';
+import { CoffeeFinderSection } from './components/CoffeeFinderSection';
 import { FeaturedProducts } from './components/FeaturedProducts';
 import { OrganicSpotlight } from './components/OrganicSpotlight';
 import { MachinesAndAccessories } from './components/MachinesAndAccessories';
@@ -176,6 +177,7 @@ export default function App() {
         onOpenAccount={() => setIsAccountOpen(true)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAbout={() => setIsAboutOpen(true)}
+        onOpenQuiz={() => setIsQuizOpen(true)}
         cartCount={totalCartCount}
       />
 
@@ -222,6 +224,11 @@ export default function App() {
               onQuickView={handleViewProductDetail}
               onAddToCart={handleAddToCart}
               onExploreAll={() => handleNavigate('shop', 'all')}
+            />
+
+            {/* Signature Interactive Feature: Find Your Perfect Coffee */}
+            <CoffeeFinderSection
+              onOpenFinder={() => setIsQuizOpen(true)}
             />
 
             {/* Filterable Products & Roasts Showcase */}

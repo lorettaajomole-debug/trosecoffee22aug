@@ -22,7 +22,7 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({ onOpenQuiz }) 
             onClick={onOpenQuiz}
             className="text-[#FAF6F0] hover:text-[#D63426] font-semibold underline underline-offset-4 decoration-[#D63426] hover:decoration-[#D63426] transition-colors inline-flex items-center space-x-1 cursor-pointer"
           >
-            <span>Roast Match Quiz</span>
+            <span>Find Your Coffee</span>
             <ArrowRight className="w-3 h-3 ml-0.5 text-[#D63426]" />
           </button>
         </div>

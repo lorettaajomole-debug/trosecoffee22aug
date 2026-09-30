@@ -66,7 +66,7 @@ export const Hero: React.FC<HeroProps> = ({
                 onClick={onOpenQuiz}
                 className="text-xs uppercase tracking-widest font-bold text-[#241712] hover:text-[#D63426] transition-colors flex items-center space-x-1.5 py-2 px-1 cursor-pointer group"
               >
-                <span>Take Roast Match Quiz</span>
+                <span>Find Your Coffee</span>
                 <ArrowRight className="w-3.5 h-3.5 text-[#D63426] group-hover:translate-x-1 transition-transform" />
               </button>
 

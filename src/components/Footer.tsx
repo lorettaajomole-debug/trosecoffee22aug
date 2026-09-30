@@ -206,7 +206,7 @@ export const Footer: React.FC<FooterProps> = ({
               </li>
               <li>
                 <button onClick={onOpenQuiz} className="hover:text-[#E65F38] transition-colors cursor-pointer flex items-center space-x-1.5 text-left font-semibold">
-                  <span>Roast Match Quiz</span>
+                  <span>Find Your Coffee</span>
                   <Sparkles className="w-3 h-3 text-[#E65F38]" />
                 </button>
               </li>

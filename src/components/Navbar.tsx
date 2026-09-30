@@ -10,6 +10,7 @@ interface NavbarProps {
   onOpenAccount: () => void;
   onOpenCart: () => void;
   onOpenAbout: () => void;
+  onOpenQuiz?: () => void;
   cartCount: number;
 }
 
@@ -21,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenAccount,
   onOpenCart,
   onOpenAbout,
+  onOpenQuiz,
   cartCount
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -211,6 +213,20 @@ export const Navbar: React.FC<NavbarProps> = ({
             ))}
 
             <div className="pt-4 border-t border-[#E8DFD5] space-y-3">
+              {onOpenQuiz && (
+                <button
+                  id="mobile-drawer-quiz-btn"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenQuiz();
+                  }}
+                  className="w-full py-3 bg-[#D63426] text-white text-xs uppercase tracking-wider font-bold rounded-xl flex items-center justify-center space-x-2 shadow-xs"
+                >
+                  <Coffee className="w-4 h-4 text-white" />
+                  <span>Find Your Perfect Coffee →</span>
+                </button>
+              )}
+
               <button
                 id="mobile-drawer-account-btn"
                 onClick={() => {

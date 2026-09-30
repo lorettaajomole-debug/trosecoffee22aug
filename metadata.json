@@ -1,6 +1,6 @@
 {
   "name": "TROSE Coffee & More",
-  "description": "A playful, modern, premium specialty coffee shop featuring freshly roasted single-origin lots, certified organic beans, prosumer espresso machines, and brewing accessories.",
+  "description": "A playful, modern, premium specialty coffee shop featuring the signature 'Find Your Perfect Coffee' taste finder, freshly roasted single-origin lots, certified organic beans, prosumer espresso gear, and sustainable accessories.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
