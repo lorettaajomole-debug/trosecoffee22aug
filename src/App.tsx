@@ -5,6 +5,8 @@ import { fetchLiveShopifyCatalogue, ShopifyCollection } from './services/shopify
 import { AnnouncementBar } from './components/AnnouncementBar';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { EditorialImageStrip } from './components/EditorialImageStrip';
+import { ShopOurCollections } from './components/ShopOurCollections';
 import { ExploreTrose } from './components/ExploreTrose';
 import { TroseBestSellers } from './components/TroseBestSellers';
 import { CoffeeFinderSection } from './components/CoffeeFinderSection';
@@ -211,7 +213,7 @@ export default function App() {
   const organicProducts = products.filter((p) => p.isOrganic || p.category === 'organic');
 
   return (
-    <div id="trose-app-root" className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#3C2A21] selection:bg-[#C5A059]/20 selection:text-[#3C2A21]">
+    <div id="trose-app-root" className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#12100E] selection:bg-[#C5A059]/30 selection:text-[#12100E]">
       
       {/* Top Announcement Bar */}
       <AnnouncementBar onOpenQuiz={() => setIsQuizOpen(true)} />
@@ -256,19 +258,28 @@ export default function App() {
         ) : (
           /* VIEW 3: EDITORIAL HOME PAGE */
           <>
-            {/* Premium Homepage Hero */}
+            {/* 1. Master Reference Hero */}
             <Hero
               onShopClick={(cat) => handleNavigate('shop', cat || 'all')}
               onDiscoverClick={() => setIsAboutOpen(true)}
               onOpenQuiz={() => setIsQuizOpen(true)}
+              featuredProduct={products.find((p) => p.category === 'coffee') || products[0]}
             />
 
-            {/* Explore TROSE: 8 Main Collection Cards */}
-            <ExploreTrose
+            {/* 2. Master Reference Editorial Image Strip */}
+            <EditorialImageStrip onLearnMore={() => setIsAboutOpen(true)} />
+
+            {/* 3. Master Reference Shop Our Collections (5 Colored Arches) */}
+            <ShopOurCollections
               onShopCollection={(cat) => handleNavigate('shop', cat)}
             />
 
-            {/* TROSE Best Sellers: 8 Reusable Premium Product Cards */}
+            {/* 4. Master Reference Coffee Finder Section */}
+            <CoffeeFinderSection
+              onOpenFinder={() => setIsQuizOpen(true)}
+            />
+
+            {/* 5. Real Shopify Best Sellers & Products */}
             <TroseBestSellers
               products={products}
               onQuickView={handleViewProductDetail}
@@ -276,12 +287,7 @@ export default function App() {
               onExploreAll={() => handleNavigate('shop', 'all')}
             />
 
-            {/* Signature Interactive Feature: Find Your Perfect Coffee */}
-            <CoffeeFinderSection
-              onOpenFinder={() => setIsQuizOpen(true)}
-            />
-
-            {/* Filterable Products & Roasts Showcase */}
+            {/* 6. Filterable Products & Roasts Showcase */}
             <FeaturedProducts
               products={products}
               activeCategory={activeCategory}
@@ -290,14 +296,7 @@ export default function App() {
               onAddToCart={handleAddToCart}
             />
 
-            {/* Organic Specialty Spotlight */}
-            <OrganicSpotlight
-              organicProducts={organicProducts}
-              onShopOrganic={() => handleNavigate('shop', 'organic')}
-              onQuickView={handleViewProductDetail}
-            />
-
-            {/* Prosumer Espresso Machines & Precision Accessories */}
+            {/* 7. Prosumer Espresso Machines & Precision Accessories */}
             <MachinesAndAccessories
               products={products}
               onQuickView={handleViewProductDetail}
@@ -305,20 +304,17 @@ export default function App() {
               onExploreGear={() => handleNavigate('shop', 'machines')}
             />
 
-            {/* Roaster's Club Subscription Tier */}
+            {/* 8. Roaster's Club Subscription Tier (Editorial Discovery) */}
             <SubscriptionClub
               products={products}
               onSubscribe={handleSubscribe}
             />
 
-            {/* Brand Philosophy & Heritage Section */}
+            {/* 9. Brand Philosophy & Heritage Section */}
             <BrandStory
               onExploreStory={() => setIsAboutOpen(true)}
               onShopCoffee={() => handleNavigate('shop', 'coffee')}
             />
-
-            {/* Connoisseur Testimonials */}
-            <ReviewsSection reviews={REVIEWS} />
           </>
         )}
 

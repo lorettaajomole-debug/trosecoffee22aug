@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, Coffee, Sparkles, Sliders, ShieldCheck, Gift } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { ProductCategory } from '../types';
 
 interface CuratedCategoriesProps {
@@ -10,76 +10,75 @@ export const CuratedCategories: React.FC<CuratedCategoriesProps> = ({ onSelectCa
   const categories = [
     {
       id: 'coffee' as ProductCategory,
+      number: '01',
       title: 'Single-Origin Coffee',
       subtitle: 'High-altitude micro-lots from Ethiopia, Colombia & Guatemala',
       image: 'https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=800&q=80',
-      icon: Coffee,
-      badge: 'Artisan Harvest'
+      tag: 'Arabica Micro-Lots'
     },
     {
       id: 'organic' as ProductCategory,
+      number: '02',
       title: 'Organic Certified Roasts',
       subtitle: '100% USDA Organic, shade-grown, zero synthetic pesticides',
       image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80',
-      icon: ShieldCheck,
-      badge: 'USDA Organic'
+      tag: 'Bio Certification'
     },
     {
       id: 'machines' as ProductCategory,
+      number: '03',
       title: 'Prosumer Machines',
       subtitle: 'Dual-boiler espresso powerhouses & precision flat burr grinders',
       image: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=800&q=80',
-      icon: Sliders,
-      badge: 'Commercial Grade'
+      tag: 'Precision Extraction'
     },
     {
       id: 'accessories' as ProductCategory,
+      number: '04',
       title: 'Barista Accessories',
       subtitle: 'PID gooseneck kettles, smart scales, hand-thrown ceramics',
       image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=800&q=80',
-      icon: Sparkles,
-      badge: 'Precision Tools'
+      tag: 'Brew Craft'
     },
     {
-      id: 'bundles' as ProductCategory,
-      title: 'Tasting Gift Sets',
-      subtitle: 'Curated roaster flights in gold-embossed bespoke boxes',
-      image: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=800&q=80',
-      icon: Gift,
-      badge: 'Curated Gift'
+      id: 'mugs-flasks' as ProductCategory,
+      number: '05',
+      title: 'Drinkware & Flasks',
+      subtitle: 'Double-walled vacuum insulated thermal travel vessels',
+      image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=800&q=80',
+      tag: 'Thermal Vessels'
     }
   ];
 
   return (
-    <section id="curated-categories-section" className="py-16 sm:py-20 bg-[#FDFBF7] border-b border-[#E5E5CB]">
+    <section id="curated-categories-section" className="py-16 sm:py-24 bg-[#FDFBF7] border-b border-[#12100E]/15">
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
         
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 border-b border-[#12100E]/15 pb-6 text-left">
           <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <span className="h-[1px] w-6 bg-[#C5A059]"></span>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-[#C5A059] font-bold">
-                The TROSE Collection
-              </span>
+            <div className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-[0.25em] text-[#C5A059]">
+              <span>02 / THE TROSE DIRECTORY</span>
+              <span className="text-[#D62828]">●</span>
+              <span>INDEX</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-serif font-normal text-[#3C2A21]">
-              Crafted For Every Coffee Ritual
+            <h2 className="text-3xl sm:text-5xl font-editorial font-bold text-[#12100E] uppercase tracking-tight">
+              Crafted For Every Ritual
             </h2>
           </div>
+          
           <button
             onClick={() => onSelectCategory('all')}
-            className="mt-4 sm:mt-0 inline-flex items-center space-x-1.5 text-xs uppercase tracking-widest font-semibold text-[#3C2A21] hover:text-[#C5A059] transition-colors cursor-pointer group"
+            className="mt-4 sm:mt-0 inline-flex items-center space-x-2 text-[11px] font-mono uppercase tracking-[0.2em] font-bold text-[#12100E] hover:text-[#D62828] transition-colors cursor-pointer group"
           >
-            <span>Explore Full Catalog</span>
-            <ArrowUpRight className="w-4 h-4 text-[#C5A059] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            <span>EXPLORE FULL DIRECTORY</span>
+            <ArrowUpRight className="w-4 h-4 text-[#D62828] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </button>
         </div>
 
-        {/* Categories Grid */}
+        {/* Categories Grid (Bauhaus Asymmetric Structured Grid) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {categories.map((cat, idx) => {
-            const Icon = cat.icon;
             const isLarge = idx === 0 || idx === 1;
 
             return (
@@ -91,46 +90,43 @@ export const CuratedCategories: React.FC<CuratedCategoriesProps> = ({ onSelectCa
                   const shopEl = document.getElementById('shop-collection-section');
                   if (shopEl) shopEl.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className={`group relative rounded-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-500 bg-[#211C1A] border border-[#E5E5CB] ${
-                  isLarge ? 'md:col-span-1 lg:col-span-1 h-[320px]' : 'h-[300px]'
+                className={`group relative border border-[#12100E]/15 hover:border-[#12100E] overflow-hidden cursor-pointer transition-all duration-300 bg-[#12100E] ${
+                  isLarge ? 'md:col-span-1 lg:col-span-1 h-[340px]' : 'h-[320px]'
                 }`}
               >
                 {/* Background Image */}
                 <img
                   src={cat.image}
                   alt={cat.title}
-                  className="w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-700 opacity-75 group-hover:opacity-90"
+                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 opacity-60 group-hover:opacity-75"
                   loading="lazy"
                   referrerPolicy="no-referrer"
                 />
 
-                {/* Gradient Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#211C1A] via-[#211C1A]/40 to-transparent" />
-
-                {/* Badge Top Left */}
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1 bg-[#211C1A]/80 backdrop-blur-md border border-white/15 text-[#E5C378] text-[10px] font-semibold tracking-widest uppercase rounded">
-                    {cat.badge}
-                  </span>
-                </div>
-
-                {/* Floating Arrow Icon Top Right */}
-                <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white group-hover:bg-[#C5A059] group-hover:text-[#211C1A] transition-colors">
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                </div>
-
-                {/* Text Content Bottom */}
-                <div className="absolute bottom-5 left-5 right-5 space-y-1.5 text-white">
-                  <div className="flex items-center space-x-2 text-[#C5A059]">
-                    <Icon className="w-3.5 h-3.5" />
-                    <span className="text-[10px] uppercase tracking-widest font-mono">Curated Tier</span>
+                {/* Packaging Technical Grid Overlay */}
+                <div className="absolute inset-0 p-6 flex flex-col justify-between text-left pointer-events-none">
+                  
+                  {/* Top Bar: Number & Tag */}
+                  <div className="flex items-center justify-between">
+                    <span className="px-2 py-0.5 bg-[#FAF7F2] text-[#12100E] text-[10px] font-mono font-bold tracking-widest uppercase">
+                      {cat.number}
+                    </span>
+                    <span className="text-[10px] font-mono text-[#C5A059] uppercase tracking-widest font-bold">
+                      {cat.tag}
+                    </span>
                   </div>
-                  <h3 className="text-xl sm:text-2xl font-serif font-normal text-[#FDFBF7] group-hover:text-[#E5C378] transition-colors">
-                    {cat.title}
-                  </h3>
-                  <p className="text-xs text-[#FDFBF7]/70 line-clamp-2 font-light">
-                    {cat.subtitle}
-                  </p>
+
+                  {/* Bottom Bar: Title & Subtitle */}
+                  <div className="space-y-1.5 bg-[#12100E]/85 backdrop-blur-xs p-4 border border-white/10">
+                    <h3 className="text-xl font-editorial font-bold text-white uppercase tracking-wide group-hover:text-[#C5A059] transition-colors flex items-center justify-between">
+                      <span>{cat.title}</span>
+                      <ArrowUpRight className="w-4 h-4 text-[#C5A059] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </h3>
+                    <p className="text-[11px] text-[#FAF7F2]/75 font-sans line-clamp-2">
+                      {cat.subtitle}
+                    </p>
+                  </div>
+
                 </div>
               </div>
             );
@@ -141,4 +137,3 @@ export const CuratedCategories: React.FC<CuratedCategoriesProps> = ({ onSelectCa
     </section>
   );
 };
-

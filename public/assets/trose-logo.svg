@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <!-- Multi-stop metallic gold gradients -->
+    <linearGradient id="troseGoldOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#936D25" />
+      <stop offset="12%" stop-color="#DDB758" />
+      <stop offset="25%" stop-color="#FFF1B0" />
+      <stop offset="42%" stop-color="#B28227" />
+      <stop offset="60%" stop-color="#FCE58D" />
+      <stop offset="78%" stop-color="#C59637" />
+      <stop offset="90%" stop-color="#FFE899" />
+      <stop offset="100%" stop-color="#734F14" />
+    </linearGradient>
+
+    <linearGradient id="troseGoldInner" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3B8" />
+      <stop offset="20%" stop-color="#CFA141" />
+      <stop offset="50%" stop-color="#8F6318" />
+      <stop offset="75%" stop-color="#E8C36A" />
+      <stop offset="100%" stop-color="#FFF7CD" />
+    </linearGradient>
+
+    <radialGradient id="troseCenterBlack" cx="50%" cy="50%" r="50%">
+      <stop offset="70%" stop-color="#0E0C0B" />
+      <stop offset="100%" stop-color="#050404" />
+    </radialGradient>
+
+    <linearGradient id="roseRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E63946" />
+      <stop offset="50%" stop-color="#C1121F" />
+      <stop offset="100%" stop-color="#780000" />
+    </linearGradient>
+
+    <!-- Path for the top curved slogan -->
+    <path id="troseSloganArc" d="M 124 235 A 136 136 0 0 1 376 235" fill="none" />
+  </defs>
+
+  <!-- Outer Shadow / Rim -->
+  <circle cx="250" cy="250" r="236" fill="#1C150B" opacity="0.3" />
+
+  <!-- Outermost Gold Border Ring -->
+  <circle cx="250" cy="250" r="230" fill="url(#troseGoldOuter)" stroke="#5E4010" stroke-width="2" />
+
+  <!-- Gold Ring Inset Groove -->
+  <circle cx="250" cy="250" r="206" fill="none" stroke="#684712" stroke-width="2.5" />
+  <circle cx="250" cy="250" r="202" fill="url(#troseGoldInner)" stroke="#FFF5C2" stroke-width="1.5" />
+
+  <!-- Inner Dark Bevel -->
+  <circle cx="250" cy="250" r="186" fill="none" stroke="#422D0A" stroke-width="3" />
+
+  <!-- Main Center Black Disc -->
+  <circle cx="250" cy="250" r="183" fill="url(#troseCenterBlack)" />
+
+  <!-- Inner Thin Golden Guideline -->
+  <circle cx="250" cy="250" r="181" fill="none" stroke="#DDB758" stroke-width="1.2" opacity="0.5" />
+
+  <!-- Slogan: BALANCE WITH BOLDNESS -->
+  <text fill="#FFFFFF" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="13.5" font-weight="700" letter-spacing="4.5">
+    <textPath href="#troseSloganArc" startOffset="50%" text-anchor="middle">
+      BALANCE WITH BOLDNESS
+    </textPath>
+  </text>
+
+  <!-- Steam Elements (Gentle rising wisps) -->
+  <g stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.9">
+    <path d="M 238 185 C 234 175 244 168 240 156 C 237 148 242 144 241 138" />
+    <path d="M 250 183 C 255 172 247 165 252 153 C 256 145 250 140 252 134" stroke-width="3" />
+    <path d="M 262 185 C 267 175 258 168 263 158 C 266 150 262 146 264 140" />
+  </g>
+
+  <!-- Coffee Cup Group -->
+  <g transform="translate(0, -6)">
+    <!-- Cup Body -->
+    <path d="M 194 212 C 194 256 218 266 250 266 C 282 266 306 256 306 212 Z" fill="#0E0C0B" stroke="#FFFFFF" stroke-width="4.5" />
+
+    <!-- Cup Rim Ellipse -->
+    <ellipse cx="250" cy="212" rx="56" ry="18" fill="#0E0C0B" stroke="#FFFFFF" stroke-width="4.5" />
+
+    <!-- Red Rose Swirl Inside Cup (TROSE Bloom) -->
+    <path d="M 218 212 C 218 205 235 200 250 200 C 268 200 282 205 282 212 C 282 218 266 224 250 224 C 232 224 218 218 218 212 Z" fill="url(#roseRed)" />
+    <!-- Rose Petal Swirls -->
+    <path d="M 232 210 C 236 204 250 204 258 207 C 268 211 268 217 258 219 C 246 221 238 216 242 212 C 246 208 256 209 256 212" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.85" />
+    <circle cx="250" cy="212" r="3.5" fill="#FFE3E3" />
+
+    <!-- Cup Handle -->
+    <path d="M 302 218 C 322 220 324 246 300 250" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" />
+
+    <!-- Coffee Bean Emblem on Front of Cup -->
+    <g transform="translate(250, 240) rotate(-15)">
+      <!-- Left lobe -->
+      <path d="M 0 -13 C -10 -13 -13 0 -10 11 C -8 15 -2 15 0 13 Z" fill="#FFFFFF" />
+      <!-- Right lobe -->
+      <path d="M 0 -13 C 10 -13 13 0 10 11 C 8 15 2 15 0 13 Z" fill="#FFFFFF" />
+      <!-- Center S-Crease -->
+      <path d="M 0 -12 C -2 -4 3 2 0 12" fill="none" stroke="#0E0C0B" stroke-width="2" stroke-linecap="round" />
+    </g>
+
+    <!-- Saucer -->
+    <ellipse cx="250" cy="272" rx="66" ry="8" fill="#FFFFFF" />
+    <path d="M 200 274 C 220 282 280 282 300 274" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <!-- TROSE Main Typography -->
+  <text x="250" y="342" text-anchor="middle" fill="#FFFFFF" font-family="'Playfair Display', 'Cormorant Garamond', Georgia, serif" font-size="54" font-weight="700" letter-spacing="6">
+    TROSE
+  </text>
+
+  <!-- COFFEE Sub-Typography -->
+  <text x="250" y="372" text-anchor="middle" fill="#FFFFFF" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" letter-spacing="9">
+    COFFEE
+  </text>
+</svg>

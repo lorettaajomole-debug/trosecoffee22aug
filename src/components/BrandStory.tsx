@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Sparkles, Award, ShieldCheck, Globe, Headphones, Lock, CheckCircle2, Heart } from 'lucide-react';
+import { ArrowRight, Coffee } from 'lucide-react';
 
 interface BrandStoryProps {
   onExploreStory: () => void;
@@ -8,115 +8,154 @@ interface BrandStoryProps {
 
 export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCoffee }) => {
   return (
-    <div id="brand-story-and-trust-root">
+    <div id="brand-story-and-culture-root">
       
-      {/* SECTION 1: COFFEE WITH A STORY */}
-      <section id="coffee-with-a-story-section" className="py-16 sm:py-24 bg-[#FAF6F0] relative overflow-hidden border-b border-[#E8DFD5]">
+      {/* EDITORIAL BRAND STORY COLLAGE: GOOD COFFEE. BRIGHTER HUMANS. */}
+      <section
+        id="brand-story-collage-section"
+        className="py-16 sm:py-24 bg-[#FAF6F0] relative overflow-hidden border-b border-[#12100E]/10"
+      >
         <div className="max-w-7xl mx-auto px-6 sm:px-10">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          {/* Top Editorial Kicker: Functional Sans */}
+          <div className="flex items-center space-x-3 text-xs font-sans uppercase tracking-[0.2em] text-[#C88E38] mb-8 font-semibold">
+            <span className="w-6 h-[1.5px] bg-[#C88E38]" />
+            <span>THE TROSE ETHOS</span>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
-            {/* Editorial Image Side */}
+            {/* LEFT: Bauhaus Asymmetric Visual Storytelling Collage (6 cols) */}
             <div className="lg:col-span-6 relative">
-              <div className="relative rounded-3xl overflow-hidden shadow-xl border border-[#E8DFD5] bg-[#1F1612] group">
-                <img
-                  src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=85"
-                  alt="TROSE coffee culture, connection and morning rituals"
-                  className="w-full h-[440px] sm:h-[500px] object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-95"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
+              
+              {/* Soft Bauhaus Geometry: Warm Kraft Disc & Deep Burgundy Arch Accent */}
+              <div className="absolute -top-6 -left-6 w-56 h-56 rounded-full bg-[#D4B896]/30 -z-10" />
+              <div className="absolute -bottom-6 -right-6 w-44 h-56 bg-[#8A2B2B]/15 rounded-t-[90px] -z-10" />
+
+              <div className="grid grid-cols-12 gap-4 items-center">
                 
-                {/* Floating Stamp / Badge */}
-                <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-[#E8DFD5] shadow-xs flex items-center space-x-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#D63426]"></span>
-                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#241712] font-bold">
-                    The Daily Ritual
-                  </span>
+                {/* Image 1: Main Coffee Pouring / Cup Ritual (7 cols) */}
+                <div className="col-span-7 relative border border-[#0E0C0B] bg-[#0E0C0B] shadow-md overflow-hidden aspect-[4/5] group">
+                  <img
+                    src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=85"
+                    alt="Precision brewed coffee ritual"
+                    className="w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-700 opacity-90"
+                    loading="lazy"
+                    referrerPolicy="no-referrer"
+                  />
+                  <div className="absolute bottom-2.5 left-2.5 bg-[#F4EFEA] border border-[#0E0C0B] px-2.5 py-1 text-[9px] font-sans uppercase tracking-wider text-[#0E0C0B] font-semibold">
+                    THE RITUAL
+                  </div>
                 </div>
 
-                {/* Bottom Story Caption */}
-                <div className="absolute bottom-6 left-6 right-6 text-white space-y-1 bg-[#1F1612]/70 backdrop-blur-md p-4 rounded-2xl border border-white/10">
-                  <span className="text-[10px] uppercase font-mono tracking-wider text-[#E65F38] font-bold block">
-                    Portland & Copenhagen
-                  </span>
-                  <h4 className="text-lg sm:text-xl font-black uppercase tracking-tight">
-                    Where Flavor Meets Human Connection
-                  </h4>
-                  <p className="text-xs text-white/80 font-normal">
-                    "A thoughtful cup turns an ordinary morning into an intentional moment of pause."
+                {/* Right Stack: Ripe Coffee Cherries & Origin Atmosphere (5 cols) */}
+                <div className="col-span-5 flex flex-col justify-between space-y-4">
+                  {/* Photo 2: Coffee Cherries / Origin Landscape */}
+                  <div className="relative border border-[#0E0C0B] bg-[#E8D8C3] overflow-hidden aspect-[4/3] group shadow-xs">
+                    <img
+                      src="https://images.unsplash.com/photo-1524350876685-274059332603?auto=format&fit=crop&w=800&q=85"
+                      alt="Ripe red coffee cherries on the branch"
+                      className="w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-700 opacity-90"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="absolute top-2 right-2 bg-[#F4EFEA]/90 px-2 py-0.5 text-[8px] font-sans font-semibold uppercase text-[#8A2B2B] border border-[#0E0C0B]/20">
+                      ORIGIN
+                    </div>
+                  </div>
+
+                  {/* Photo 3: Coffee Beans / Roasted Texture */}
+                  <div className="relative border border-[#0E0C0B] bg-[#2A1D15] overflow-hidden aspect-[4/3] group shadow-xs">
+                    <img
+                      src="https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=800&q=85"
+                      alt="Artisan roasted coffee beans"
+                      className="w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-700 opacity-85"
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                    />
+                  </div>
+
+                  {/* Bauhaus Color Accent Block */}
+                  <div className="bg-[#F4EFEA] text-[#0E0C0B] p-3.5 border border-[#0E0C0B] text-left">
+                    <div className="text-[10px] font-sans uppercase tracking-[0.16em] text-[#C88E38] font-bold">
+                      BALANCE
+                    </div>
+                    <div className="text-sm font-display font-black uppercase text-[#0E0C0B]">
+                      BOLD & REFINED
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Bauhaus Annotation Bar: Functional Sans */}
+              <div className="flex items-center justify-between text-[11px] font-sans uppercase tracking-[0.18em] text-[#0E0C0B]/60 mt-3 px-1">
+                <span>INTENTIONAL SENSORY EXPERIENCE</span>
+                <span className="text-[#8A2B2B] font-bold">TROSE COFFEE & MORE</span>
+              </div>
+            </div>
+
+            {/* RIGHT: Visual Headline & Brand Narrative (6 cols) */}
+            <div className="lg:col-span-6 space-y-6 text-left font-sans">
+              
+              {/* Bold Grotesk Headline matching Reference Graphic Typographic Personality */}
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-display font-black text-[#0E0C0B] tracking-tight uppercase leading-[0.96]">
+                <span className="block">GOOD COFFEE.</span>
+                <span className="block text-[#C88E38]">BRIGHTER HUMANS.</span>
+              </h2>
+
+              <p className="text-base sm:text-lg text-[#0E0C0B] font-normal leading-relaxed">
+                Coffee is more than an ordinary morning habit—it is a shared ritual, a moment to reset, and a celebration of human craft.
+              </p>
+
+              <div className="space-y-3.5 text-sm text-[#0E0C0B]/80 leading-relaxed font-normal">
+                <p>
+                  At TROSE, we curate coffees that bring harmony between nuance and strength. Whether you seek the vibrant florals of a high-altitude single origin or the comforting richness of a smooth dark roast, each cup is an invitation to inhabit your day with purpose.
+                </p>
+                <p>
+                  From the aroma blooming in your kitchen to the first sip, our coffees and wares are designed to inspire moments of stillness, focus, and joy.
+                </p>
+              </div>
+
+              {/* Brand Pillars: Clean Hairline Grid */}
+              <div className="grid grid-cols-2 gap-4 pt-3 border-t border-[#0E0C0B]/10">
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2 text-xs uppercase tracking-wider text-[#8A2B2B] font-bold">
+                    <span className="w-1.5 h-1.5 bg-[#8A2B2B]" />
+                    <span>BALANCE WITH BOLDNESS</span>
+                  </div>
+                  <p className="text-xs text-[#0E0C0B]/70 font-normal">
+                    Roast profiles calibrated for depth, sweetness, and smooth finish.
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-2 text-xs uppercase tracking-wider text-[#162820] font-bold">
+                    <span className="w-1.5 h-1.5 bg-[#162820]" />
+                    <span>MINDFUL RITUALS</span>
+                  </div>
+                  <p className="text-xs text-[#0E0C0B]/70 font-normal">
+                    Transforming your everyday cup into a deliberate sensory pleasure.
                   </p>
                 </div>
               </div>
 
-              {/* Decorative Inset Frame */}
-              <div className="absolute -bottom-5 -right-3 sm:-right-5 w-40 sm:w-48 h-40 sm:h-48 rounded-2xl overflow-hidden border-4 border-[#FAF6F0] shadow-lg hidden sm:block bg-[#1F1612]">
-                <img
-                  src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=85"
-                  alt="Artisanal pour over dripping in ceramic dripper"
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-            </div>
-
-            {/* Storytelling Copy Side */}
-            <div className="lg:col-span-6 space-y-6">
-              
-              <span className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D63426] font-bold block">
-                Heritage & Everyday Rituals
-              </span>
-
-              <h2 className="text-4xl sm:text-6xl font-black text-[#241712] tracking-tight uppercase leading-[0.95]">
-                Coffee With <br />
-                <span className="font-serif font-normal italic lowercase text-[#E65F38]">a true story</span>
-              </h2>
-
-              <p className="text-base sm:text-lg text-[#241712] font-medium leading-relaxed">
-                TROSE is a coffee and lifestyle brand dedicated to the intersection of flavor, culture, connection, and everyday rituals.
-              </p>
-
-              <div className="space-y-3 text-xs sm:text-sm text-[#7A6C63] leading-relaxed font-normal">
-                <p>
-                  We believe coffee is far more than a morning caffeine habit—it is a shared cultural language and a sensory moment of pause. From smallholder cloud-forest micro-lots in Yirgacheffe and Marcala to your kitchen counter, every bean carries the terroir of its origin.
-                </p>
-                <p>
-                  Our roast profiles are crafted in small drum batches to celebrate natural sweetness, clean acidity, and chocolate undertones. Designed to look gorgeous on your counter and taste unforgettable in your cup.
-                </p>
-              </div>
-
-              {/* Core Values Checklist */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-                {[
-                  'Distinct Origin Terroir Flavor',
-                  'Direct Generational Farm Trade',
-                  'Mindful Morning Rituals',
-                  'Timeless Scandinavian Aesthetic'
-                ].map((val) => (
-                  <div key={val} className="flex items-center space-x-2.5 text-xs text-[#241712] font-semibold">
-                    <CheckCircle2 className="w-4 h-4 text-[#D63426] shrink-0" />
-                    <span>{val}</span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Action Buttons */}
-              <div className="pt-3 flex flex-wrap items-center gap-3">
+              {/* Action Buttons: Functional Sans */}
+              <div className="pt-2 flex flex-wrap items-center gap-4">
                 <button
                   id="learn-about-trose-btn"
                   onClick={onExploreStory}
-                  className="px-8 py-3.5 bg-[#241712] hover:bg-[#D63426] text-white text-xs uppercase tracking-widest font-black rounded-full transition-all duration-300 shadow-md flex items-center space-x-2.5 cursor-pointer group"
+                  className="px-8 py-3.5 bg-[#0E0C0B] hover:bg-[#221B16] text-white text-xs uppercase tracking-[0.18em] font-sans font-bold transition-all flex items-center space-x-3 cursor-pointer group active:translate-y-0.5 border border-[#0E0C0B]"
                 >
-                  <span>Learn About TROSE</span>
-                  <ArrowRight className="w-4 h-4 text-[#FAF6F0] group-hover:translate-x-1 transition-transform" />
+                  <span>OUR PHILOSOPHY</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#C88E38] group-hover:translate-x-1 transition-transform" />
                 </button>
 
                 <button
                   onClick={onShopCoffee}
-                  className="px-7 py-3.5 bg-white hover:bg-[#241712] hover:text-white text-[#241712] text-xs uppercase tracking-widest font-black rounded-full border border-[#E8DFD5] transition-all cursor-pointer shadow-xs"
+                  className="px-7 py-3.5 bg-transparent hover:bg-[#F4EFEA] hover:text-[#8A2B2B] text-[#0E0C0B] text-xs uppercase tracking-[0.16em] font-sans font-bold border border-[#0E0C0B] transition-all cursor-pointer"
                 >
-                  <span>Shop Roasts</span>
+                  <span>EXPLORE ROASTS →</span>
                 </button>
               </div>
 
@@ -127,98 +166,62 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
         </div>
       </section>
 
-      {/* SECTION 2: WHY TROSE (4 Trust Cards) */}
-      <section id="why-trose-section" className="py-16 sm:py-24 bg-white border-b border-[#E8DFD5]">
+      {/* WHY TROSE: ELEGANT EDITORIAL VALUE PILLARS (Neutral brand copy) */}
+      <section id="why-trose-section" className="py-14 sm:py-20 bg-[#F4EFEA] border-b border-[#0E0C0B]/10">
         <div className="max-w-7xl mx-auto px-6 sm:px-10">
           
-          {/* Section Header */}
-          <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
-            <span className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D63426] font-bold">
-              The TROSE Standard
-            </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left font-sans">
             
-            <h2 className="text-3xl sm:text-5xl font-black text-[#241712] uppercase tracking-tight">
-              Why TROSE
-            </h2>
-
-            <p className="text-xs sm:text-sm text-[#7A6C63] font-normal leading-relaxed">
-              Built on transparency, roasting precision, and a genuine obsession with better coffee.
-            </p>
-          </div>
-
-          {/* 4 Trust Pillars Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            
-            {/* 1. Premium Quality */}
-            <div 
-              id="trust-card-premium-quality"
-              className="p-6 sm:p-7 rounded-3xl bg-[#FAF6F0] border border-[#E8DFD5] hover:border-[#D63426] transition-all duration-300 space-y-4 group shadow-xs"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-[#D63426] flex items-center justify-center text-[#D63426] group-hover:text-white transition-colors duration-300 shadow-xs">
-                <Award className="w-6 h-6 stroke-[2]" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-[#241712] uppercase">
-                  Premium Quality
-                </h3>
-                <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                  Top 1% specialty-grade micro-lots, small-batch roasted and nitrogen-sealed for peak aromatics.
-                </p>
-              </div>
+            {/* 1. Meticulous Sourcing */}
+            <div className="p-6 bg-white border border-[#0E0C0B]/12 space-y-2.5 group hover:border-[#0E0C0B] transition-colors">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#C88E38] font-bold block">
+                01 / SELECTION
+              </span>
+              <h3 className="text-base font-display font-black text-[#0E0C0B] uppercase">
+                Distinct Origins
+              </h3>
+              <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
+                Carefully selected coffees chosen for distinct terroir, natural sweetness, and vibrant aromatics.
+              </p>
             </div>
 
-            {/* 2. Secure Checkout */}
-            <div 
-              id="trust-card-secure-checkout"
-              className="p-6 sm:p-7 rounded-3xl bg-[#FAF6F0] border border-[#E8DFD5] hover:border-[#D63426] transition-all duration-300 space-y-4 group shadow-xs"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-[#D63426] flex items-center justify-center text-[#241712] group-hover:text-white transition-colors duration-300 shadow-xs">
-                <Lock className="w-6 h-6 stroke-[2]" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-[#241712] uppercase">
-                  Secure Checkout
-                </h3>
-                <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                  Bank-grade 256-bit encrypted checkout with Apple Pay, Google Pay, Visa, Mastercard, and Shop Pay.
-                </p>
-              </div>
+            {/* 2. Artisanal Roasting */}
+            <div className="p-6 bg-white border border-[#0E0C0B]/12 space-y-2.5 group hover:border-[#0E0C0B] transition-colors">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#8A2B2B] font-bold block">
+                02 / HARMONY
+              </span>
+              <h3 className="text-base font-display font-black text-[#0E0C0B] uppercase">
+                Balanced Roasting
+              </h3>
+              <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
+                Roast curves crafted to highlight origin complexity without excessive bitterness or acidity.
+              </p>
             </div>
 
-            {/* 3. Worldwide Shipping */}
-            <div 
-              id="trust-card-worldwide-shipping"
-              className="p-6 sm:p-7 rounded-3xl bg-[#FAF6F0] border border-[#E8DFD5] hover:border-[#D63426] transition-all duration-300 space-y-4 group shadow-xs"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-[#D63426] flex items-center justify-center text-[#E65F38] group-hover:text-white transition-colors duration-300 shadow-xs">
-                <Globe className="w-6 h-6 stroke-[2]" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-[#241712] uppercase">
-                  Worldwide Shipping
-                </h3>
-                <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                  Direct express shipping from our roastery in recyclable, one-way valved degassing pouches.
-                </p>
-              </div>
+            {/* 3. Sustainable Organic Lots */}
+            <div className="p-6 bg-white border border-[#0E0C0B]/12 space-y-2.5 group hover:border-[#0E0C0B] transition-colors">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#162820] font-bold block">
+                03 / STEWARDSHIP
+              </span>
+              <h3 className="text-base font-display font-black text-[#0E0C0B] uppercase">
+                Organic Offerings
+              </h3>
+              <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
+                Certified organic selections cultivated with care for the earth, clean soil, and sustainable farming.
+              </p>
             </div>
 
-            {/* 4. Customer Support */}
-            <div 
-              id="trust-card-customer-support"
-              className="p-6 sm:p-7 rounded-3xl bg-[#FAF6F0] border border-[#E8DFD5] hover:border-[#D63426] transition-all duration-300 space-y-4 group shadow-xs"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-white group-hover:bg-[#D63426] flex items-center justify-center text-[#657953] group-hover:text-white transition-colors duration-300 shadow-xs">
-                <Headphones className="w-6 h-6 stroke-[2]" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-[#241712] uppercase">
-                  Customer Support
-                </h3>
-                <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                  Real coffee professionals ready to help with recipe dial-ins, brew methods, and equipment setup.
-                </p>
-              </div>
+            {/* 4. Complete Coffee Experience */}
+            <div className="p-6 bg-white border border-[#0E0C0B]/12 space-y-2.5 group hover:border-[#0E0C0B] transition-colors">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-[#C88E38] font-bold block">
+                04 / LIFESTYLE
+              </span>
+              <h3 className="text-base font-display font-black text-[#0E0C0B] uppercase">
+                Complete Ritual
+              </h3>
+              <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
+                From precision espresso machines to ceramic mugs, everything you need for the perfect cup.
+              </p>
             </div>
 
           </div>
@@ -229,4 +232,3 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
     </div>
   );
 };
-

@@ -12,57 +12,57 @@ export const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#211C1A]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#12100E]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 text-left">
       
       <div 
         id="account-modal-container"
-        className="relative w-full max-w-2xl bg-[#FDFBF7] rounded-2xl shadow-2xl border border-[#E5E5CB] overflow-hidden flex flex-col my-8"
+        className="relative w-full max-w-2xl bg-[#FAF7F2] border border-[#12100E] shadow-2xl overflow-hidden flex flex-col my-8"
       >
         {/* Header */}
-        <div className="bg-[#3C2A21] text-[#FDFBF7] p-6 sm:p-8 flex items-center justify-between border-b border-white/10">
+        <div className="bg-[#12100E] text-white p-6 sm:p-8 flex items-center justify-between border-b border-white/15">
           <div className="flex items-center space-x-4">
-            <div className="w-14 h-14 rounded-full bg-[#C5A059] text-[#211C1A] flex items-center justify-center font-serif text-xl font-bold border-2 border-white/20">
-              JS
+            <div className="w-12 h-12 border border-[#C5A059] bg-[#12100E] text-[#C5A059] flex items-center justify-center font-mono text-lg font-bold">
+              TR
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="text-xl font-serif font-normal">Julian Sterling</h3>
-                <span className="px-2 py-0.5 bg-[#C5A059] text-[#211C1A] text-[9px] font-mono font-bold uppercase tracking-wider rounded">
-                  VIP Roaster Tier
+                <h3 className="text-xl font-editorial font-bold uppercase tracking-wide">Client Portal</h3>
+                <span className="px-2 py-0.5 bg-[#C5A059] text-[#12100E] text-[9px] font-mono font-bold uppercase tracking-wider">
+                  MEMBER
                 </span>
               </div>
-              <p className="text-xs text-[#FDFBF7]/75 font-light">Member since 2024 • lorettaajomole@gmail.com</p>
+              <p className="text-xs text-white/70 font-mono mt-0.5">Member since 2026 · lorettaajomole@gmail.com</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-[#FDFBF7]/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+            className="p-1.5 border border-white/20 text-white hover:border-[#D62828] hover:text-[#D62828] transition-colors cursor-pointer"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Tab Switcher */}
-        <div className="flex border-b border-[#E5E5CB] bg-white text-xs font-semibold uppercase tracking-wider">
+        {/* Tab Switcher (Zero pills) */}
+        <div className="flex border-b border-[#12100E]/15 bg-white text-[10px] font-mono uppercase tracking-wider">
           {[
-            { id: 'profile', label: 'Roaster Profile', icon: User },
-            { id: 'orders', label: 'Order History', icon: Package },
-            { id: 'subscription', label: 'Active Club', icon: Sparkles }
+            { id: 'profile', label: '01 / Profile', icon: User },
+            { id: 'orders', label: '02 / Orders', icon: Package },
+            { id: 'subscription', label: '03 / Club Cadence', icon: Sparkles }
           ].map((tab) => {
             const Icon = tab.icon;
             return (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id as any)}
-                className={`flex-1 py-3.5 flex items-center justify-center space-x-2 border-b-2 transition-colors cursor-pointer text-xs font-medium ${
+                className={`flex-1 py-3 px-4 flex items-center justify-center space-x-2 border-b-2 transition-colors cursor-pointer font-bold ${
                   activeTab === tab.id
-                    ? 'border-[#C5A059] text-[#3C2A21] bg-[#FDFBF7]'
-                    : 'border-transparent text-[#7E7067] hover:text-[#3C2A21]'
+                    ? 'border-[#12100E] text-[#12100E] bg-[#FAF7F2]'
+                    : 'border-transparent text-[#69574A] hover:text-[#12100E]'
                 }`}
               >
-                <Icon className="w-4 h-4 text-[#C5A059]" />
+                <Icon className="w-3.5 h-3.5 text-[#C5A059]" />
                 <span>{tab.label}</span>
               </button>
             );
@@ -73,140 +73,70 @@ export const AccountModal: React.FC<AccountModalProps> = ({ isOpen, onClose }) =
         <div className="p-6 sm:p-8 space-y-6">
           
           {activeTab === 'profile' && (
-            <div className="space-y-5">
-              
-              {/* Points Banner */}
-              <div className="p-4 rounded-xl bg-[#E5E5CB]/30 border border-[#E5E5CB] flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Award className="w-6 h-6 text-[#C5A059]" />
-                  <div>
-                    <span className="text-[10px] uppercase tracking-widest text-[#7E7067] font-mono block">Tasting Loyalty Points</span>
-                    <span className="text-xl font-serif font-medium text-[#3C2A21]">520 Points Available</span>
-                  </div>
+            <div className="space-y-4">
+              <div className="p-4 bg-white border border-[#12100E]/15 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#C5A059] font-bold block">
+                    TASTING REWARDS
+                  </span>
+                  <span className="text-lg font-mono font-bold text-[#12100E]">420 Points Available</span>
+                  <p className="text-xs text-[#69574A] font-sans">Equivalent to $15 off your next micro-lot order.</p>
                 </div>
-                <span className="text-xs bg-[#3C2A21] text-white px-3 py-1.5 rounded-lg font-mono">
-                  Redeem $25 Reward
+                <Award className="w-6 h-6 text-[#C5A059]" />
+              </div>
+
+              <div className="p-4 bg-white border border-[#12100E]/15 space-y-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#69574A] font-bold block">
+                  SAVED ADDRESSES
                 </span>
+                <p className="text-xs font-mono text-[#12100E]">742 Artisan Roastery Blvd, Portland, OR</p>
+                <span className="text-[10px] font-mono text-[#C5A059] uppercase">Default Shipping Destination</span>
               </div>
-
-              {/* Saved Palate Preferences */}
-              <div className="space-y-2">
-                <h4 className="text-sm font-serif font-semibold text-[#3C2A21]">Saved Palate Profile</h4>
-                <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                    <span className="text-[#7E7067] block font-light">Preferred Method:</span>
-                    <strong className="text-[#3C2A21] font-medium">Pour-Over (Chemex / V60)</strong>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                    <span className="text-[#7E7067] block font-light">Preferred Grind:</span>
-                    <strong className="text-[#3C2A21] font-medium">Medium-Fine (Whole Bean)</strong>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                    <span className="text-[#7E7067] block font-light">Aromatic Notes:</span>
-                    <strong className="text-[#3C2A21] font-medium">Floral, Jasmine, Stonefruit</strong>
-                  </div>
-                  <div className="p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                    <span className="text-[#7E7067] block font-light">Organic Lots:</span>
-                    <strong className="text-[#3C2A21] font-medium">Preferred (USDA Certified)</strong>
-                  </div>
-                </div>
-              </div>
-
             </div>
           )}
 
           {activeTab === 'orders' && (
-            <div className="space-y-4">
-              
-              <div className="p-4 bg-white rounded-xl border border-[#E5E5CB] space-y-3">
-                <div className="flex items-center justify-between text-xs border-b border-[#E5E5CB] pb-2">
-                  <div>
-                    <span className="font-mono font-semibold text-[#3C2A21]">#TR-893041</span>
-                    <span className="text-[#7E7067] ml-2 font-light">• August 12, 2026</span>
-                  </div>
-                  <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded font-mono text-[9px] uppercase">
-                    Delivered
-                  </span>
+            <div className="space-y-3">
+              <div className="p-4 bg-white border border-[#12100E]/15 space-y-2">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="font-bold text-[#12100E]">ORDER #TR-894212</span>
+                  <span className="text-[#C5A059] font-bold">DISPATCHED</span>
                 </div>
-
-                <div className="flex items-center space-x-3 text-xs">
-                  <img
-                    src="https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=200&q=80"
-                    alt=""
-                    className="w-12 h-12 rounded-lg object-cover bg-[#211C1A]"
-                  />
-                  <div className="flex-1">
-                    <h5 className="font-serif font-medium text-[#3C2A21]">TROSE Grand Reserve Yirgacheffe</h5>
-                    <span className="text-[#7E7067] font-light">Whole Bean • 12 oz (340g) x 2</span>
-                  </div>
-                  <span className="font-serif font-semibold text-[#3C2A21]">$49.00</span>
-                </div>
+                <p className="text-xs text-[#69574A] font-sans">
+                  Fair Trade Organic Bali Blue · Whole Bean (12 oz)
+                </p>
+                <span className="text-[10px] font-mono text-[#69574A] block">Sept 28, 2026 · $19.99</span>
               </div>
-
-              <div className="p-4 bg-white rounded-xl border border-[#E5E5CB] space-y-3">
-                <div className="flex items-center justify-between text-xs border-b border-[#E5E5CB] pb-2">
-                  <div>
-                    <span className="font-mono font-semibold text-[#3C2A21]">#TR-744192</span>
-                    <span className="text-[#7E7067] ml-2 font-light">• July 18, 2026</span>
-                  </div>
-                  <span className="px-2 py-0.5 bg-green-50 text-green-700 border border-green-200 rounded font-mono text-[9px] uppercase">
-                    Delivered
-                  </span>
-                </div>
-
-                <div className="flex items-center space-x-3 text-xs">
-                  <img
-                    src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=200&q=80"
-                    alt=""
-                    className="w-12 h-12 rounded-lg object-cover bg-[#211C1A]"
-                  />
-                  <div className="flex-1">
-                    <h5 className="font-serif font-medium text-[#3C2A21]">TROSE Organic Marcala Reserve</h5>
-                    <span className="text-[#7E7067] font-light">Pour Over Grind • 12 oz (340g)</span>
-                  </div>
-                  <span className="font-serif font-semibold text-[#3C2A21]">$25.00</span>
-                </div>
-              </div>
-
             </div>
           )}
 
           {activeTab === 'subscription' && (
             <div className="space-y-4">
-              
-              <div className="p-5 bg-white rounded-xl border border-[#C5A059]/40 space-y-4">
+              <div className="p-5 bg-white border border-[#12100E]/15 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Sparkles className="w-5 h-5 text-[#C5A059]" />
-                    <h4 className="text-base font-serif font-medium text-[#3C2A21]">Active Roaster’s Concierge Club</h4>
-                  </div>
-                  <span className="px-2.5 py-0.5 bg-[#E5E5CB]/40 text-[#C5A059] font-mono text-[10px] uppercase font-bold rounded">
-                    Every 2 Weeks
+                  <span className="text-xs font-mono font-bold text-[#12100E] uppercase">The Roaster's Club</span>
+                  <span className="px-2 py-0.5 bg-[#12100E] text-[#C5A059] text-[9px] font-mono font-bold uppercase">
+                    ACTIVE · 15% OFF
                   </span>
                 </div>
-
-                <p className="text-xs text-[#3C2A21]/75 font-light">
-                  Next roast scheduled: <strong className="text-[#3C2A21] font-medium">September 01, 2026</strong>. Free climate-neutral priority shipment.
+                <p className="text-xs text-[#69574A] leading-relaxed">
+                  Cadence: Bi-weekly fresh coffee delivery (2 bags). Next dispatch scheduled for Friday.
                 </p>
-
-                <div className="pt-2 border-t border-[#E5E5CB] flex items-center justify-between text-xs">
-                  <button className="text-[#C5A059] font-medium hover:underline cursor-pointer">
-                    Change Frequency / Swap Beans
+                <div className="flex gap-2 pt-2">
+                  <button className="px-3 py-1.5 border border-[#12100E] text-[10px] font-mono uppercase font-bold hover:bg-[#12100E] hover:text-white transition-colors cursor-pointer">
+                    PAUSE SHIPMENT
                   </button>
-                  <button className="text-[#7E7067] hover:text-red-600 font-light cursor-pointer">
-                    Pause Subscription
+                  <button className="px-3 py-1.5 border border-[#12100E] text-[10px] font-mono uppercase font-bold hover:bg-[#12100E] hover:text-white transition-colors cursor-pointer">
+                    SWAP LOT
                   </button>
                 </div>
               </div>
-
             </div>
           )}
 
         </div>
 
       </div>
-
     </div>
   );
 };
-

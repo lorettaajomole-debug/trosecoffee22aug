@@ -8,18 +8,7 @@ import {
   ArrowRight, 
   ArrowLeft, 
   Check, 
-  Flame, 
-  Share2, 
-  Heart, 
-  Info,
-  Gift,
-  Sun,
-  Laptop,
-  Smile,
-  CupSoda,
-  Sliders,
-  CheckCircle2,
-  Copy
+  Share2
 } from 'lucide-react';
 import { 
   Product, 
@@ -100,7 +89,7 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
       mood: finalMood
     };
 
-    // Simulate sensory calculation animation
+    // Calculate real live match with coffeeFinderService
     setTimeout(() => {
       const matchResult = findPerfectCoffee(products, userAnswers);
       setResult(matchResult);
@@ -110,23 +99,12 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
 
   const handleShareResult = async () => {
     if (!result) return;
-    const shareText = `Apparently I'm a "${result.perfectMatch.shareablePersona}"! My perfect cup is TROSE ${result.perfectMatch.product.name} (${result.perfectMatch.score}% Match ☕). Find yours at TROSE Coffee & More!`;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'My TROSE Coffee Match',
-          text: shareText,
-          url: window.location.href
-        });
-        return;
-      } catch (e) {
-        // Fallback to clipboard
-      }
-    }
-
+    const shareText = `☕ I took the TROSE Coffee Finder and found my match: ${result.perfectMatch.product.name} (${result.perfectMatch.score}% match)! "${result.perfectMatch.shareablePersona}" Find yours at TROSE Coffee & More.`;
+    
     try {
-      await navigator.clipboard.writeText(shareText);
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareText);
+      }
       setCopiedShare(true);
       setTimeout(() => setCopiedShare(false), 3000);
     } catch (e) {
@@ -135,24 +113,30 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/65 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#12100E]/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 animate-fadeIn">
       
       <div 
         id="coffee-finder-modal"
-        className="relative w-full max-w-2xl bg-[#FAF6F0] rounded-3xl shadow-2xl border border-[#E8DFD5] overflow-hidden flex flex-col my-4 sm:my-8 transition-all"
+        className="relative w-full max-w-2xl bg-[#FAF7F2] shadow-2xl border border-[#12100E] overflow-hidden flex flex-col my-4 sm:my-8 transition-all"
       >
         {/* Header Ribbon */}
-        <div className="bg-[#241712] text-[#FAF6F0] px-5 sm:px-8 py-4 flex items-center justify-between border-b border-[#3A271E]">
-          <div className="flex items-center space-x-2.5">
-            <div className="w-7 h-7 rounded-xl bg-[#D63426] text-white flex items-center justify-center shadow-xs">
-              <Sparkles className="w-3.5 h-3.5" />
-            </div>
+        <div className="bg-[#12100E] text-[#FAF7F2] px-5 sm:px-8 py-3.5 flex items-center justify-between border-b border-[#12100E]">
+          <div className="flex items-center space-x-3">
+            <img
+              src="/assets/trose-logo.svg"
+              alt="Official TROSE Seal"
+              className="w-7 h-7 object-contain"
+              onError={(e) => {
+                const target = e.currentTarget as HTMLImageElement;
+                if (!target.src.endsWith('.png')) target.src = '/assets/trose-logo.png';
+              }}
+            />
             <div>
-              <span className="text-[10px] font-mono tracking-widest uppercase text-[#E65F38] font-bold block">
-                TROSE Signature
+              <span className="text-[9px] font-mono tracking-[0.25em] uppercase text-[#C5A059] font-bold block">
+                TROSE TASTING SYSTEM
               </span>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-[#FAF6F0]">
-                Find Your Perfect Coffee
+              <h2 className="text-xs font-editorial font-bold uppercase tracking-wider text-[#FAF7F2]">
+                Coffee Finder · Palate Matching
               </h2>
             </div>
           </div>
@@ -161,7 +145,7 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
             {currentStep > 1 && currentStep <= totalSteps && (
               <button
                 onClick={() => setCurrentStep((prev) => prev - 1)}
-                className="text-[11px] font-bold uppercase tracking-wider text-[#FAF6F0]/70 hover:text-white flex items-center space-x-1 cursor-pointer transition-colors"
+                className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-[#FAF7F2]/70 hover:text-white flex items-center space-x-1 cursor-pointer transition-colors"
                 aria-label="Previous question"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
@@ -172,19 +156,19 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
             <button
               id="close-coffee-finder-btn"
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-[#FAF6F0] flex items-center justify-center transition-colors cursor-pointer"
+              className="w-7 h-7 border border-white/20 bg-white/10 hover:bg-[#D62828] text-[#FAF7F2] flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Close Coffee Finder"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Progress Bar (Visible during questions) */}
+        {/* Stepped Progress Bar */}
         {currentStep <= totalSteps && (
-          <div className="w-full bg-[#E8DFD5] h-1.5 relative">
+          <div className="w-full bg-[#12100E]/10 h-1 relative">
             <div
-              className="bg-gradient-to-r from-[#E65F38] to-[#D63426] h-full transition-all duration-400 ease-out"
+              className="bg-[#D62828] h-full transition-all duration-300 ease-out"
               style={{ width: `${(currentStep / totalSteps) * 100}%` }}
             />
           </div>
@@ -193,33 +177,31 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
         {/* Main Content Area */}
         <div className="p-5 sm:p-8 md:p-10 max-h-[80vh] overflow-y-auto">
           
-          {/* ============================================================ */}
           {/* QUESTION 1 — HOW DO YOU LIKE YOUR COFFEE? */}
-          {/* ============================================================ */}
           {currentStep === 1 && (
             <div className="space-y-6 sm:space-y-8 animate-fadeIn">
               <div className="space-y-2 text-left">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] uppercase font-mono tracking-widest text-[#D63426] font-bold px-2.5 py-0.5 rounded-full bg-[#D63426]/10">
-                    Question 1 of 5
+                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#C5A059] font-bold px-2 py-0.5 border border-[#12100E]/20 bg-[#FDFBF7]">
+                    STEP 01 / 05
                   </span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[#241712]">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-editorial font-bold uppercase tracking-tight text-[#12100E]">
                   How do you usually enjoy your coffee?
                 </h3>
-                <p className="text-sm text-[#7A6C63]">
+                <p className="text-xs sm:text-sm text-[#69574A] font-sans">
                   Select the ritual that starts your morning best.
                 </p>
               </div>
 
-              {/* 4 Selectable Cards */}
+              {/* 4 Selectable Cards (Zero pills, sharp Bauhaus boxes) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {[
                   {
                     id: 'black' as CoffeeEnjoyment,
                     emoji: '☕',
                     title: 'Black',
-                    desc: 'Pure, clear origin notes with bright aroma and sweetness.'
+                    desc: 'Pure, clear origin notes with bright aroma and natural sweetness.'
                   },
                   {
                     id: 'milk' as CoffeeEnjoyment,
@@ -237,7 +219,7 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                     id: 'mood' as CoffeeEnjoyment,
                     emoji: '✨',
                     title: 'Depends on my mood',
-                    desc: 'Versatile beans that taste sublime in every single cup.'
+                    desc: 'Versatile beans that taste sublime across multiple brew styles.'
                   }
                 ].map((opt) => {
                   const isSelected = enjoyment === opt.id;
@@ -248,28 +230,28 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                         setEnjoyment(opt.id);
                         setTimeout(() => setCurrentStep(2), 180);
                       }}
-                      className={`p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
+                      className={`p-5 border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
                         isSelected
-                          ? 'border-[#241712] bg-[#241712] text-white shadow-lg scale-[1.01]'
-                          : 'border-[#E8DFD5] bg-white hover:border-[#D63426] hover:bg-[#FAF6F0] hover:shadow-md text-[#241712]'
+                          ? 'border-[#12100E] bg-[#12100E] text-white shadow-md'
+                          : 'border-[#12100E]/15 bg-[#FDFBF7] hover:border-[#12100E] text-[#12100E]'
                       }`}
                     >
                       <div className="flex items-center justify-between w-full mb-3">
-                        <span className="text-3xl sm:text-4xl group-hover:scale-110 transition-transform">
+                        <span className="text-3xl">
                           {opt.emoji}
                         </span>
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center border transition-colors ${
-                          isSelected ? 'bg-[#D63426] border-[#D63426] text-white' : 'border-[#E8DFD5] bg-transparent'
+                        <div className={`w-5 h-5 flex items-center justify-center border transition-colors ${
+                          isSelected ? 'bg-[#D62828] border-[#D62828] text-white' : 'border-[#12100E]/20 bg-transparent'
                         }`}>
                           {isSelected && <Check className="w-3.5 h-3.5" />}
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-base font-bold uppercase tracking-tight mb-1">
+                        <h4 className="text-base font-editorial font-bold uppercase tracking-tight mb-1">
                           {opt.title}
                         </h4>
-                        <p className={`text-xs leading-relaxed ${
-                          isSelected ? 'text-[#FAF6F0]/80' : 'text-[#7A6C63]'
+                        <p className={`text-xs leading-relaxed font-sans ${
+                          isSelected ? 'text-[#FAF7F2]/80' : 'text-[#69574A]'
                         }`}>
                           {opt.desc}
                         </p>
@@ -281,22 +263,20 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
             </div>
           )}
 
-          {/* ============================================================ */}
           {/* QUESTION 2 — FLAVOUR */}
-          {/* ============================================================ */}
           {currentStep === 2 && (
             <div className="space-y-6 sm:space-y-8 animate-fadeIn">
               <div className="space-y-2 text-left">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] uppercase font-mono tracking-widest text-[#D63426] font-bold px-2.5 py-0.5 rounded-full bg-[#D63426]/10">
-                    Question 2 of 5
+                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#C5A059] font-bold px-2 py-0.5 border border-[#12100E]/20 bg-[#FDFBF7]">
+                    STEP 02 / 05
                   </span>
-                  <span className="text-xs text-[#7A6C63] font-medium">Select one or more</span>
+                  <span className="text-xs text-[#69574A] font-mono">Select one or more</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[#241712]">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-editorial font-bold uppercase tracking-tight text-[#12100E]">
                   What sounds delicious to you?
                 </h3>
-                <p className="text-sm text-[#7A6C63]">
+                <p className="text-xs sm:text-sm text-[#69574A] font-sans">
                   Pick the tasting notes your palate craves.
                 </p>
               </div>
@@ -346,32 +326,32 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                     <button
                       key={item.id}
                       onClick={() => handleToggleFlavour(item.id)}
-                      className={`p-4 sm:p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex items-center justify-between group ${
+                      className={`p-4 sm:p-5 border text-left transition-all duration-200 cursor-pointer flex items-center justify-between group ${
                         isChecked
-                          ? 'border-[#241712] bg-[#241712] text-white shadow-md'
-                          : 'border-[#E8DFD5] bg-white hover:border-[#D63426] hover:bg-[#FAF6F0] text-[#241712]'
+                          ? 'border-[#12100E] bg-[#12100E] text-white shadow-md'
+                          : 'border-[#12100E]/15 bg-[#FDFBF7] hover:border-[#12100E] text-[#12100E]'
                       }`}
                     >
                       <div className="flex items-center space-x-3.5">
-                        <span className="text-2xl sm:text-3xl group-hover:scale-110 transition-transform">
+                        <span className="text-2xl sm:text-3xl">
                           {item.emoji}
                         </span>
                         <div>
-                          <h4 className="text-sm font-bold uppercase tracking-tight">
+                          <h4 className="text-sm font-editorial font-bold uppercase tracking-tight">
                             {item.title}
                           </h4>
-                          <span className={`text-[11px] block ${
-                            isChecked ? 'text-[#FAF6F0]/75' : 'text-[#7A6C63]'
+                          <span className={`text-[11px] font-mono block ${
+                            isChecked ? 'text-[#FAF7F2]/75' : 'text-[#69574A]'
                           }`}>
                             {item.subtitle}
                           </span>
                         </div>
                       </div>
 
-                      <div className={`w-5 h-5 rounded-lg flex items-center justify-center border transition-colors shrink-0 ml-2 ${
+                      <div className={`w-5 h-5 flex items-center justify-center border transition-colors shrink-0 ml-2 ${
                         isChecked 
-                          ? 'bg-[#D63426] border-[#D63426] text-white' 
-                          : 'border-[#E8DFD5] bg-[#FAF6F0]'
+                          ? 'bg-[#D62828] border-[#D62828] text-white' 
+                          : 'border-[#12100E]/20 bg-white'
                       }`}>
                         {isChecked && <Check className="w-3.5 h-3.5" />}
                       </div>
@@ -384,10 +364,10 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
               <div className="pt-2 flex items-center justify-between">
                 <button
                   onClick={() => setCurrentStep(1)}
-                  className="text-xs uppercase tracking-wider font-bold text-[#7A6C63] hover:text-[#241712] flex items-center space-x-1 cursor-pointer"
+                  className="text-xs font-mono uppercase tracking-wider font-bold text-[#69574A] hover:text-[#12100E] flex items-center space-x-1 cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Previous</span>
+                  <span>PREVIOUS</span>
                 </button>
 
                 <button
@@ -397,142 +377,130 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                     }
                     setCurrentStep(3);
                   }}
-                  className="px-8 py-3.5 bg-[#D63426] hover:bg-[#BF2A1D] text-white text-xs uppercase tracking-widest font-black rounded-full transition-all shadow-md flex items-center space-x-2 cursor-pointer"
+                  className="px-8 py-3.5 bg-[#12100E] hover:bg-[#D62828] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-all shadow-xs flex items-center space-x-2 cursor-pointer"
                 >
-                  <span>Continue</span>
+                  <span>CONTINUE</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
 
-          {/* ============================================================ */}
           {/* QUESTION 3 — STRENGTH */}
-          {/* ============================================================ */}
           {currentStep === 3 && (
             <div className="space-y-6 sm:space-y-8 animate-fadeIn">
               <div className="space-y-2 text-left">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] uppercase font-mono tracking-widest text-[#D63426] font-bold px-2.5 py-0.5 rounded-full bg-[#D63426]/10">
-                    Question 3 of 5
+                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#C5A059] font-bold px-2 py-0.5 border border-[#12100E]/20 bg-[#FDFBF7]">
+                    STEP 03 / 05
                   </span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[#241712]">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-editorial font-bold uppercase tracking-tight text-[#12100E]">
                   How bold do you like it?
                 </h3>
-                <p className="text-sm text-[#7A6C63]">
+                <p className="text-xs sm:text-sm text-[#69574A] font-sans">
                   Select your preferred roast depth and intensity.
                 </p>
               </div>
 
-              {/* Playful Strength Visual Selector */}
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {[
-                    {
-                      level: 'Smooth' as CoffeeStrengthLevel,
-                      roast: 'Light Roast',
-                      beans: '🫘',
-                      desc: 'Gentle, tea-like clarity with sparkling floral & fruit brightness.',
-                      barWidth: '25%',
-                      color: 'text-[#657953]'
-                    },
-                    {
-                      level: 'Balanced' as CoffeeStrengthLevel,
-                      roast: 'Medium Roast',
-                      beans: '🫘🫘',
-                      desc: 'Crowd-pleaser equilibrium with golden toffee and milk chocolate.',
-                      barWidth: '50%',
-                      color: 'text-[#E65F38]'
-                    },
-                    {
-                      level: 'Bold' as CoffeeStrengthLevel,
-                      roast: 'Medium-Dark',
-                      beans: '🫘🫘🫘',
-                      desc: 'Rich, syrupy mouthfeel with dark cacao and toasted hazelnut.',
-                      barWidth: '75%',
-                      color: 'text-[#D63426]'
-                    },
-                    {
-                      level: 'Very Bold' as CoffeeStrengthLevel,
-                      roast: 'Espresso Roast',
-                      beans: '🫘🫘🫘🫘',
-                      desc: 'Deepest intensity, heavy crema, zero sharpness, cuts through milk.',
-                      barWidth: '100%',
-                      color: 'text-[#241712]'
-                    }
-                  ].map((item) => {
-                    const isSelected = strength === item.level;
-                    return (
-                      <button
-                        key={item.level}
-                        onClick={() => {
-                          setStrength(item.level);
-                          setTimeout(() => setCurrentStep(4), 180);
-                        }}
-                        className={`p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
-                          isSelected
-                            ? 'border-[#241712] bg-[#241712] text-white shadow-lg scale-[1.01]'
-                            : 'border-[#E8DFD5] bg-white hover:border-[#D63426] hover:bg-[#FAF6F0] text-[#241712]'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-base tracking-widest font-mono">
-                            {item.beans}
-                          </span>
-                          <span className={`text-[10px] font-mono uppercase font-bold px-2 py-0.5 rounded-full ${
-                            isSelected ? 'bg-white/20 text-[#FAF6F0]' : 'bg-[#FAF6F0] text-[#7A6C63] border border-[#E8DFD5]'
-                          }`}>
-                            {item.roast}
-                          </span>
-                        </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {[
+                  {
+                    level: 'Smooth' as CoffeeStrengthLevel,
+                    roast: 'Light Roast',
+                    beans: '🫘',
+                    desc: 'Gentle, tea-like clarity with sparkling floral & fruit brightness.',
+                    barWidth: '25%'
+                  },
+                  {
+                    level: 'Balanced' as CoffeeStrengthLevel,
+                    roast: 'Medium Roast',
+                    beans: '🫘🫘',
+                    desc: 'Crowd-pleaser equilibrium with golden toffee and milk chocolate.',
+                    barWidth: '50%'
+                  },
+                  {
+                    level: 'Bold' as CoffeeStrengthLevel,
+                    roast: 'Medium-Dark',
+                    beans: '🫘🫘🫘',
+                    desc: 'Rich, syrupy mouthfeel with dark cacao and toasted hazelnut.',
+                    barWidth: '75%'
+                  },
+                  {
+                    level: 'Very Bold' as CoffeeStrengthLevel,
+                    roast: 'Espresso Roast',
+                    beans: '🫘🫘🫘🫘',
+                    desc: 'Deepest intensity, heavy crema, zero sharpness, cuts through milk.',
+                    barWidth: '100%'
+                  }
+                ].map((item) => {
+                  const isSelected = strength === item.level;
+                  return (
+                    <button
+                      key={item.level}
+                      onClick={() => {
+                        setStrength(item.level);
+                        setTimeout(() => setCurrentStep(4), 180);
+                      }}
+                      className={`p-5 border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between group ${
+                        isSelected
+                          ? 'border-[#12100E] bg-[#12100E] text-white shadow-md'
+                          : 'border-[#12100E]/15 bg-[#FDFBF7] hover:border-[#12100E] text-[#12100E]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-base tracking-widest font-mono">
+                          {item.beans}
+                        </span>
+                        <span className={`text-[9px] font-mono uppercase font-bold px-2 py-0.5 border ${
+                          isSelected ? 'border-white/30 text-[#FAF7F2]' : 'border-[#12100E]/20 text-[#69574A] bg-white'
+                        }`}>
+                          {item.roast}
+                        </span>
+                      </div>
 
-                        <div>
-                          <h4 className="text-lg font-black uppercase tracking-tight mb-1">
-                            {item.level}
-                          </h4>
-                          <p className={`text-xs leading-relaxed ${
-                            isSelected ? 'text-[#FAF6F0]/80' : 'text-[#7A6C63]'
-                          }`}>
-                            {item.desc}
-                          </p>
-                        </div>
+                      <div>
+                        <h4 className="text-lg font-editorial font-bold uppercase tracking-tight mb-1">
+                          {item.level}
+                        </h4>
+                        <p className={`text-xs leading-relaxed font-sans ${
+                          isSelected ? 'text-[#FAF7F2]/80' : 'text-[#69574A]'
+                        }`}>
+                          {item.desc}
+                        </p>
+                      </div>
 
-                        {/* Interactive bean intensity bar */}
-                        <div className="w-full bg-white/20 h-1.5 rounded-full mt-4 overflow-hidden">
-                          <div
-                            className={`h-full rounded-full ${isSelected ? 'bg-[#D63426]' : 'bg-[#241712]'}`}
-                            style={{ width: item.barWidth }}
-                          />
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
+                      <div className="w-full bg-[#12100E]/10 h-1 mt-4 overflow-hidden">
+                        <div
+                          className={`h-full ${isSelected ? 'bg-[#D62828]' : 'bg-[#12100E]'}`}
+                          style={{ width: item.barWidth }}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
-          {/* ============================================================ */}
           {/* QUESTION 4 — BREWING METHOD */}
-          {/* ============================================================ */}
           {currentStep === 4 && (
             <div className="space-y-6 sm:space-y-8 animate-fadeIn">
               <div className="space-y-2 text-left">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] uppercase font-mono tracking-widest text-[#D63426] font-bold px-2.5 py-0.5 rounded-full bg-[#D63426]/10">
-                    Question 4 of 5
+                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#C5A059] font-bold px-2 py-0.5 border border-[#12100E]/20 bg-[#FDFBF7]">
+                    STEP 04 / 05
                   </span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[#241712]">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-editorial font-bold uppercase tracking-tight text-[#12100E]">
                   How are you making your coffee?
                 </h3>
-                <p className="text-sm text-[#7A6C63]">
+                <p className="text-xs sm:text-sm text-[#69574A] font-sans">
                   We will pair you with beans dialed for your brewing equipment.
                 </p>
               </div>
 
-              {/* 8 Brew Methods */}
+              {/* 8 Brew Methods (Bauhaus grid) */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
                   { id: 'espresso-machine' as CoffeeBrewingMethod, label: 'Espresso Machine', icon: '☕', sub: '9-bar pump' },
@@ -552,20 +520,20 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                         setBrewingMethod(item.id);
                         setTimeout(() => setCurrentStep(5), 180);
                       }}
-                      className={`p-4 rounded-2xl border text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-between group ${
+                      className={`p-4 border text-center transition-all duration-200 cursor-pointer flex flex-col items-center justify-between group ${
                         isSelected
-                          ? 'border-[#241712] bg-[#241712] text-white shadow-md scale-[1.02]'
-                          : 'border-[#E8DFD5] bg-white hover:border-[#D63426] hover:bg-[#FAF6F0] text-[#241712]'
+                          ? 'border-[#12100E] bg-[#12100E] text-white shadow-md'
+                          : 'border-[#12100E]/15 bg-[#FDFBF7] hover:border-[#12100E] text-[#12100E]'
                       }`}
                     >
-                      <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">
+                      <span className="text-3xl mb-2">
                         {item.icon}
                       </span>
-                      <h4 className="text-xs font-bold uppercase tracking-tight line-clamp-1">
+                      <h4 className="text-xs font-mono font-bold uppercase tracking-tight line-clamp-1">
                         {item.label}
                       </h4>
-                      <span className={`text-[10px] ${
-                        isSelected ? 'text-[#FAF6F0]/70' : 'text-[#7A6C63]'
+                      <span className={`text-[9px] font-mono mt-0.5 ${
+                        isSelected ? 'text-[#FAF7F2]/70' : 'text-[#69574A]'
                       }`}>
                         {item.sub}
                       </span>
@@ -576,27 +544,24 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
             </div>
           )}
 
-          {/* ============================================================ */}
           {/* QUESTION 5 — YOUR COFFEE MOOD */}
-          {/* ============================================================ */}
           {currentStep === 5 && (
             <div className="space-y-6 sm:space-y-8 animate-fadeIn">
               <div className="space-y-2 text-left">
                 <div className="flex items-center space-x-2">
-                  <span className="text-[11px] uppercase font-mono tracking-widest text-[#D63426] font-bold px-2.5 py-0.5 rounded-full bg-[#D63426]/10">
-                    Question 5 of 5
+                  <span className="text-[10px] uppercase font-mono tracking-widest text-[#C5A059] font-bold px-2 py-0.5 border border-[#12100E]/20 bg-[#FDFBF7]">
+                    STEP 05 / 05 · FINAL STEP
                   </span>
-                  <span className="text-xs text-[#E65F38] font-bold uppercase tracking-wider font-mono">Final Step</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-[#241712]">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-editorial font-bold uppercase tracking-tight text-[#12100E]">
                   What's your coffee moment?
                 </h3>
-                <p className="text-sm text-[#7A6C63]">
+                <p className="text-xs sm:text-sm text-[#69574A] font-sans">
                   What atmosphere surrounds your favorite cup?
                 </p>
               </div>
 
-              {/* 6 Playful Mood Cards */}
+              {/* 6 Mood Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {[
                   {
@@ -609,7 +574,7 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                     id: 'work-mode' as CoffeeMoodType,
                     emoji: '💻',
                     title: 'Work Mode',
-                    desc: 'Deep focus companion for long creative desk sessions.'
+                    desc: 'Deep focus companion for creative desk sessions.'
                   },
                   {
                     id: 'slow-morning' as CoffeeMoodType,
@@ -641,27 +606,27 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                     <button
                       key={item.id}
                       onClick={() => handleFinishQuiz(item.id)}
-                      className={`p-5 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex items-center space-x-4 group ${
+                      className={`p-4 border text-left transition-all duration-200 cursor-pointer flex items-center space-x-4 group ${
                         isSelected
-                          ? 'border-[#241712] bg-[#241712] text-white shadow-lg'
-                          : 'border-[#E8DFD5] bg-white hover:border-[#D63426] hover:bg-[#FAF6F0] text-[#241712]'
+                          ? 'border-[#12100E] bg-[#12100E] text-white shadow-md'
+                          : 'border-[#12100E]/15 bg-[#FDFBF7] hover:border-[#12100E] text-[#12100E]'
                       }`}
                     >
-                      <span className="text-3xl sm:text-4xl group-hover:scale-110 transition-transform shrink-0">
+                      <span className="text-3xl shrink-0">
                         {item.emoji}
                       </span>
                       <div className="flex-1">
-                        <h4 className="text-sm font-bold uppercase tracking-tight mb-0.5">
+                        <h4 className="text-sm font-editorial font-bold uppercase tracking-tight mb-0.5">
                           {item.title}
                         </h4>
-                        <p className={`text-xs leading-relaxed ${
-                          isSelected ? 'text-[#FAF6F0]/80' : 'text-[#7A6C63]'
+                        <p className={`text-xs leading-relaxed font-sans ${
+                          isSelected ? 'text-[#FAF7F2]/80' : 'text-[#69574A]'
                         }`}>
                           {item.desc}
                         </p>
                       </div>
-                      <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${
-                        isSelected ? 'text-[#D63426]' : 'text-[#7A6C63]'
+                      <ArrowRight className={`w-4 h-4 ${
+                        isSelected ? 'text-[#C5A059]' : 'text-[#69574A]'
                       }`} />
                     </button>
                   );
@@ -670,124 +635,103 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
             </div>
           )}
 
-          {/* ============================================================ */}
           {/* STEP 6 — LOADING / PROCESSING ANIMATION */}
-          {/* ============================================================ */}
           {currentStep === 6 && isCalculating && (
             <div className="py-14 sm:py-20 text-center space-y-6 animate-fadeIn flex flex-col items-center justify-center">
-              <div className="relative w-20 h-20 rounded-full bg-[#FAF6F0] border-2 border-[#D63426] flex items-center justify-center shadow-lg">
-                <Coffee className="w-8 h-8 text-[#D63426] animate-bounce" />
-                <div className="absolute inset-0 rounded-full border-2 border-t-[#D63426] border-r-transparent border-b-transparent border-l-transparent animate-spin" />
+              <div className="relative w-16 h-16 border border-[#12100E] bg-[#FAF7F2] flex items-center justify-center">
+                <Coffee className="w-7 h-7 text-[#D62828] animate-bounce" />
               </div>
 
               <div className="space-y-1.5 max-w-sm">
-                <h3 className="text-2xl font-black uppercase text-[#241712]">
+                <h3 className="text-xl font-editorial font-bold uppercase text-[#12100E]">
                   Matching Your Taste Profile...
                 </h3>
-                <p className="text-xs text-[#7A6C63]">
+                <p className="text-xs font-mono text-[#69574A]">
                   Comparing acidity, roast depth, and origin notes with our small-batch roastery lots.
                 </p>
               </div>
             </div>
           )}
 
-          {/* ============================================================ */}
           {/* RESULTS PAGE — PERFECT MATCH + ALSO TRY */}
-          {/* ============================================================ */}
           {currentStep === 6 && !isCalculating && result && (
             <div className="space-y-8 animate-fadeIn text-left">
               
               {/* Results Hero Heading */}
-              <div className="text-center space-y-2 border-b border-[#E8DFD5] pb-6">
-                
-                {/* Match Score Badge */}
-                <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-[#EBF1E6] border border-[#657953]/30 text-[#657953] shadow-xs">
-                  <Sparkles className="w-4 h-4 text-[#D63426]" />
-                  <span className="text-xs font-mono font-black uppercase tracking-wider">
-                    {result.perfectMatch.score}% YOUR CUP ☕
-                  </span>
+              <div className="text-center space-y-2 border-b border-[#12100E]/15 pb-6">
+                <div className="inline-flex items-center space-x-2 px-3 py-1 bg-[#12100E] text-[#C5A059] border border-[#12100E] text-[10px] font-mono font-bold uppercase tracking-widest">
+                  <Sparkles className="w-3.5 h-3.5 text-[#C5A059]" />
+                  <span>{result.perfectMatch.score}% MATCH WITH YOUR PALATE</span>
                 </div>
 
-                {/* Exact Requested Headline */}
-                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#241712]">
+                <h3 className="text-3xl sm:text-4xl lg:text-5xl font-editorial font-bold uppercase tracking-tight text-[#12100E]">
                   WE FOUND YOUR COFFEE ☕
                 </h3>
                 
-                {/* Exact Requested Supporting Line */}
-                <p className="text-sm sm:text-base text-[#7A6C63] font-normal">
+                <p className="text-xs sm:text-sm text-[#69574A] font-sans">
                   Based on your taste, we think you'll love...
                 </p>
               </div>
 
-              {/* ======================================================== */}
-              {/* FEATURED: PERFECT MATCH CARD */}
-              {/* ======================================================== */}
-              <div className="bg-white rounded-3xl border-2 border-[#241712] p-6 sm:p-8 shadow-xl relative overflow-hidden space-y-6">
+              {/* PERFECT MATCH CARD (Bauhaus Packaging Layout) */}
+              <div className="bg-[#D4B896] border border-[#12100E] p-6 sm:p-8 space-y-6 shadow-xl text-[#12100E]">
                 
-                {/* Top Badge Stamp */}
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#E8DFD5] pb-4">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#12100E] pb-3 text-xs font-mono">
                   <div className="flex items-center space-x-2">
-                    <span className="px-3 py-1 bg-[#D63426] text-white text-[11px] font-mono font-black uppercase tracking-widest rounded-full shadow-xs">
+                    <span className="px-2.5 py-0.5 bg-[#D62828] text-white text-[10px] uppercase font-bold tracking-wider">
                       PERFECT MATCH
                     </span>
-                    <span className="text-xs font-mono text-[#7A6C63]">
+                    <span className="text-[#12100E] font-bold">
                       {result.perfectMatch.shareablePersona}
                     </span>
                   </div>
 
-                  <div className="text-right">
-                    <span className="text-xl font-black text-[#241712]">
-                      ${result.perfectMatch.product.price.toFixed(2)}
-                    </span>
-                  </div>
+                  <span className="text-xl font-bold font-mono text-[#12100E]">
+                    ${result.perfectMatch.product.price.toFixed(2)}
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                   
                   {/* Left: Product Image */}
-                  <div className="md:col-span-5 relative aspect-square rounded-2xl overflow-hidden bg-[#241712] shadow-md border border-[#E8DFD5] group">
+                  <div className="md:col-span-5 relative aspect-square bg-[#FAF7F2] border border-[#12100E] overflow-hidden">
                     <img
                       src={result.perfectMatch.product.images[0]}
                       alt={result.perfectMatch.product.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
                     {result.perfectMatch.product.isOrganic && (
-                      <div className="absolute top-3 left-3 px-2.5 py-1 bg-[#657953] text-white text-[10px] font-mono font-bold uppercase rounded-md shadow-xs">
-                        USDA Organic
+                      <div className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#12100E] text-white text-[9px] font-mono font-bold uppercase">
+                        BIO ORGANIC
                       </div>
                     )}
                   </div>
 
                   {/* Right: Info & Explanations */}
-                  <div className="md:col-span-7 space-y-4">
-                    
+                  <div className="md:col-span-7 space-y-3.5">
                     <div>
-                      <span className="text-[11px] font-mono uppercase tracking-widest text-[#E65F38] font-bold">
-                        {result.perfectMatch.product.country || result.perfectMatch.product.origin}
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-[#69574A] font-bold block">
+                        {result.perfectMatch.product.origin || 'ARTISAN LOT'}
                       </span>
-                      <h4 className="text-2xl sm:text-3xl font-black uppercase text-[#241712] tracking-tight leading-snug">
+                      <h4 className="text-2xl font-editorial font-bold uppercase text-[#12100E] tracking-tight">
                         {result.perfectMatch.product.name}
                       </h4>
-                      <p className="text-xs text-[#7A6C63] mt-1 font-normal line-clamp-2">
+                      <p className="text-xs text-[#12100E]/80 mt-1 font-sans line-clamp-2">
                         {result.perfectMatch.product.description}
                       </p>
                     </div>
 
-                    {/* Roast & Flavour Notes */}
-                    <div className="space-y-2 pt-1">
-                      <div className="flex items-center space-x-2 text-xs font-semibold text-[#241712]">
-                        <span className="text-[#7A6C63] font-mono text-[11px] uppercase">Roast Level:</span>
-                        <span className="px-2.5 py-0.5 bg-[#FAF6F0] rounded-md border border-[#E8DFD5]">
-                          {result.perfectMatch.product.roastLevel || 'Artisan Roast'}
-                        </span>
+                    <div className="space-y-1.5 pt-1">
+                      <div className="text-[10px] font-mono uppercase text-[#12100E]">
+                        ROAST: <strong>{result.perfectMatch.product.roastLevel || 'Artisan Medium'}</strong>
                       </div>
 
                       <div className="flex flex-wrap gap-1.5">
                         {result.perfectMatch.product.tastingNotes?.map((note) => (
                           <span 
                             key={note} 
-                            className="px-2.5 py-1 bg-[#FAF6F0] text-[#241712] text-xs font-medium rounded-lg border border-[#E8DFD5]"
+                            className="px-2 py-0.5 bg-[#FAF7F2] text-[#12100E] text-[10px] font-mono uppercase border border-[#12100E]/20"
                           >
                             {note}
                           </span>
@@ -795,19 +739,19 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                       </div>
                     </div>
 
-                    {/* Dynamic "Why You'll Love It" Explanation Section */}
-                    <div className="p-4 rounded-2xl bg-[#FAF6F0] border border-[#E8DFD5] space-y-1.5">
-                      <div className="flex items-center space-x-1.5 text-[#D63426] font-mono text-[11px] font-bold uppercase tracking-wider">
+                    {/* "Why You'll Love It" */}
+                    <div className="p-3 bg-[#FAF7F2] border border-[#12100E]/20 space-y-1 text-xs">
+                      <div className="flex items-center space-x-1.5 text-[#D62828] font-mono text-[10px] font-bold uppercase tracking-wider">
                         <Sparkles className="w-3.5 h-3.5" />
                         <span>Why you'll love it</span>
                       </div>
-                      <p className="text-xs text-[#241712]/90 leading-relaxed font-normal italic">
+                      <p className="text-xs text-[#12100E]/90 italic font-sans">
                         "{result.perfectMatch.whyYoullLoveIt}"
                       </p>
                     </div>
 
-                    {/* Actions: Add to Bag & View Coffee */}
-                    <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                    {/* Actions */}
+                    <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-2">
                       <button
                         id="coffee-finder-add-to-bag"
                         onClick={() => {
@@ -818,10 +762,10 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                           );
                           onClose();
                         }}
-                        className="w-full sm:flex-1 py-4 bg-[#D63426] hover:bg-[#BF2A1D] active:scale-[0.98] text-white text-xs uppercase tracking-widest font-black rounded-full transition-all shadow-md hover:shadow-lg flex items-center justify-center space-x-2 cursor-pointer"
+                        className="w-full sm:flex-1 py-3.5 bg-[#12100E] hover:bg-[#261C14] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-all flex items-center justify-center space-x-2 cursor-pointer"
                       >
-                        <ShoppingBag className="w-4 h-4" />
-                        <span>Add to Bag • ${result.perfectMatch.product.price.toFixed(2)}</span>
+                        <ShoppingBag className="w-4 h-4 text-[#C5A059]" />
+                        <span>ADD TO TASTING BAG</span>
                       </button>
 
                       <button
@@ -830,9 +774,9 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                           onClose();
                           onQuickView(result.perfectMatch.product);
                         }}
-                        className="w-full sm:w-auto px-6 py-4 bg-white hover:bg-[#FAF6F0] border border-[#241712] text-[#241712] text-xs uppercase tracking-widest font-bold rounded-full transition-colors cursor-pointer text-center"
+                        className="w-full sm:w-auto px-5 py-3.5 bg-white border border-[#12100E] text-[#12100E] text-xs font-mono uppercase tracking-wider font-bold hover:bg-[#FAF7F2] transition-colors cursor-pointer text-center"
                       >
-                        View Coffee
+                        DETAILS →
                       </button>
                     </div>
 
@@ -842,58 +786,43 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
 
               </div>
 
-              {/* ======================================================== */}
               {/* YOU MIGHT ALSO LOVE (Also Try) */}
-              {/* ======================================================== */}
               {result.alternatives.length > 0 && (
                 <div className="space-y-4 pt-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-lg font-black uppercase tracking-tight text-[#241712]">
+                  <div className="flex items-center justify-between border-b border-[#12100E]/15 pb-2">
+                    <h4 className="text-lg font-editorial font-bold uppercase text-[#12100E]">
                       You Might Also Love
                     </h4>
-                    <span className="text-xs text-[#7A6C63] font-mono">Secondary Roaster Picks</span>
+                    <span className="text-[10px] text-[#69574A] font-mono uppercase">SECONDARY PAIRINGS</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {result.alternatives.map((alt) => (
                       <div
                         key={alt.product.id}
-                        className="p-4 sm:p-5 rounded-2xl bg-white border border-[#E8DFD5] hover:border-[#241712] transition-all flex flex-col justify-between space-y-4"
+                        className="p-4 bg-[#FDFBF7] border border-[#12100E]/15 hover:border-[#12100E] transition-colors flex flex-col justify-between space-y-3"
                       >
-                        <div className="flex items-start space-x-4">
+                        <div className="flex items-start space-x-3">
                           <img
                             src={alt.product.images[0]}
                             alt={alt.product.name}
-                            className="w-20 h-20 rounded-xl object-cover bg-[#241712] shrink-0"
+                            className="w-16 h-16 object-cover bg-[#F2E8DC] shrink-0 border border-[#12100E]/15"
                             referrerPolicy="no-referrer"
                           />
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                              <span className="text-[10px] font-mono font-bold uppercase text-[#657953] px-2 py-0.5 bg-[#EBF1E6] rounded">
-                                {alt.score}% Match
-                              </span>
-                              {alt.product.roastLevel && (
-                                <span className="text-[11px] text-[#7A6C63] font-mono">
-                                  {alt.product.roastLevel}
-                                </span>
-                              )}
-                            </div>
-
-                            <h5 className="text-sm font-bold uppercase text-[#241712] line-clamp-1">
+                          <div className="space-y-0.5">
+                            <span className="text-[9px] font-mono font-bold uppercase text-[#C5A059] block">
+                              {alt.score}% MATCH · {alt.product.roastLevel || 'Roast'}
+                            </span>
+                            <h5 className="text-xs font-editorial font-bold uppercase text-[#12100E] line-clamp-1">
                               {alt.product.name}
                             </h5>
-                            
-                            <p className="text-[11px] text-[#7A6C63] line-clamp-1">
-                              {alt.product.tastingNotes?.slice(0, 3).join(' • ')}
-                            </p>
-
-                            <div className="text-xs font-bold text-[#241712] pt-0.5">
+                            <div className="text-xs font-mono font-bold text-[#12100E]">
                               ${alt.product.price.toFixed(2)}
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center space-x-2 pt-2 border-t border-[#E8DFD5]">
+                        <div className="flex items-center space-x-2 pt-2 border-t border-[#12100E]/10">
                           <button
                             onClick={() => {
                               onAddToCart(
@@ -903,10 +832,10 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                               );
                               onClose();
                             }}
-                            className="flex-1 py-2.5 bg-[#241712] hover:bg-[#D63426] text-white text-[11px] uppercase font-bold tracking-wider rounded-xl transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+                            className="flex-1 py-2 bg-[#12100E] hover:bg-[#D62828] text-white text-[10px] font-mono uppercase font-bold tracking-wider transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
                           >
-                            <ShoppingBag className="w-3.5 h-3.5" />
-                            <span>Add to Bag</span>
+                            <ShoppingBag className="w-3 h-3 text-[#C5A059]" />
+                            <span>Add</span>
                           </button>
 
                           <button
@@ -914,9 +843,9 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                               onClose();
                               onQuickView(alt.product);
                             }}
-                            className="px-3 py-2.5 bg-[#FAF6F0] hover:bg-[#E8DFD5] text-[#241712] text-[11px] uppercase font-bold rounded-xl transition-colors cursor-pointer"
+                            className="px-3 py-2 bg-white border border-[#12100E]/20 text-[#12100E] text-[10px] font-mono uppercase font-bold hover:border-[#12100E] transition-colors cursor-pointer"
                           >
-                            Details
+                            View
                           </button>
                         </div>
                       </div>
@@ -925,31 +854,25 @@ export const CoffeeQuizModal: React.FC<CoffeeQuizModalProps> = ({
                 </div>
               )}
 
-              {/* ======================================================== */}
-              {/* FOOTER ACTIONS: RETAKE & SHARE */}
-              {/* ======================================================== */}
-              <div className="pt-4 border-t border-[#E8DFD5] flex flex-col sm:flex-row items-center justify-between gap-4">
-                
-                {/* Share Button */}
+              {/* FOOTER ACTIONS */}
+              <div className="pt-4 border-t border-[#12100E]/15 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <button
                   id="coffee-finder-share-btn"
                   onClick={handleShareResult}
-                  className="w-full sm:w-auto px-5 py-3 rounded-full bg-[#FAF6F0] hover:bg-white border border-[#E8DFD5] text-[#241712] text-xs uppercase font-bold tracking-wider transition-colors flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
+                  className="w-full sm:w-auto px-5 py-3 border border-[#12100E] bg-white text-[#12100E] text-xs font-mono uppercase tracking-wider font-bold hover:bg-[#FAF7F2] transition-colors flex items-center justify-center space-x-2 cursor-pointer"
                 >
-                  <Share2 className="w-3.5 h-3.5 text-[#E65F38]" />
-                  <span>{copiedShare ? 'Match Copied to Clipboard!' : 'Share My Coffee Match'}</span>
+                  <Share2 className="w-3.5 h-3.5 text-[#D62828]" />
+                  <span>{copiedShare ? 'MATCH COPIED!' : 'SHARE MATCH'}</span>
                 </button>
 
-                {/* Retake Button */}
                 <button
                   id="coffee-finder-retake-btn"
                   onClick={handleReset}
-                  className="text-xs uppercase tracking-wider font-bold text-[#7A6C63] hover:text-[#D63426] flex items-center space-x-1.5 cursor-pointer transition-colors py-2"
+                  className="text-xs font-mono uppercase tracking-wider font-bold text-[#69574A] hover:text-[#12100E] flex items-center space-x-1.5 cursor-pointer py-2"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Retake the Coffee Finder</span>
+                  <span>RETAKE COFFEE FINDER</span>
                 </button>
-
               </div>
 
             </div>

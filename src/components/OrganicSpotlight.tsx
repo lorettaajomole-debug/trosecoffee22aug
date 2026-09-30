@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Leaf, Sun, HeartHandshake, ArrowRight, CheckCircle2, Sprout } from 'lucide-react';
+import { ArrowRight, Leaf, Shield, Sun, Sparkles } from 'lucide-react';
 import { Product } from '../types';
 
 interface OrganicSpotlightProps {
@@ -16,148 +16,166 @@ export const OrganicSpotlight: React.FC<OrganicSpotlightProps> = ({
   const featuredOrganic = organicProducts[0];
 
   return (
-    <section id="organic-spotlight-section" className="py-16 sm:py-24 bg-[#1F1612] text-[#FAF6F0] relative overflow-hidden border-b border-[#2D1E18]">
+    <section id="organic-spotlight-section" className="py-16 sm:py-24 bg-[#F7F3EB] text-[#12100E] relative overflow-hidden border-b border-[#12100E]/10">
       
-      {/* Decorative Soft Olive Blur */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#657953]/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Bauhaus Architectural Accents: Soft Cream & Subtle Green Field (3%) */}
+      <div className="absolute top-0 right-0 w-80 h-80 rounded-bl-[140px] bg-[#1C3328]/10 pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-60 h-60 rounded-tr-full bg-[#D4B896]/20 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 sm:px-10 relative z-10">
         
+        {/* Section Header: Quieter Editorial Secondary */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-6 border-b border-[#12100E]/10 pb-6">
+          <div className="space-y-2 max-w-xl text-left font-sans">
+            <div className="flex items-center space-x-2 text-xs uppercase tracking-[0.2em] text-[#1C3328] font-semibold">
+              <span className="w-5 h-[1.5px] bg-[#1C3328]" />
+              <span>ORGANIC COFFEE</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-editorial font-semibold text-[#12100E] tracking-tight uppercase leading-[1.05]">
+              Pure Terroir. <br />
+              <span className="font-serif font-normal italic lowercase text-[#5C151E]">
+                nurtured by nature.
+              </span>
+            </h2>
+          </div>
+
+          <button
+            onClick={onShopOrganic}
+            className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-[0.16em] font-semibold text-[#12100E] hover:text-[#5C151E] transition-colors cursor-pointer group self-start md:self-end border-b border-[#12100E]/30 pb-0.5 hover:border-[#5C151E]"
+          >
+            <span>EXPLORE ORGANIC SELECTIONS</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#CCA347] group-hover:translate-x-1.5 transition-transform" />
+          </button>
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           
-          {/* Left Column: Fresh Organic Ethos */}
-          <div className="lg:col-span-6 space-y-6">
-            
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-[#657953]/25 border border-[#657953]/40 text-[#EBF1E6]">
-              <Sprout className="w-3.5 h-3.5 text-[#657953]" />
-              <span className="text-[11px] font-bold uppercase tracking-wider">
-                100% Bio Organic & Direct Trade
-              </span>
-            </div>
-
-            <h2 className="text-4xl sm:text-6xl font-black tracking-tight text-white uppercase leading-[0.95]">
-              Pure High Mountain Soil. <br />
-              <span className="font-serif font-normal italic lowercase text-[#E65F38]">zero chemical compromise.</span>
-            </h2>
-
-            <p className="text-sm sm:text-base text-[#FAF6F0]/80 leading-relaxed font-normal">
-              Grown under native cloud forest shade in high Andean and Ethiopian micro-climates. No synthetic pesticides, herbicides, or artificial enhancers — just clean, vibrant origin flavor.
+          {/* Left Column: Brand Story & Values (7 cols) */}
+          <div className="lg:col-span-7 space-y-6 text-left font-sans">
+            <p className="text-sm sm:text-base text-[#12100E]/80 leading-relaxed font-normal max-w-xl">
+              Organic cultivation honors natural agricultural cycles and living soil. Our organic coffee selections deliver clean, vibrant cups with natural sweetness and smooth finish.
             </p>
 
-            {/* 4 Clean Value Points */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
+            {/* 4 Bauhaus Structural Blocks (Zero pills, clean typography) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-                <div className="flex items-center space-x-2 text-[#657953]">
-                  <ShieldCheck className="w-4 h-4 text-[#657953]" />
-                  <h4 className="text-xs font-bold text-white uppercase">USDA Bio Certified</h4>
+              <div className="p-4 border border-[#12100E]/12 bg-[#FAF6F0] space-y-1 text-left">
+                <div className="flex items-center space-x-2 text-[#1C3328]">
+                  <Leaf className="w-4 h-4 text-[#1C3328]" />
+                  <h4 className="text-xs uppercase tracking-wider font-semibold text-[#12100E]">Organic Cultivation</h4>
                 </div>
-                <p className="text-[11px] text-[#FAF6F0]/70">Purity tested with zero residue or synthetic inputs.</p>
+                <p className="text-xs text-[#12100E]/70 leading-relaxed">
+                  Beans certified organic, honoring both the grower and the drinker.
+                </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-                <div className="flex items-center space-x-2 text-[#657953]">
-                  <Sun className="w-4 h-4 text-[#E65F38]" />
-                  <h4 className="text-xs font-bold text-white uppercase">Shade Grown at 1,800m</h4>
+              <div className="p-4 border border-[#12100E]/12 bg-[#FAF6F0] space-y-1 text-left">
+                <div className="flex items-center space-x-2 text-[#CCA347]">
+                  <Sun className="w-4 h-4 text-[#CCA347]" />
+                  <h4 className="text-xs uppercase tracking-wider font-semibold text-[#12100E]">Shade Grown</h4>
                 </div>
-                <p className="text-[11px] text-[#FAF6F0]/70">Slow-ripened cherries with higher natural sweetness.</p>
+                <p className="text-xs text-[#12100E]/70 leading-relaxed">
+                  Slow-maturing coffee cherries under natural tree canopies for developed sugars.
+                </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-                <div className="flex items-center space-x-2 text-[#657953]">
-                  <HeartHandshake className="w-4 h-4 text-[#D63426]" />
-                  <h4 className="text-xs font-bold text-white uppercase">Direct Trade Premiums</h4>
+              <div className="p-4 border border-[#12100E]/12 bg-[#FAF6F0] space-y-1 text-left">
+                <div className="flex items-center space-x-2 text-[#5C151E]">
+                  <Shield className="w-4 h-4 text-[#5C151E]" />
+                  <h4 className="text-xs uppercase tracking-wider font-semibold text-[#12100E]">Clean Character</h4>
                 </div>
-                <p className="text-[11px] text-[#FAF6F0]/70">Paying over 300% above market prices directly to smallholders.</p>
+                <p className="text-xs text-[#12100E]/70 leading-relaxed">
+                  Carefully preserved origin profile with clean, sweet cup clarity.
+                </p>
               </div>
 
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
-                <div className="flex items-center space-x-2 text-[#657953]">
-                  <CheckCircle2 className="w-4 h-4 text-[#657953]" />
-                  <h4 className="text-xs font-bold text-white uppercase">Spring-Water Washed</h4>
+              <div className="p-4 border border-[#12100E]/12 bg-[#FAF6F0] space-y-1 text-left">
+                <div className="flex items-center space-x-2 text-[#CCA347]">
+                  <Sparkles className="w-4 h-4 text-[#CCA347]" />
+                  <h4 className="text-xs uppercase tracking-wider font-semibold text-[#12100E]">Balanced Roast</h4>
                 </div>
-                <p className="text-[11px] text-[#FAF6F0]/70">Clean mountain stream washing and solar raised-bed drying.</p>
+                <p className="text-xs text-[#12100E]/70 leading-relaxed">
+                  Calibrated to highlight origin notes without excessive bitterness.
+                </p>
               </div>
 
             </div>
 
-            {/* CTA */}
-            <div className="pt-2">
-              <button
-                id="explore-organic-collection-btn"
-                onClick={onShopOrganic}
-                className="px-8 py-4 bg-[#D63426] hover:bg-[#BF2A1D] text-white text-xs uppercase tracking-widest font-black rounded-full transition-all duration-300 flex items-center space-x-2 cursor-pointer shadow-lg hover:shadow-xl group"
-              >
-                <span>Shop Organic Coffee</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
+            {/* Sourcing Callout: Functional & Neutral */}
+            <div className="pt-3 border-t border-[#12100E]/10 flex items-center space-x-3 text-xs uppercase tracking-[0.16em] text-[#12100E]/60">
+              <span>CERTIFIED ORGANIC</span>
+              <span>·</span>
+              <span>BALANCED PROFILES</span>
+              <span>·</span>
+              <span className="text-[#1C3328] font-semibold">TROSE COFFEE</span>
             </div>
 
           </div>
 
-          {/* Right Column: Featured Organic Lot Card */}
-          <div className="lg:col-span-6">
-            {featuredOrganic && (
-              <div className="relative rounded-3xl overflow-hidden bg-[#2D1E18] border border-white/10 shadow-2xl p-6 sm:p-8 space-y-6">
-                
-                {/* Visual Header */}
-                <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-black/40">
+          {/* Right Column: Featured Organic Coffee Spotlight Card (5 cols) */}
+          <div className="lg:col-span-5">
+            {featuredOrganic ? (
+              <div 
+                onClick={() => onQuickView(featuredOrganic)}
+                className="bg-[#FAF6F0] p-6 sm:p-7 text-[#12100E] border border-[#12100E] shadow-xl space-y-4 cursor-pointer group text-left transition-all hover:shadow-2xl"
+              >
+                {/* Packaging Header Bar */}
+                <div className="flex items-center justify-between border-b border-[#12100E]/15 pb-3 text-xs font-sans">
+                  <span className="bg-[#1C3328] text-white px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider">
+                    ORGANIC SPOTLIGHT
+                  </span>
+                  <span className="font-bold text-base text-[#12100E]">
+                    ${featuredOrganic.price.toFixed(2)}
+                  </span>
+                </div>
+
+                {/* Product Photo Container */}
+                <div className="aspect-[4/3] bg-[#E8D8C3] border border-[#12100E]/15 overflow-hidden relative flex items-center justify-center p-4">
                   <img
                     src={featuredOrganic.images[0]}
                     alt={featuredOrganic.name}
-                    className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700 opacity-90"
+                    className="w-full h-full object-contain group-hover:scale-104 transition-transform duration-500"
                     loading="lazy"
-                    referrerPolicy="no-referrer"
                   />
-                  <div className="absolute top-3 left-3 bg-[#1F1612]/90 border border-[#657953]/40 px-3 py-1 rounded-full text-[#EBF1E6] text-[10px] font-mono font-bold uppercase tracking-wider">
-                    Bio Harvest
-                  </div>
-                  <div className="absolute bottom-3 right-3 bg-[#1F1612]/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-white text-xs font-mono font-bold border border-white/10">
-                    ${featuredOrganic.price.toFixed(2)}
+                  <div className="absolute top-2 right-2 bg-white/95 px-2 py-0.5 text-[9px] font-sans font-semibold uppercase text-[#1C3328] border border-[#1C3328]/30">
+                    CERTIFIED ORGANIC
                   </div>
                 </div>
 
                 {/* Details */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between text-xs text-[#E65F38] font-mono font-bold uppercase">
-                    <span>{featuredOrganic.origin}</span>
-                    <span className="bg-white/10 px-2 py-0.5 rounded-full text-white text-[10px]">100% Organic</span>
-                  </div>
-
-                  <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+                <div className="space-y-1">
+                  <h3 className="text-lg font-serif font-semibold uppercase tracking-tight text-[#12100E] group-hover:text-[#5C151E] transition-colors">
                     {featuredOrganic.name}
                   </h3>
+                  <p className="text-xs text-[#12100E]/75 line-clamp-2 font-sans">
+                    {featuredOrganic.description}
+                  </p>
+                </div>
 
-                  <div className="flex flex-wrap gap-1.5 py-1">
-                    {featuredOrganic.tastingNotes?.map((note) => (
+                {/* Tasting Notes */}
+                {featuredOrganic.tastingNotes && featuredOrganic.tastingNotes.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {featuredOrganic.tastingNotes.slice(0, 3).map((note) => (
                       <span
                         key={note}
-                        className="px-3 py-1 rounded-full bg-white/10 text-[11px] text-[#FAF6F0] font-medium"
+                        className="px-2 py-0.5 bg-[#E8D8C3] text-[#12100E] text-[10px] font-sans uppercase tracking-wider font-semibold"
                       >
                         {note}
                       </span>
                     ))}
                   </div>
+                )}
 
-                  <p className="text-xs text-[#FAF6F0]/70 leading-relaxed font-normal">
-                    {featuredOrganic.description}
-                  </p>
+                <div className="pt-2 flex items-center justify-between border-t border-[#12100E]/10 text-xs font-sans">
+                  <span className="uppercase tracking-wider text-[#12100E]/60 text-[11px]">
+                    {featuredOrganic.origin || 'Organic Roast'}
+                  </span>
+                  <span className="font-semibold text-[#1C3328] group-hover:translate-x-1 transition-transform inline-flex items-center">
+                    VIEW DETAILS →
+                  </span>
                 </div>
-
-                {/* Card Button */}
-                <div className="pt-2">
-                  <button
-                    id="spotlight-quickview-btn"
-                    onClick={() => onQuickView(featuredOrganic)}
-                    className="w-full py-3.5 bg-white hover:bg-[#FAF6F0] text-[#1F1612] text-xs uppercase tracking-widest font-black rounded-full transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer shadow-md"
-                  >
-                    <span>View Sourcing & Notes</span>
-                    <ArrowRight className="w-4 h-4 text-[#D63426]" />
-                  </button>
-                </div>
-
               </div>
-            )}
+            ) : null}
           </div>
 
         </div>
@@ -166,5 +184,3 @@ export const OrganicSpotlight: React.FC<OrganicSpotlightProps> = ({
     </section>
   );
 };
-
-

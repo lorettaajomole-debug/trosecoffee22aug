@@ -1,75 +1,55 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
-  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-editorial: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Space Mono', monospace;
   
-  --color-trose-bg: #FAF6F0;
-  --color-trose-cream: #FAF6F0;
-  --color-trose-sand: #F4EFEB;
-  --color-trose-border: #E8DFD5;
-  --color-trose-espresso: #241712;
-  --color-trose-dark: #1F1612;
-  --color-trose-cherry: #D63426;
-  --color-trose-cherry-hover: #BF2A1D;
-  --color-trose-orange: #E65F38;
-  --color-trose-olive: #657953;
-  --color-trose-olive-light: #EBF1E6;
-  --color-trose-muted: #7A6C63;
+  --color-trose-bg: #F4EFEA;
+  --color-trose-cream: #F4EFEA;
+  --color-trose-gold: #C88E38;
+  --color-trose-gold-light: #DDB758;
+  --color-trose-burnt-red: #8A2B2B;
+  --color-trose-terracotta: #7B2424;
+  --color-trose-forest: #162820;
+  --color-trose-navy: #142233;
+  --color-trose-espresso: #2A1D15;
+  --color-trose-black: #0E0C0B;
+  --color-trose-kraft: #D4B896;
 }
 
 @layer base {
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-    background-color: #FAF6F0;
-    color: #241712;
+    font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
+    background-color: #F4EFEA;
+    color: #0E0C0B;
     overflow-x: hidden;
   }
 
-  h1, h2, h3, .font-serif {
-    font-family: 'Playfair Display', Georgia, serif;
+  /* Display Font: Bold modern geometric grotesk sans-serif for master campaign headlines */
+  .font-display,
+  .font-editorial {
+    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-weight: 800;
+  }
+
+  /* Functional Body & UI: Clean modern sans-serif */
+  .font-sans {
+    font-family: 'Plus Jakarta Sans', 'Outfit', system-ui, -apple-system, sans-serif;
   }
 }
 
 /* Custom Minimalist Clean Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF6F0;
+  background: #F4EFEA;
 }
 ::-webkit-scrollbar-thumb {
-  background: #E0D5C7;
-  border-radius: 9999px;
+  background: #C88E38;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #D63426;
+  background: #8A2B2B;
 }
-
-/* Playful Stamp & Spin Animation */
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin-slow {
-  animation: spin-slow 24s linear infinite;
-}
-
-/* Smooth Image Hover FX */
-.img-zoom-container {
-  overflow: hidden;
-}
-.img-zoom-container img {
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.img-zoom-container:hover img {
-  transform: scale(1.05);
-}
-
-

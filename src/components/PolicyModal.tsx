@@ -25,227 +25,156 @@ export const PolicyModal: React.FC<PolicyModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#211C1A]/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#12100E]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 text-left">
       <div 
         id="policy-modal-container"
-        className="relative w-full max-w-3xl bg-[#FDFBF7] rounded-2xl shadow-2xl border border-[#E5E5CB] overflow-hidden flex flex-col my-8 max-h-[85vh]"
+        className="relative w-full max-w-3xl bg-[#FAF7F2] border border-[#12100E] shadow-2xl overflow-hidden flex flex-col my-8 max-h-[85vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="p-6 bg-white border-b border-[#E5E5CB] flex items-center justify-between">
+        <div className="p-6 bg-[#FDFBF7] border-b border-[#12100E]/15 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-9 h-9 rounded-xl bg-[#E5E5CB]/40 flex items-center justify-center text-[#3C2A21]">
-              {activeTab === 'privacy' && <ShieldCheck className="w-5 h-5 text-[#C5A059]" />}
-              {activeTab === 'terms' && <FileText className="w-5 h-5 text-[#C5A059]" />}
-              {activeTab === 'shipping' && <Truck className="w-5 h-5 text-[#C5A059]" />}
-              {activeTab === 'contact' && <Mail className="w-5 h-5 text-[#C5A059]" />}
+            <div className="w-9 h-9 border border-[#12100E] flex items-center justify-center text-[#12100E] bg-white">
+              {activeTab === 'privacy' && <ShieldCheck className="w-4 h-4 text-[#C5A059]" />}
+              {activeTab === 'terms' && <FileText className="w-4 h-4 text-[#C5A059]" />}
+              {activeTab === 'shipping' && <Truck className="w-4 h-4 text-[#C5A059]" />}
+              {activeTab === 'contact' && <Mail className="w-4 h-4 text-[#C5A059]" />}
             </div>
             <div>
-              <h3 className="text-lg font-serif font-semibold text-[#3C2A21]">
+              <h3 className="text-lg font-editorial font-bold text-[#12100E] uppercase">
                 {activeTab === 'privacy' && 'Privacy Policy'}
                 {activeTab === 'terms' && 'Terms of Service'}
                 {activeTab === 'shipping' && 'Shipping & Freshness Standards'}
-                {activeTab === 'contact' && 'Contact Concierge'}
+                {activeTab === 'contact' && 'Client Support'}
               </h3>
-              <span className="text-[10px] uppercase font-mono tracking-widest text-[#7E7067]">
-                TROSE Coffee & More • Legal & Support
+              <span className="text-[10px] uppercase font-mono tracking-widest text-[#69574A]">
+                TROSE ROASTERY & MORE · LEGAL DISCLOSURES
               </span>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-[#7E7067] hover:text-[#3C2A21] hover:bg-[#E5E5CB]/40 transition-colors cursor-pointer"
+            className="p-1.5 border border-[#12100E]/20 text-[#12100E] hover:border-[#12100E] hover:text-[#D62828] transition-colors cursor-pointer"
             aria-label="Close dialog"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Tab Selector */}
-        <div className="flex border-b border-[#E5E5CB] bg-[#F5EBE0]/30 px-6 overflow-x-auto text-xs">
-          <button
-            onClick={() => setActiveTab('privacy')}
-            className={`py-3 px-4 font-medium transition-colors border-b-2 cursor-pointer whitespace-nowrap ${
-              activeTab === 'privacy'
-                ? 'border-[#3C2A21] text-[#3C2A21] font-semibold'
-                : 'border-transparent text-[#7E7067] hover:text-[#3C2A21]'
-            }`}
-          >
-            Privacy Policy
-          </button>
-          <button
-            onClick={() => setActiveTab('terms')}
-            className={`py-3 px-4 font-medium transition-colors border-b-2 cursor-pointer whitespace-nowrap ${
-              activeTab === 'terms'
-                ? 'border-[#3C2A21] text-[#3C2A21] font-semibold'
-                : 'border-transparent text-[#7E7067] hover:text-[#3C2A21]'
-            }`}
-          >
-            Terms of Service
-          </button>
-          <button
-            onClick={() => setActiveTab('shipping')}
-            className={`py-3 px-4 font-medium transition-colors border-b-2 cursor-pointer whitespace-nowrap ${
-              activeTab === 'shipping'
-                ? 'border-[#3C2A21] text-[#3C2A21] font-semibold'
-                : 'border-transparent text-[#7E7067] hover:text-[#3C2A21]'
-            }`}
-          >
-            Shipping Information
-          </button>
-          <button
-            onClick={() => setActiveTab('contact')}
-            className={`py-3 px-4 font-medium transition-colors border-b-2 cursor-pointer whitespace-nowrap ${
-              activeTab === 'contact'
-                ? 'border-[#3C2A21] text-[#3C2A21] font-semibold'
-                : 'border-transparent text-[#7E7067] hover:text-[#3C2A21]'
-            }`}
-          >
-            Contact & Roastery
-          </button>
+        {/* Tab Navigation (Zero pills) */}
+        <div className="flex border-b border-[#12100E]/15 bg-white text-[10px] font-mono uppercase tracking-wider overflow-x-auto">
+          {[
+            { id: 'privacy' as PolicyTab, label: '01 / Privacy' },
+            { id: 'terms' as PolicyTab, label: '02 / Terms' },
+            { id: 'shipping' as PolicyTab, label: '03 / Shipping & Returns' },
+            { id: 'contact' as PolicyTab, label: '04 / Support' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-3 px-5 transition-colors cursor-pointer whitespace-nowrap border-b-2 font-bold ${
+                activeTab === tab.id
+                  ? 'border-[#12100E] bg-[#FAF7F2] text-[#12100E]'
+                  : 'border-transparent text-[#69574A] hover:text-[#12100E]'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* Content Body */}
-        <div className="p-6 sm:p-8 overflow-y-auto space-y-6 text-xs sm:text-sm text-[#3C2A21]/80 font-light leading-relaxed">
+        <div className="p-6 sm:p-8 overflow-y-auto space-y-6 text-xs sm:text-sm text-[#12100E]/80 leading-relaxed font-normal">
           
-          {/* TAB 1: PRIVACY POLICY */}
           {activeTab === 'privacy' && (
             <div className="space-y-4">
-              <div className="p-4 bg-white rounded-xl border border-[#E5E5CB] space-y-1.5">
-                <h4 className="font-serif font-semibold text-sm text-[#3C2A21]">Data Protection Commitment</h4>
-                <p className="text-xs text-[#7E7067]">
-                  At TROSE, your privacy is fundamental to our craft. We do not sell or monetize personal customer records under any circumstances.
-                </p>
-              </div>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">1. Information We Collect</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">1. Information Collection & Use</h4>
               <p>
-                We collect information you explicitly provide when placing orders, subscribing to the Roaster's Club, or contacting our concierge. This includes your name, shipping address, email address, and order customization preferences (such as preferred grind size).
+                TROSE Coffee & More respects your privacy. We collect customer information solely to fulfill orders, facilitate deliveries, and communicate relevant small-batch roast drops. We do not sell, rent, or monetize your personal details to third-party brokers.
               </p>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">2. Payment Security</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">2. Encrypted Payments</h4>
               <p>
-                All credit card and payment processing is handled through PCI-DSS Level 1 certified gateways with 256-bit SSL encryption. TROSE never stores or has access to raw credit card numbers.
+                All transactions are encrypted with 256-bit TLS protocol. We partner with PCI-DSS compliant gateways including Shopify Payments, Stripe, and Apple Pay. Sensitive payment numbers never touch our servers.
               </p>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">3. Cookies & Session Preferences</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">3. Data Rights</h4>
               <p>
-                We use strictly functional cookies to preserve your cart items, roast quiz recommendations, and currency selection across browser sessions.
+                You may request full erasure of your account and personal history at any time by contacting support@trosecoffee.com.
               </p>
             </div>
           )}
 
-          {/* TAB 2: TERMS OF SERVICE */}
           {activeTab === 'terms' && (
             <div className="space-y-4">
-              <div className="p-4 bg-white rounded-xl border border-[#E5E5CB] space-y-1.5">
-                <h4 className="font-serif font-semibold text-sm text-[#3C2A21]">Specialty Coffee Terms & Guarantees</h4>
-                <p className="text-xs text-[#7E7067]">
-                  By purchasing from TROSE Coffee & More, you agree to our terms governing artisan small-batch fulfillment and our Fresh Roast Guarantee.
-                </p>
-              </div>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">1. Fresh Roast Guarantee</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">1. Roastery Terms</h4>
               <p>
-                All whole bean and pre-ground coffees are roasted in micro-batches and shipped within 48 hours of profiling. If your coffee fails to meet our strict sensory standards, contact our concierge within 30 days for a complimentary replacement roast.
+                By placing an order on TROSE Coffee & More, you agree to our terms of fulfillment and roasting cycles. Because our coffee is roasted fresh to order, orders entered into the production schedule cannot be cancelled once beans enter the drum.
               </p>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">2. Roaster’s Club Subscriptions</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">2. Fresh Roast Guarantee</h4>
               <p>
-                Subscriptions may be paused, adjusted for grind or quantity, or cancelled at any time without fees prior to the scheduled billing date.
+                If your coffee bag arrives damaged, compromised, or you feel the roast profile does not meet our high standards, please notify us within 30 days of delivery. We will immediately replace your bag or issue a full refund.
               </p>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">3. Hardware & Machinery Warranty</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">3. Subscription Flexibility</h4>
               <p>
-                All espresso machines, electric grinders, and smart scales carry a full 2-year manufacturer warranty supported by our certified technicians in Portland and Seattle.
+                Subscriptions may be paused, adjusted, or cancelled anytime before the scheduled weekly/monthly billing cycle.
               </p>
             </div>
           )}
 
-          {/* TAB 3: SHIPPING INFORMATION */}
           {activeTab === 'shipping' && (
             <div className="space-y-4">
-              <div className="p-4 bg-white rounded-xl border border-[#E5E5CB] space-y-1.5">
-                <h4 className="font-serif font-semibold text-sm text-[#3C2A21]">Worldwide Express & Sustainable Packaging</h4>
-                <p className="text-xs text-[#7E7067]">
-                  Every order is packed in 100% recyclable boxes with plant-based cushioning and nitrogen-flushed, one-way degassing valved pouches.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="p-3.5 bg-white rounded-xl border border-[#E5E5CB]">
-                  <span className="text-[10px] uppercase font-mono text-[#C5A059] block font-bold">Domestic Shipping</span>
-                  <p className="text-xs text-[#3C2A21] font-semibold mt-0.5">Complimentary over $65</p>
-                  <p className="text-[11px] text-[#7E7067] font-light">2–4 Business Days via Priority Express</p>
-                </div>
-                <div className="p-3.5 bg-white rounded-xl border border-[#E5E5CB]">
-                  <span className="text-[10px] uppercase font-mono text-[#C5A059] block font-bold">International Shipping</span>
-                  <p className="text-xs text-[#3C2A21] font-semibold mt-0.5">Flat $14.50 Worldwide</p>
-                  <p className="text-[11px] text-[#7E7067] font-light">4–7 Business Days with tracked customs clearance</p>
-                </div>
-              </div>
-
-              <h5 className="font-serif font-semibold text-[#3C2A21] text-sm pt-2">Roast-to-Order Dispatch Cycle</h5>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">1. Small-Batch Roast & Dispatch</h4>
               <p>
-                To preserve delicate floral aromatics and fruit notes, we roast on Tuesdays and Thursdays. Orders received are queued for the nearest roast date to ensure zero staleness.
+                We roast three days a week. Coffees ordered by 1:00 PM PST are packaged in valved one-way degassing pouches and dispatched within 24 to 48 hours for maximum flavor preservation.
+              </p>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">2. Complimentary Threshold</h4>
+              <p>
+                Domestic orders over $65 qualify for complimentary expedited shipping. Standard shipping is a flat rate of $7.50 for all other orders.
+              </p>
+              <h4 className="text-base font-editorial font-bold uppercase text-[#12100E]">3. Global Sourcing & Distribution</h4>
+              <p>
+                We ship worldwide with tracked air delivery. International transit typically takes 5–9 business days depending on customs clearance.
               </p>
             </div>
           )}
 
-          {/* TAB 4: CONTACT CONCIERGE */}
           {activeTab === 'contact' && (
-            <div className="space-y-5">
-              <div className="p-4 bg-white rounded-xl border border-[#E5E5CB] space-y-1.5">
-                <h4 className="font-serif font-semibold text-sm text-[#3C2A21]">We Are Here For Your Daily Ritual</h4>
-                <p className="text-xs text-[#7E7067]">
-                  Speak directly with our roasting team, certified Q-Graders, or prosumer equipment technicians.
-                </p>
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="p-4 bg-white border border-[#12100E]/15 space-y-1">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#C5A059] font-bold">EMAIL SUPPORT</span>
+                  <p className="font-mono text-xs font-bold text-[#12100E]">support@trosecoffee.com</p>
+                  <p className="text-[11px] text-[#69574A]">Response within 24 hours</p>
+                </div>
+
+                <div className="p-4 bg-white border border-[#12100E]/15 space-y-1">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#C5A059] font-bold">ROASTERY PHONE</span>
+                  <p className="font-mono text-xs font-bold text-[#12100E]">+1 (503) 892-4112</p>
+                  <p className="text-[11px] text-[#69574A]">Mon–Fri: 8:00 AM – 5:00 PM PST</p>
+                </div>
               </div>
 
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                  <Mail className="w-4 h-4 text-[#C5A059] shrink-0" />
-                  <div>
-                    <span className="text-[10px] uppercase font-mono text-[#7E7067] block">Direct Concierge Email</span>
-                    <a href="mailto:concierge@trosecoffee.com" className="text-xs font-semibold text-[#3C2A21] hover:text-[#C5A059] transition-colors">
-                      concierge@trosecoffee.com
-                    </a>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                  <MapPin className="w-4 h-4 text-[#C5A059] shrink-0" />
-                  <div>
-                    <span className="text-[10px] uppercase font-mono text-[#7E7067] block">Roastery & Tasting Room</span>
-                    <span className="text-xs text-[#3C2A21] font-semibold">
-                      742 Artisan Roastery Blvd, Portland, OR & Copenhagen K, Denmark
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-3 p-3 bg-white rounded-xl border border-[#E5E5CB]">
-                  <Phone className="w-4 h-4 text-[#C5A059] shrink-0" />
-                  <div>
-                    <span className="text-[10px] uppercase font-mono text-[#7E7067] block">Barista Support Line</span>
-                    <span className="text-xs text-[#3C2A21] font-semibold">
-                      +1 (800) 592-ROAST (Mon–Fri 8am–6pm PST)
-                    </span>
-                  </div>
-                </div>
+              <div className="p-4 bg-white border border-[#12100E]/15 space-y-1">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#C2873F] font-bold">TROSE COFFEE & MORE</span>
+                <p className="font-mono text-xs font-bold text-[#12100E]">
+                  Customer Care & Inquiries
+                </p>
+                <p className="text-[11px] text-[#69574A]">
+                  For corporate gifting, bulk roasts, and wholesale inquiries, contact support@trosecoffee.com.
+                </p>
               </div>
             </div>
           )}
 
         </div>
 
-        {/* Footer Action */}
-        <div className="p-4 bg-white border-t border-[#E5E5CB] flex justify-end">
+        {/* Footer */}
+        <div className="p-4 bg-[#FDFBF7] border-t border-[#12100E]/15 flex justify-end">
           <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-[#3C2A21] hover:bg-[#211C1A] text-white text-xs uppercase tracking-widest font-semibold rounded-lg transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-[#12100E] text-white text-[10px] font-mono uppercase tracking-wider font-bold hover:bg-[#D62828] transition-colors cursor-pointer"
           >
-            Done
+            DISMISS
           </button>
         </div>
 

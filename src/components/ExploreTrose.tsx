@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Coffee, ShieldCheck, CupSoda, Cookie, Armchair, Sliders, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { ProductCategory } from '../types';
 
 interface ExploreTroseProps {
@@ -7,148 +7,216 @@ interface ExploreTroseProps {
 }
 
 export const ExploreTrose: React.FC<ExploreTroseProps> = ({ onShopCollection }) => {
-  // 4 Primary Hero Categories
-  const mainCategories = [
-    {
-      id: 'coffee' as ProductCategory,
-      title: 'Coffee',
-      tag: 'Micro-Lot Roasts',
-      image: 'https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=900&q=85',
-      badgeColor: 'bg-[#D63426] text-white',
-      badgeText: 'Fresh Roasts'
-    },
-    {
-      id: 'organic' as ProductCategory,
-      title: 'Organic Coffee',
-      tag: '100% USDA Certified',
-      image: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=900&q=85',
-      badgeColor: 'bg-[#657953] text-white',
-      badgeText: 'Bio Organic'
-    },
-    {
-      id: 'machines' as ProductCategory,
-      title: 'Coffee Machines',
-      tag: 'Espresso & Grinders',
-      image: 'https://images.unsplash.com/photo-1517668808822-9ebb02f2a0e6?auto=format&fit=crop&w=900&q=85',
-      badgeColor: 'bg-[#241712] text-white',
-      badgeText: 'Pro Gear'
-    },
-    {
-      id: 'accessories' as ProductCategory,
-      title: 'Mugs & Accessories',
-      tag: 'Ceramics & Barista Tools',
-      image: 'https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=900&q=85',
-      badgeColor: 'bg-[#E65F38] text-white',
-      badgeText: 'Drinkware & Tools'
-    }
-  ];
-
-  // Secondary categories accessed as clean, minimalist chips
-  const secondaryCategories: { id: ProductCategory; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-    { id: 'beverages', label: 'Craft Beverages & Cascara', icon: CupSoda },
-    { id: 'snacks', label: 'Artisan Chocolates & Cantucci', icon: Cookie },
-    { id: 'tables', label: 'Salon Coffee Tables', icon: Armchair },
-    { id: 'bundles', label: 'Gift Flights & Sets', icon: Sparkles }
-  ];
-
   return (
-    <section id="explore-trose-section" className="py-16 sm:py-24 bg-[#FAF6F0] border-b border-[#E8DFD5]">
+    <section id="explore-trose-section" className="py-16 sm:py-24 bg-[#F7F3EB] border-b border-[#12100E]/10">
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
         
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 sm:mb-12 gap-4">
-          <div className="space-y-2 max-w-xl">
-            <span className="text-[11px] uppercase tracking-[0.2em] font-mono text-[#D63426] font-bold">
-              Shop By Category
-            </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-[#241712] tracking-tight uppercase">
-              Explore TROSE
+        {/* Section Header: Quieter Editorial Hierarchy */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-6">
+          <div className="space-y-2 max-w-xl text-left">
+            <div className="flex items-center space-x-3 text-xs uppercase tracking-[0.2em] font-sans text-[#CCA347] font-semibold">
+              <span className="w-5 h-[1.5px] bg-[#CCA347]" />
+              <span>COLLECTIONS</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-editorial font-semibold text-[#12100E] tracking-tight uppercase leading-[1.05]">
+              Explore The World Of{' '}
+              <span className="text-[#5C151E] font-serif italic font-normal normal-case">
+                TROSE
+              </span>
             </h2>
-            <p className="text-sm sm:text-base text-[#241712]/70 font-normal">
-              Find your morning essential — from freshly roasted beans to precision machines and artisan drinkware.
+            <p className="text-sm sm:text-base text-[#12100E]/75 font-sans font-normal leading-relaxed">
+              Discover coffees and wares designed to bring warmth, balance, and luxury to your daily ritual.
             </p>
           </div>
 
           <button
             onClick={() => onShopCollection('all')}
-            className="inline-flex items-center space-x-2 text-xs uppercase tracking-widest font-black text-[#241712] hover:text-[#D63426] transition-colors cursor-pointer group pb-1 self-start md:self-end"
+            className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-[0.16em] font-semibold text-[#12100E] hover:text-[#5C151E] transition-colors cursor-pointer group self-start md:self-end border-b border-[#12100E]/30 pb-0.5 hover:border-[#5C151E]"
           >
-            <span>View All Categories</span>
-            <ArrowRight className="w-4 h-4 text-[#D63426] group-hover:translate-x-1 transition-transform" />
+            <span>VIEW ALL OFFERINGS</span>
+            <ArrowRight className="w-3.5 h-3.5 text-[#CCA347] group-hover:translate-x-1.5 transition-transform" />
           </button>
         </div>
 
-        {/* 4 Prominent Hero Category Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {mainCategories.map((item) => (
-            <div
-              key={item.id}
-              id={`explore-collection-card-${item.id}`}
-              onClick={() => onShopCollection(item.id)}
-              className="group relative h-[360px] sm:h-[400px] rounded-3xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300 border border-[#E8DFD5] flex flex-col justify-end p-6 bg-[#1F1612]"
-            >
-              {/* Background Image */}
-              <img
-                src={item.image}
-                alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-106 transition-transform duration-700 opacity-85 group-hover:opacity-95"
-                loading="lazy"
-                referrerPolicy="no-referrer"
-              />
-              
-              {/* Clean Dark Vignette */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1F1612]/90 via-[#1F1612]/30 to-transparent" />
+        {/* Editorial Collage Layout: Lifestyle Story + Geometric Collection Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          {/* LEFT: Human / Lifestyle Story Panel (5 cols) with Bauhaus Overlap */}
+          <div className="lg:col-span-5 relative group overflow-hidden border border-[#12100E] bg-[#1E1712] flex flex-col justify-between min-h-[440px] sm:min-h-[500px] shadow-sm">
+            {/* Lifestyle Image: People enjoying morning coffee ritual */}
+            <img
+              src="https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&w=1200&q=85"
+              alt="Quiet morning coffee ritual"
+              className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-104 transition-transform duration-700 opacity-80"
+              loading="lazy"
+              referrerPolicy="no-referrer"
+            />
+            {/* Soft Warm Gradient Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#12100E] via-[#12100E]/40 to-transparent" />
+            
+            {/* Top Bauhaus Badge */}
+            <div className="relative z-10 p-6 sm:p-8 flex items-center justify-between text-white">
+              <span className="text-[10px] font-sans uppercase tracking-[0.2em] font-semibold bg-[#FAF6F0] text-[#12100E] px-3 py-1 border border-[#12100E]">
+                RITUAL & LIVING
+              </span>
+              <div className="w-2.5 h-2.5 rounded-full bg-[#CCA347]" />
+            </div>
 
-              {/* Top Badge */}
-              <div className="absolute top-4 left-4 z-10">
-                <span className={`px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-xs ${item.badgeColor}`}>
-                  {item.badgeText}
-                </span>
+            {/* Bottom Content: Refined Secondary Typography */}
+            <div className="relative z-10 p-6 sm:p-8 space-y-3 text-left text-white">
+              <div className="text-[11px] font-sans uppercase tracking-[0.2em] text-[#CCA347] font-semibold">
+                RISE. REFRESH. REIGN.
               </div>
-
-              {/* Card Bottom Content */}
-              <div className="relative z-10 space-y-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-[#FAF6F0]/80 block">
-                  {item.tag}
-                </span>
-                
-                <div className="flex items-center justify-between">
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight group-hover:text-[#FAF6F0]">
-                    {item.title}
-                  </h3>
-                  <div className="w-9 h-9 rounded-full bg-[#FAF6F0] text-[#241712] flex items-center justify-center group-hover:bg-[#D63426] group-hover:text-white transition-colors duration-200 shadow-md">
-                    <ArrowRight className="w-4 h-4" />
-                  </div>
-                </div>
+              <h3 className="text-xl sm:text-2xl font-editorial font-semibold uppercase leading-snug text-white">
+                Moments of stillness, clarity & bold flavor.
+              </h3>
+              <p className="text-xs sm:text-sm text-white/80 font-sans font-normal leading-relaxed max-w-sm">
+                An invitation to pause, breathe, and elevate the morning cup into an art form.
+              </p>
+              <div className="pt-2">
+                <button
+                  onClick={() => onShopCollection('coffee')}
+                  className="inline-flex items-center space-x-2 text-xs font-sans uppercase tracking-[0.16em] text-[#CCA347] font-semibold hover:text-white transition-colors cursor-pointer"
+                >
+                  <span>EXPLORE COFFEES</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
-          ))}
-        </div>
-
-        {/* Sleek Minimalist Secondary Category Bar */}
-        <div className="mt-8 pt-6 border-t border-[#E8DFD5] flex flex-wrap items-center justify-between gap-3 text-xs">
-          <span className="text-[11px] font-mono uppercase text-[#7A6C63] font-semibold">
-            Also In The Studio:
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {secondaryCategories.map((sec) => {
-              const Icon = sec.icon;
-              return (
-                <button
-                  key={sec.id}
-                  onClick={() => onShopCollection(sec.id)}
-                  className="px-3.5 py-1.5 rounded-full bg-white hover:bg-[#241712] hover:text-white border border-[#E8DFD5] text-[#241712] text-xs font-semibold transition-all flex items-center space-x-1.5 cursor-pointer shadow-xs"
-                >
-                  <Icon className="w-3.5 h-3.5 text-[#D63426]" />
-                  <span>{sec.label}</span>
-                </button>
-              );
-            })}
           </div>
+
+          {/* RIGHT: Geometric Bauhaus Collection Cards (7 cols) */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
+            {/* Card 1: Specialty Coffee with Burgundy Geometric Arch */}
+            <div
+              id="collection-coffee-card"
+              onClick={() => onShopCollection('coffee')}
+              className="relative p-6 sm:p-7 border border-[#12100E] bg-[#FAF6F0] overflow-hidden flex flex-col justify-between min-h-[250px] group cursor-pointer transition-all hover:shadow-md"
+            >
+              {/* Geometric Backdrop: Deep Burgundy Arch */}
+              <div className="absolute top-0 right-0 w-32 h-44 bg-[#5C151E] rounded-bl-[80px] opacity-90 transition-transform duration-500 group-hover:scale-105 -z-0" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-sans uppercase tracking-[0.2em] font-bold text-[#12100E]">
+                  COLLECTION 01
+                </span>
+                <span className="w-7 h-7 bg-white border border-[#12100E] flex items-center justify-center text-[#5C151E] group-hover:bg-[#5C151E] group-hover:text-white transition-colors">
+                  <ArrowUpRight className="w-4 h-4" />
+                </span>
+              </div>
+
+              <div className="relative z-10 pt-8 text-left">
+                <h4 className="text-xl font-editorial font-semibold uppercase text-[#12100E] group-hover:text-[#5C151E] transition-colors">
+                  Specialty Coffee
+                </h4>
+                <p className="text-xs text-[#12100E]/70 font-sans font-normal mt-1 max-w-[200px]">
+                  Signature roasts and single-origins with balanced aromatics.
+                </p>
+                <span className="inline-block mt-3 text-[10px] font-sans uppercase tracking-[0.16em] font-semibold text-[#5C151E]">
+                  BROWSE COFFEE →
+                </span>
+              </div>
+            </div>
+
+            {/* Card 2: Organic Coffee with Forest Green Semicircle */}
+            <div
+              id="collection-organic-card"
+              onClick={() => onShopCollection('organic')}
+              className="relative p-6 sm:p-7 border border-[#12100E] bg-[#FAF6F0] overflow-hidden flex flex-col justify-between min-h-[250px] group cursor-pointer transition-all hover:shadow-md"
+            >
+              {/* Geometric Backdrop: Subtle Forest Green Semicircle */}
+              <div className="absolute top-0 right-0 w-36 h-36 bg-[#1C3328] rounded-full translate-x-8 -translate-y-8 opacity-85 transition-transform duration-500 group-hover:scale-105 -z-0" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-sans uppercase tracking-[0.2em] font-bold text-[#12100E]">
+                  COLLECTION 02
+                </span>
+                <span className="w-7 h-7 bg-white border border-[#12100E] flex items-center justify-center text-[#1C3328] group-hover:bg-[#1C3328] group-hover:text-white transition-colors">
+                  <ArrowUpRight className="w-4 h-4" />
+                </span>
+              </div>
+
+              <div className="relative z-10 pt-8 text-left">
+                <h4 className="text-xl font-editorial font-semibold uppercase text-[#12100E] group-hover:text-[#1C3328] transition-colors">
+                  Organic Coffee
+                </h4>
+                <p className="text-xs text-[#12100E]/70 font-sans font-normal mt-1 max-w-[200px]">
+                  Certified organic beans cultivated with respect for the land.
+                </p>
+                <span className="inline-block mt-3 text-[10px] font-sans uppercase tracking-[0.16em] font-semibold text-[#1C3328]">
+                  BROWSE ORGANIC →
+                </span>
+              </div>
+            </div>
+
+            {/* Card 3: Espresso & Brewing Machines with Natural Kraft Field */}
+            <div
+              id="collection-machines-card"
+              onClick={() => onShopCollection('machines')}
+              className="relative p-6 sm:p-7 border border-[#12100E] bg-[#FAF6F0] overflow-hidden flex flex-col justify-between min-h-[250px] group cursor-pointer transition-all hover:shadow-md"
+            >
+              {/* Geometric Backdrop: Natural Kraft / Warm Tan Field */}
+              <div className="absolute bottom-0 right-0 w-32 h-32 bg-[#D4B896] rounded-tl-[70px] opacity-90 transition-transform duration-500 group-hover:scale-105 -z-0" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-sans uppercase tracking-[0.2em] font-bold text-[#12100E]">
+                  COLLECTION 03
+                </span>
+                <span className="w-7 h-7 bg-white border border-[#12100E] flex items-center justify-center text-[#1E1712] group-hover:bg-[#1E1712] group-hover:text-white transition-colors">
+                  <ArrowUpRight className="w-4 h-4" />
+                </span>
+              </div>
+
+              <div className="relative z-10 pt-8 text-left">
+                <h4 className="text-xl font-editorial font-semibold uppercase text-[#12100E] group-hover:text-[#1E1712] transition-colors">
+                  Coffee Machines
+                </h4>
+                <p className="text-xs text-[#12100E]/70 font-sans font-normal mt-1 max-w-[200px]">
+                  Precision espresso machines and high-performance coffee makers.
+                </p>
+                <span className="inline-block mt-3 text-[10px] font-sans uppercase tracking-[0.16em] font-semibold text-[#1E1712]">
+                  DISCOVER GEAR →
+                </span>
+              </div>
+            </div>
+
+            {/* Card 4: Mugs & Barista Gear with Antique Champagne Gold Field */}
+            <div
+              id="collection-gear-card"
+              onClick={() => onShopCollection('accessories')}
+              className="relative p-6 sm:p-7 border border-[#12100E] bg-[#FAF6F0] overflow-hidden flex flex-col justify-between min-h-[250px] group cursor-pointer transition-all hover:shadow-md"
+            >
+              {/* Geometric Backdrop: Champagne Gold Quarter Circle */}
+              <div className="absolute top-0 right-0 w-28 h-28 bg-[#CCA347] rounded-bl-full opacity-90 transition-transform duration-500 group-hover:scale-105 -z-0" />
+              
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-[10px] font-sans uppercase tracking-[0.2em] font-bold text-[#12100E]">
+                  COLLECTION 04
+                </span>
+                <span className="w-7 h-7 bg-white border border-[#12100E] flex items-center justify-center text-[#CCA347] group-hover:bg-[#CCA347] group-hover:text-white transition-colors">
+                  <ArrowUpRight className="w-4 h-4" />
+                </span>
+              </div>
+
+              <div className="relative z-10 pt-8 text-left">
+                <h4 className="text-xl font-editorial font-semibold uppercase text-[#12100E] group-hover:text-[#CCA347] transition-colors">
+                  Mugs & Accessories
+                </h4>
+                <p className="text-xs text-[#12100E]/70 font-sans font-normal mt-1 max-w-[200px]">
+                  Ceramic drinkware, travel flasks, and brew accessories.
+                </p>
+                <span className="inline-block mt-3 text-[10px] font-sans uppercase tracking-[0.16em] font-semibold text-[#CCA347]">
+                  EXPLORE ACCESSORIES →
+                </span>
+              </div>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
     </section>
   );
 };
-

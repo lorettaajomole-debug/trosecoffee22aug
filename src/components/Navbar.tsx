@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, User, ShoppingBag, Menu, X, Coffee } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, User, ShoppingBag, Menu, X } from 'lucide-react';
 import { ProductCategory, AppView } from '../types';
 
 interface NavbarProps {
@@ -25,78 +25,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenQuiz,
   cartCount
 }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const navItems: { label: string; view?: AppView; category?: ProductCategory; isAbout?: boolean; isHome?: boolean; badge?: string }[] = [
-    { label: 'Home', isHome: true, view: 'home' },
-    { label: 'Shop', view: 'shop', category: 'all' },
-    { label: 'Coffee', view: 'shop', category: 'coffee' },
-    { label: 'Organic Coffee', view: 'shop', category: 'organic', badge: 'Bio' },
-    { label: 'Machines', view: 'shop', category: 'machines' },
-    { label: 'Mugs & Gear', view: 'shop', category: 'accessories' },
-    { label: 'About', isAbout: true }
-  ];
-
-  const handleNavClick = (item: typeof navItems[0]) => {
-    setMobileMenuOpen(false);
-    if (item.isAbout) {
-      onOpenAbout();
-    } else if (item.isHome) {
-      onNavigate('home');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } else if (item.view) {
-      onNavigate(item.view, item.category || 'all');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
 
   return (
     <header
       id="main-navigation-bar"
-      className={`sticky top-0 z-40 transition-all duration-200 ${
-        isScrolled
-          ? 'bg-[#FAF6F0]/95 backdrop-blur-md border-b border-[#E8DFD5] py-3.5 shadow-xs'
-          : 'bg-[#FAF6F0] border-b border-[#E8DFD5] py-4 sm:py-5'
-      }`}
+      className="bg-[#F4EFEA] border-b border-[#0E0C0B]/10 py-4 sm:py-5 sticky top-0 z-40 transition-all backdrop-blur-md"
     >
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
         <div className="flex items-center justify-between">
           
-          {/* Mobile Menu Trigger */}
-          <div className="flex items-center lg:hidden space-x-1">
-            <button
-              id="mobile-menu-toggle-btn"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 -ml-2 text-[#241712] hover:text-[#D63426] transition-colors cursor-pointer"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-            <button
-              id="mobile-search-btn"
-              onClick={onOpenSearch}
-              className="p-2 text-[#241712] hover:text-[#D63426] transition-colors cursor-pointer"
-              aria-label="Open search"
-            >
-              <Search className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Left / Brand Area: Modern, Playful TROSE Wordmark */}
-          <div className="flex items-center space-x-10">
+          {/* LEFT: TROSE COFFEE Brand Wordmark & Seal (matching reference exactly) */}
+          <div className="flex items-center space-x-3">
             <a
               id="brand-logo-link"
               href="#home"
@@ -105,145 +45,182 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onNavigate('home');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="flex items-baseline space-x-1 focus:outline-none cursor-pointer group"
+              className="flex items-center space-x-2.5 focus:outline-none cursor-pointer group text-left"
+              aria-label="TROSE Coffee — Home"
             >
-              <span className="text-2xl sm:text-[26px] font-sans font-black tracking-tight text-[#241712] uppercase transition-transform group-hover:scale-[1.02]">
-                TROSE
-              </span>
-              <span className="w-2 h-2 rounded-full bg-[#D63426] inline-block transition-transform group-hover:scale-125"></span>
+              {/* Circular TROSE Logo */}
+              <img
+                src="/assets/trose-logo.png"
+                alt="TROSE"
+                className="w-10 h-10 sm:w-11 sm:h-11 object-contain transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement;
+                  if (!target.src.endsWith('.svg')) {
+                    target.src = '/assets/trose-logo.svg';
+                  }
+                }}
+              />
+              {/* Bold Geometric Wordmark matching reference */}
+              <div className="flex flex-col">
+                <span className="text-xl sm:text-2xl font-display font-extrabold tracking-[0.16em] text-[#0E0C0B] leading-none">
+                  TROSE
+                </span>
+                <span className="text-[9px] font-sans font-semibold tracking-[0.38em] text-[#0E0C0B] mt-0.5 uppercase">
+                  COFFEE
+                </span>
+              </div>
             </a>
-
-            {/* Desktop Navigation Links */}
-            <nav className="hidden lg:flex items-center space-x-7 text-xs uppercase tracking-[0.14em] font-semibold text-[#241712]/75">
-              {navItems.map((item) => {
-                const isActive =
-                  (item.isHome && currentView === 'home') ||
-                  (!item.isHome && !item.isAbout && currentView === 'shop' && activeCategory === item.category);
-
-                return (
-                  <button
-                    key={item.label}
-                    id={`nav-link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                    onClick={() => handleNavClick(item)}
-                    className={`transition-all duration-200 cursor-pointer relative py-1 hover:text-[#D63426] ${
-                      isActive
-                        ? 'text-[#D63426] font-bold'
-                        : 'text-[#241712]/80'
-                    }`}
-                  >
-                    <span>{item.label}</span>
-                    {isActive && (
-                      <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-[#D63426] rounded-full" />
-                    )}
-                    {item.badge && (
-                      <span className="ml-1.5 px-1.5 py-0.5 bg-[#EBF1E6] text-[#657953] text-[9px] font-bold rounded-full normal-case tracking-normal">
-                        {item.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
           </div>
 
-          {/* Action Icons: Search, Account, Cart */}
-          <div className="flex items-center space-x-3 sm:space-x-4 text-[#241712]">
+          {/* CENTER: Clean Reference Navigation */}
+          <nav className="hidden md:flex items-center space-x-8 lg:space-x-10 text-xs uppercase tracking-[0.18em] font-sans font-semibold text-[#0E0C0B]">
             <button
-              id="desktop-search-btn"
+              onClick={() => onNavigate('shop', 'all')}
+              className={`hover:text-[#C88E38] transition-colors cursor-pointer py-1 ${
+                currentView === 'shop' && activeCategory === 'all' ? 'text-[#C88E38] font-bold' : ''
+              }`}
+            >
+              SHOP
+            </button>
+            <button
+              onClick={() => {
+                if (onOpenQuiz) onOpenQuiz();
+              }}
+              className="hover:text-[#C88E38] transition-colors cursor-pointer py-1"
+            >
+              FIND YOUR TROSE
+            </button>
+            <button
+              onClick={onOpenAbout}
+              className="hover:text-[#C88E38] transition-colors cursor-pointer py-1"
+            >
+              OUR STORY
+            </button>
+            <button
+              onClick={() => onNavigate('shop', 'coffee')}
+              className="hover:text-[#C88E38] transition-colors cursor-pointer py-1"
+            >
+              JOURNAL
+            </button>
+          </nav>
+
+          {/* RIGHT: Action Icons matching reference (Search, Account, Cart, Menu) */}
+          <div className="flex items-center space-x-4 sm:space-x-6 text-[#0E0C0B]">
+            
+            {/* Search */}
+            <button
+              id="search-trigger-btn"
               onClick={onOpenSearch}
-              className="hidden lg:flex items-center justify-center p-2 text-[#241712]/80 hover:text-[#D63426] hover:bg-[#F4EFEB] rounded-full transition-all cursor-pointer"
-              aria-label="Search products"
-              title="Search"
+              className="p-1.5 hover:text-[#C88E38] transition-colors cursor-pointer"
+              aria-label="Search catalogue"
             >
-              <Search className="w-4 h-4 stroke-[2]" />
+              <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.8]" />
             </button>
 
+            {/* Account */}
             <button
-              id="account-profile-btn"
+              id="account-trigger-btn"
               onClick={onOpenAccount}
-              className="flex items-center justify-center p-2 text-[#241712]/80 hover:text-[#D63426] hover:bg-[#F4EFEB] rounded-full transition-all cursor-pointer"
-              aria-label="Account & Orders"
-              title="Account"
+              className="p-1.5 hover:text-[#C88E38] transition-colors cursor-pointer"
+              aria-label="Account"
             >
-              <User className="w-4 h-4 stroke-[2]" />
+              <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.8]" />
             </button>
 
+            {/* Cart */}
             <button
-              id="cart-drawer-trigger-btn"
+              id="cart-trigger-btn"
               onClick={onOpenCart}
-              className="flex items-center space-x-2 px-3 py-2 bg-[#241712] hover:bg-[#1F1612] text-white rounded-full transition-transform active:scale-95 cursor-pointer group shadow-xs"
-              aria-label={`Shopping bag with ${cartCount} items`}
-              title="Shopping Bag"
+              className="flex items-center space-x-1 p-1.5 hover:text-[#C88E38] transition-colors cursor-pointer relative"
+              aria-label="Shopping bag"
             >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              <span className="text-xs font-bold tracking-wider font-mono">
-                {cartCount}
-              </span>
+              <ShoppingBag className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[1.8]" />
+              {cartCount > 0 && (
+                <span className="text-[11px] font-sans font-bold text-[#0E0C0B]">
+                  ({cartCount})
+                </span>
+              )}
             </button>
+
+            {/* Menu Hamburger Trigger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-1.5 hover:text-[#C88E38] transition-colors cursor-pointer"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 stroke-[2]" />
+              ) : (
+                <Menu className="w-5 h-5 stroke-[2]" />
+              )}
+            </button>
+
           </div>
 
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-[61px] bg-[#FAF6F0] border-b border-[#E8DFD5] shadow-xl z-50 animate-fadeIn">
-          <div className="px-6 py-6 space-y-4 max-h-[80vh] overflow-y-auto font-sans">
-            <div className="border-b border-[#E8DFD5] pb-3 flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-[0.2em] font-mono text-[#7A6C63]">Menu</span>
-              <span className="text-xs text-[#D63426] font-semibold">Coffee Culture</span>
-            </div>
-
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                id={`mobile-nav-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
-                onClick={() => handleNavClick(item)}
-                className="w-full text-left py-2.5 flex items-center justify-between text-xs uppercase tracking-[0.14em] text-[#241712] hover:text-[#D63426] font-bold transition-colors cursor-pointer"
-              >
-                <span>{item.label}</span>
-                {item.badge ? (
-                  <span className="px-2 py-0.5 bg-[#EBF1E6] text-[#657953] text-[10px] font-bold rounded-full">
-                    {item.badge}
-                  </span>
-                ) : item.category ? (
-                  <Coffee className="w-3.5 h-3.5 text-[#7A6C63]" />
-                ) : null}
-              </button>
-            ))}
-
-            <div className="pt-4 border-t border-[#E8DFD5] space-y-3">
-              {onOpenQuiz && (
-                <button
-                  id="mobile-drawer-quiz-btn"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    onOpenQuiz();
-                  }}
-                  className="w-full py-3 bg-[#D63426] text-white text-xs uppercase tracking-wider font-bold rounded-xl flex items-center justify-center space-x-2 shadow-xs"
-                >
-                  <Coffee className="w-4 h-4 text-white" />
-                  <span>Find Your Perfect Coffee →</span>
-                </button>
-              )}
-
-              <button
-                id="mobile-drawer-account-btn"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAccount();
-                }}
-                className="w-full py-3 bg-[#F4EFEB] text-[#241712] text-xs uppercase tracking-wider font-bold rounded-xl flex items-center justify-center space-x-2"
-              >
-                <User className="w-4 h-4 text-[#D63426]" />
-                <span>Account & Order History</span>
-              </button>
-            </div>
+        <div className="bg-[#F4EFEA] border-b border-[#0E0C0B]/15 shadow-xl animate-fadeIn">
+          <div className="max-w-7xl mx-auto px-6 py-6 space-y-4 text-left font-sans">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onNavigate('shop', 'all');
+              }}
+              className="block w-full text-xs uppercase tracking-widest font-semibold py-2 border-b border-[#0E0C0B]/10"
+            >
+              SHOP ALL COLLECTIONS
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onNavigate('shop', 'coffee');
+              }}
+              className="block w-full text-xs uppercase tracking-widest font-semibold py-2 border-b border-[#0E0C0B]/10"
+            >
+              COFFEE ROASTS
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onNavigate('shop', 'organic');
+              }}
+              className="block w-full text-xs uppercase tracking-widest font-semibold py-2 border-b border-[#0E0C0B]/10"
+            >
+              ORGANIC COFFEE
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onNavigate('shop', 'machines');
+              }}
+              className="block w-full text-xs uppercase tracking-widest font-semibold py-2 border-b border-[#0E0C0B]/10"
+            >
+              MACHINES & GEAR
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                if (onOpenQuiz) onOpenQuiz();
+              }}
+              className="block w-full text-xs uppercase tracking-widest font-bold py-2 text-[#C88E38] border-b border-[#0E0C0B]/10"
+            >
+              FIND YOUR TROSE →
+            </button>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenAbout();
+              }}
+              className="block w-full text-xs uppercase tracking-widest font-semibold py-2"
+            >
+              OUR STORY
+            </button>
           </div>
         </div>
       )}
     </header>
   );
 };
-
-

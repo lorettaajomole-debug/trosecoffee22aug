@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Sparkles, Award, ShieldCheck, HeartHandshake, MapPin, ArrowRight } from 'lucide-react';
+import { X, Award, ShieldCheck, Heart, Coffee, ArrowRight } from 'lucide-react';
 
 interface AboutModalProps {
   isOpen: boolean;
@@ -11,33 +11,39 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onShopC
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-[#12100E]/75 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6">
       
       <div 
         id="about-modal-container"
-        className="relative w-full max-w-3xl bg-[#FAF6F0] rounded-3xl shadow-2xl border border-[#E8DFD5] overflow-hidden flex flex-col my-8"
+        className="relative w-full max-w-3xl bg-[#FAF7F2] border border-[#12100E] shadow-2xl overflow-hidden flex flex-col my-8 text-left"
       >
         {/* Visual Hero Header */}
-        <div className="relative h-64 sm:h-72 bg-[#241712] overflow-hidden">
+        <div className="relative h-64 sm:h-72 bg-[#12100E] overflow-hidden border-b border-[#12100E]">
           <img
             src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=85"
-            alt="TROSE Roasting Master & Coffee Farm"
+            alt="TROSE Coffee Origin and Roasting Ritual"
             className="w-full h-full object-cover opacity-60"
             referrerPolicy="no-referrer"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#241712] via-[#241712]/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#12100E] via-[#12100E]/40 to-transparent" />
           
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-white/20 backdrop-blur-md hover:bg-white text-white hover:text-[#241712] flex items-center justify-center transition-colors cursor-pointer"
+            className="absolute top-4 right-4 z-20 p-2 border border-white/30 bg-black/40 hover:bg-white text-white hover:text-[#12100E] transition-colors cursor-pointer"
             aria-label="Close modal"
           >
             <X className="w-4 h-4" />
           </button>
 
-          <div className="absolute bottom-6 left-6 sm:left-8 right-6 text-white space-y-1">
-            <span className="text-[10px] uppercase font-mono tracking-[0.2em] text-[#E65F38] font-bold">The TROSE Story</span>
-            <h2 className="text-3xl sm:text-4xl font-black uppercase tracking-tight">Great Coffee. Real Culture.</h2>
+          <div className="absolute bottom-6 left-6 sm:left-8 right-6 text-white space-y-1.5">
+            <div className="flex items-center space-x-2 text-[10px] uppercase font-mono tracking-[0.28em] text-[#C2873F] font-bold">
+              <span>OUR STORY</span>
+              <span>·</span>
+              <span>RISE. REFRESH. REIGN.</span>
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-editorial font-bold uppercase tracking-tight">
+              Good Coffee. Brighter Humans.
+            </h2>
           </div>
         </div>
 
@@ -46,59 +52,55 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onShopC
           
           {/* Mission */}
           <div className="space-y-2">
-            <h3 className="text-xl font-bold uppercase text-[#241712]">Our Origin</h3>
-            <p className="text-sm text-[#7A6C63] leading-relaxed font-normal">
-              TROSE Coffee & More was created to bring high-elevation micro-lots and vibrant coffee culture straight to your everyday kitchen ritual. We believe coffee should taste extraordinary, feel warm, and spark connection without the stuffy attitude.
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#5C121E] font-bold block">
+              01 / THE TROSE VISION
+            </span>
+            <h3 className="text-xl font-editorial font-bold uppercase text-[#12100E]">
+              Balance With Boldness
+            </h3>
+            <p className="text-sm text-[#12100E]/80 leading-relaxed font-normal">
+              TROSE Coffee & More was created to bring exceptional coffee, intentional design, and elevated daily rituals to your morning. We believe coffee is more than caffeine—it is an art form, a moment of stillness, and a shared passion that brings people together.
             </p>
           </div>
 
-          {/* Pillars */}
+          {/* Pillars (Bauhaus Structural Boxes) */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-            <div className="p-5 bg-white rounded-2xl border border-[#E8DFD5] space-y-2">
-              <Award className="w-5 h-5 text-[#D63426]" />
-              <h4 className="text-sm font-bold uppercase text-[#241712]">Top 1% Micro-Lots</h4>
-              <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                We cup seasonal coffees year-round, roasting only sweet, fruit-forward lots with vibrant flavor clarity.
+            <div className="p-5 bg-[#F7F3EB] border border-[#12100E] space-y-2">
+              <Coffee className="w-5 h-5 text-[#5C121E]" />
+              <h4 className="text-xs font-mono font-bold uppercase text-[#12100E]">Curated Roasts</h4>
+              <p className="text-xs text-[#12100E]/70 leading-relaxed font-normal">
+                Signature blends and single origins chosen for natural sweetness, deep aromatics, and clean balance.
               </p>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-[#E8DFD5] space-y-2">
-              <ShieldCheck className="w-5 h-5 text-[#657953]" />
-              <h4 className="text-sm font-bold uppercase text-[#241712]">100% Organic</h4>
-              <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                Zero synthetics or pesticides. Shade grown beneath canopies for rich biodiversity and soil health.
+            <div className="p-5 bg-[#F7F3EB] border border-[#12100E] space-y-2">
+              <ShieldCheck className="w-5 h-5 text-[#1E3A2F]" />
+              <h4 className="text-xs font-mono font-bold uppercase text-[#12100E]">Organic Focus</h4>
+              <p className="text-xs text-[#12100E]/70 leading-relaxed font-normal">
+                Certified organic selections grown in living soil, respecting farmers and natural ecosystems.
               </p>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-[#E8DFD5] space-y-2">
-              <HeartHandshake className="w-5 h-5 text-[#E65F38]" />
-              <h4 className="text-sm font-bold uppercase text-[#241712]">Direct Trade</h4>
-              <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-                Transparent long-term partnerships with generational farming families that pay well above fair-trade.
+            <div className="p-5 bg-[#F7F3EB] border border-[#12100E] space-y-2">
+              <Heart className="w-5 h-5 text-[#C2873F]" />
+              <h4 className="text-xs font-mono font-bold uppercase text-[#12100E]">Daily Ritual</h4>
+              <p className="text-xs text-[#12100E]/70 leading-relaxed font-normal">
+                Designed to make every morning feel intentional, inspiring, and deeply satisfying.
               </p>
             </div>
           </div>
 
-          {/* The Roasting Process */}
-          <div className="space-y-3 bg-white p-6 rounded-2xl border border-[#E8DFD5]">
-            <div className="flex items-center space-x-2 text-[#D63426]">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-[10px] uppercase tracking-widest font-mono font-bold">Small-Batch Drum Roasting</span>
-            </div>
-            <p className="text-xs text-[#7A6C63] leading-relaxed font-normal">
-              Every single batch is profiled on custom cast-iron drum roasters. We highlight origin sweetness, fruit esters, and balanced acidity, packing within hours of roast in nitrogen-sealed valved pouches.
+          {/* Roasting Philosophy */}
+          <div className="space-y-2 bg-[#F7F3EB] p-6 border border-[#12100E]">
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#C2873F] font-bold block">
+              02 / ROASTING PHILOSOPHY
+            </span>
+            <h4 className="text-sm font-editorial font-bold uppercase text-[#12100E]">
+              Harmonious Roasting Profiles
+            </h4>
+            <p className="text-xs text-[#12100E]/75 leading-relaxed font-normal">
+              Every coffee is roasted to showcase its natural terroir and intrinsic flavor characteristics. We seek the sweet spot where brightness, chocolate undertones, and smooth body unite in perfect harmony.
             </p>
-          </div>
-
-          {/* Tasting Room & Boutique */}
-          <div className="flex items-start space-x-4 p-5 bg-white rounded-2xl border border-[#E8DFD5]">
-            <MapPin className="w-5 h-5 text-[#E65F38] shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <h4 className="text-sm font-bold uppercase text-[#241712]">Visit The TROSE Roastery Bar</h4>
-              <p className="text-xs text-[#7A6C63] font-normal">
-                Join us for weekend public cupping sessions, espresso flight pairings, and gear walkthroughs at our flagship roastery.
-              </p>
-            </div>
           </div>
 
           {/* CTA */}
@@ -108,10 +110,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onShopC
                 onClose();
                 onShopCoffee();
               }}
-              className="px-8 py-3.5 bg-[#D63426] hover:bg-[#BF2A1D] text-white text-xs uppercase tracking-widest font-black rounded-full transition-colors flex items-center space-x-2 cursor-pointer shadow-md"
+              className="px-6 py-3 bg-[#12100E] hover:bg-[#5C121E] text-white text-xs font-mono uppercase tracking-[0.2em] font-bold transition-colors flex items-center space-x-2 cursor-pointer"
             >
-              <span>Explore All Roasts</span>
-              <ArrowRight className="w-4 h-4" />
+              <span>EXPLORE THE ROASTS</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -122,5 +124,3 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onShopC
     </div>
   );
 };
-
-
