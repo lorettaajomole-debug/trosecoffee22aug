@@ -21,6 +21,8 @@ interface ShopPageProps {
   onSelectProduct: (product: Product) => void;
   onAddToCart: (product: Product, grind?: GrindOption, quantity?: number) => void;
   onNavigateHome: () => void;
+  isLoading?: boolean;
+  isShopifyLive?: boolean;
 }
 
 const CATEGORY_TABS: { id: ProductCategory; label: string }[] = [
@@ -77,7 +79,9 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   initialCategory = 'all',
   onSelectProduct,
   onAddToCart,
-  onNavigateHome
+  onNavigateHome,
+  isLoading = false,
+  isShopifyLive = false,
 }) => {
   const [filters, setFilters] = useState<ShopFiltersState>({
     category: initialCategory,
@@ -139,11 +143,14 @@ export const ShopPage: React.FC<ShopPageProps> = ({
         }
       }
 
-      // Category
+      // Category & Shopify Collection matching
       if (filters.category !== 'all') {
         if (filters.category === 'organic') {
-          if (!product.isOrganic) return false;
-        } else if (product.category !== filters.category) {
+          if (!product.isOrganic && product.category !== 'organic') return false;
+        } else if (
+          product.category !== filters.category &&
+          !product.collectionHandles?.some((h) => h.includes(filters.category))
+        ) {
           return false;
         }
       }
@@ -544,7 +551,29 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           {/* Product Grid Area (9 Columns) */}
           <div className="lg:col-span-9">
             
-            {filteredProducts.length === 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="bg-white rounded-3xl overflow-hidden border border-[#E8DFD5] animate-pulse flex flex-col aspect-[4/5]"
+                  >
+                    <div className="aspect-[4/3] bg-gray-200" />
+                    <div className="p-6 space-y-3 flex-1 flex flex-col justify-between">
+                      <div className="space-y-2">
+                        <div className="h-3 bg-gray-200 rounded w-1/3" />
+                        <div className="h-5 bg-gray-200 rounded w-3/4" />
+                        <div className="h-3 bg-gray-100 rounded w-1/2" />
+                      </div>
+                      <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                        <div className="h-6 bg-gray-200 rounded w-16" />
+                        <div className="h-8 bg-gray-200 rounded-full w-24" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredProducts.length === 0 ? (
               <div className="bg-white rounded-2xl border border-[#E5E5CB] p-12 text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-[#E5E5CB]/40 text-[#C5A059] flex items-center justify-center mx-auto">
                   <Search className="w-8 h-8" />

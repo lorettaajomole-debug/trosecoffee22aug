@@ -209,7 +209,9 @@ export function scoreCoffeeProduct(
   product: Product,
   answers: CoffeeFinderAnswers
 ): CoffeeMatchScore {
-  const metafields = PRODUCT_COFFEE_METAFIELDS[product.id];
+  const metafields =
+    PRODUCT_COFFEE_METAFIELDS[product.id] ||
+    (product.handle ? PRODUCT_COFFEE_METAFIELDS[product.handle] : undefined);
   let points = 0;
   let maxPoints = 0;
   const reasons: string[] = [];
@@ -218,21 +220,36 @@ export function scoreCoffeeProduct(
   maxPoints += 25;
   if (answers.enjoyment) {
     if (answers.enjoyment === 'milk') {
-      if (metafields?.milk_friendly || product.roastLevel === 'Espresso Roast' || product.roastLevel === 'Dark' || product.roastLevel === 'Medium') {
+      if (
+        metafields?.milk_friendly ||
+        product.roastLevel === 'Espresso Roast' ||
+        product.roastLevel === 'Dark' ||
+        product.roastLevel === 'Medium-Dark' ||
+        product.roastLevel === 'Medium'
+      ) {
         points += 25;
         reasons.push('Rich body that pairs deliciously with milk');
       } else {
         points += 10;
       }
     } else if (answers.enjoyment === 'black') {
-      if (product.roastLevel === 'Light' || product.roastLevel === 'Medium' || product.category === 'organic') {
+      if (
+        product.roastLevel === 'Light' ||
+        product.roastLevel === 'Medium' ||
+        product.category === 'organic'
+      ) {
         points += 25;
         reasons.push('Clean origin clarity perfect for drinking black');
       } else {
         points += 15;
       }
     } else if (answers.enjoyment === 'iced') {
-      if (metafields?.iced_friendly || product.id === 'trose-nitro-cold-brew-concentrate' || product.roastLevel === 'Light' || product.roastLevel === 'Espresso Roast') {
+      if (
+        metafields?.iced_friendly ||
+        product.id === 'trose-nitro-cold-brew-concentrate' ||
+        product.roastLevel === 'Light' ||
+        product.roastLevel === 'Espresso Roast'
+      ) {
         points += 25;
         reasons.push('Vibrant aromatics that shine over ice');
       } else {
@@ -254,15 +271,29 @@ export function scoreCoffeeProduct(
     answers.flavours.forEach((userFlavour) => {
       if (metafields?.flavour_notes.includes(userFlavour)) {
         matchedFlavoursCount++;
+      } else if (product.tastingNotes && product.tastingNotes.length > 0) {
+        const noteMatch = product.tastingNotes.some((tn) => {
+          const lower = tn.toLowerCase();
+          if (userFlavour === 'chocolate-rich') return lower.includes('choc') || lower.includes('cacao');
+          if (userFlavour === 'caramel-sweet') return lower.includes('caramel') || lower.includes('toffee') || lower.includes('sugar');
+          if (userFlavour === 'fruity-bright') return lower.includes('fruit') || lower.includes('citrus') || lower.includes('berry') || lower.includes('apple');
+          if (userFlavour === 'nutty-smooth') return lower.includes('nut') || lower.includes('almond') || lower.includes('praline');
+          if (userFlavour === 'bold-intense') return lower.includes('smoky') || lower.includes('spice') || lower.includes('dense');
+          if (userFlavour === 'light-delicate') return lower.includes('floral') || lower.includes('jasmine') || lower.includes('bergamot');
+          return false;
+        });
+        if (noteMatch) matchedFlavoursCount++;
       }
     });
 
     if (matchedFlavoursCount > 0) {
-      const flavourScore = Math.min(30, Math.round((matchedFlavoursCount / answers.flavours.length) * 30) + 6);
-      points += flavourScore;
-      reasons.push(`Contains matching ${answers.flavours.slice(0, 2).map(f => FLAVOUR_LABELS[f]).join(' & ')}`);
+      points += Math.min(30, matchedFlavoursCount * 15);
+      reasons.push('Tasting notes that align with your chosen flavors');
+    } else if (metafields || (product.tastingNotes && product.tastingNotes.length > 0)) {
+      points += 12;
     } else {
-      points += 14;
+      // No metadata available on this Shopify product - do NOT fabricate points
+      points += 15;
     }
   } else {
     points += 22;

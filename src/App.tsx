@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { PRODUCTS, REVIEWS } from './data/products';
 import { Product, ProductCategory, CartItem, GrindOption, AppView } from './types';
+import { fetchLiveShopifyCatalogue, ShopifyCollection } from './services/shopify';
 import { AnnouncementBar } from './components/AnnouncementBar';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -28,6 +29,15 @@ import { Toast } from './components/Toast';
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [activeCategory, setActiveCategory] = useState<ProductCategory>('all');
+  
+  // Single source of truth: Live Shopify products (with local fallback if API unavailable)
+  const [products, setProducts] = useState<Product[]>(PRODUCTS);
+  const [shopifyCollections, setShopifyCollections] = useState<ShopifyCollection[]>([]);
+  const [unmappedCollections, setUnmappedCollections] = useState<ShopifyCollection[]>([]);
+  const [isLoadingCatalogue, setIsLoadingCatalogue] = useState<boolean>(true);
+  const [isShopifyLive, setIsShopifyLive] = useState<boolean>(false);
+  const [catalogueError, setCatalogueError] = useState<string | null>(null);
+
   const [cart, setCart] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('trose_cart');
@@ -59,6 +69,44 @@ export default function App() {
     tab: 'privacy'
   });
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Load Live Shopify Storefront Catalogue on startup
+  useEffect(() => {
+    let isMounted = true;
+    fetchLiveShopifyCatalogue()
+      .then((result) => {
+        if (!isMounted) return;
+        if (result.isLive && result.products.length > 0) {
+          setProducts(result.products);
+          setShopifyCollections(result.collections);
+          setUnmappedCollections(result.unmappedCollections);
+          setIsShopifyLive(true);
+          setCatalogueError(null);
+        } else {
+          // Graceful fallback to local PRODUCTS dataset
+          setProducts(PRODUCTS);
+          setIsShopifyLive(false);
+          if (result.error && result.error !== 'CREDENTIALS_NOT_CONFIGURED') {
+            setCatalogueError(result.error);
+          }
+        }
+      })
+      .catch((err) => {
+        if (!isMounted) return;
+        console.warn('[TROSE Storefront] Catalogue fetch error, using local fallback:', err);
+        setProducts(PRODUCTS);
+        setIsShopifyLive(false);
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoadingCatalogue(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Sync Cart to LocalStorage
   useEffect(() => {
@@ -160,7 +208,7 @@ export default function App() {
   };
 
   const totalCartCount = cart.reduce((total, item) => total + item.quantity, 0);
-  const organicProducts = PRODUCTS.filter((p) => p.isOrganic);
+  const organicProducts = products.filter((p) => p.isOrganic || p.category === 'organic');
 
   return (
     <div id="trose-app-root" className="min-h-screen flex flex-col bg-[#FDFBF7] text-[#3C2A21] selection:bg-[#C5A059]/20 selection:text-[#3C2A21]">
@@ -188,7 +236,7 @@ export default function App() {
         {currentView === 'product-detail' && selectedProduct ? (
           <ProductDetailPage
             product={selectedProduct}
-            allProducts={PRODUCTS}
+            allProducts={products}
             onBackToShop={(cat) => handleNavigate('shop', cat || 'all')}
             onSelectProduct={handleViewProductDetail}
             onAddToCart={handleAddToCart}
@@ -197,11 +245,13 @@ export default function App() {
         ) : currentView === 'shop' ? (
           /* VIEW 2: COMPLETE SHOP PAGE WITH FILTERS & SORTING */
           <ShopPage
-            products={PRODUCTS}
+            products={products}
             initialCategory={activeCategory}
             onSelectProduct={handleViewProductDetail}
             onAddToCart={handleAddToCart}
             onNavigateHome={() => handleNavigate('home')}
+            isLoading={isLoadingCatalogue}
+            isShopifyLive={isShopifyLive}
           />
         ) : (
           /* VIEW 3: EDITORIAL HOME PAGE */
@@ -220,7 +270,7 @@ export default function App() {
 
             {/* TROSE Best Sellers: 8 Reusable Premium Product Cards */}
             <TroseBestSellers
-              products={PRODUCTS}
+              products={products}
               onQuickView={handleViewProductDetail}
               onAddToCart={handleAddToCart}
               onExploreAll={() => handleNavigate('shop', 'all')}
@@ -233,7 +283,7 @@ export default function App() {
 
             {/* Filterable Products & Roasts Showcase */}
             <FeaturedProducts
-              products={PRODUCTS}
+              products={products}
               activeCategory={activeCategory}
               onSelectCategory={setActiveCategory}
               onQuickView={handleViewProductDetail}
@@ -249,7 +299,7 @@ export default function App() {
 
             {/* Prosumer Espresso Machines & Precision Accessories */}
             <MachinesAndAccessories
-              products={PRODUCTS}
+              products={products}
               onQuickView={handleViewProductDetail}
               onAddToCart={(product) => handleAddToCart(product, undefined, 1)}
               onExploreGear={() => handleNavigate('shop', 'machines')}
@@ -257,7 +307,7 @@ export default function App() {
 
             {/* Roaster's Club Subscription Tier */}
             <SubscriptionClub
-              products={PRODUCTS}
+              products={products}
               onSubscribe={handleSubscribe}
             />
 
@@ -303,7 +353,7 @@ export default function App() {
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        products={PRODUCTS}
+        products={products}
         onQuickView={(product) => {
           setIsSearchOpen(false);
           handleViewProductDetail(product);
@@ -328,7 +378,7 @@ export default function App() {
       <CoffeeQuizModal
         isOpen={isQuizOpen}
         onClose={() => setIsQuizOpen(false)}
-        products={PRODUCTS}
+        products={products}
         onAddToCart={handleAddToCart}
         onQuickView={(product) => {
           setIsQuizOpen(false);

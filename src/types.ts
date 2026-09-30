@@ -20,8 +20,15 @@ export type GrindOption =
   | 'Cold Brew'
   | 'Standard Grind';
 
+export interface ProductOption {
+  name: string;
+  values: string[];
+}
+
 export interface Product {
   id: string;
+  handle?: string;
+  shopifyId?: string;
   name: string;
   subtitle: string;
   category: ProductCategory;
@@ -41,6 +48,7 @@ export interface Product {
   process?: string;
   tastingNotes?: string[];
   description: string;
+  descriptionHtml?: string;
   details: string[];
   images: string[];
   inStock: boolean;
@@ -50,6 +58,12 @@ export interface Product {
   brewingRecommendation?: string;
   ingredients?: string;
   shippingInfo?: string;
+  // Live Shopify Commerce Fields
+  variants?: ShopifyProductVariant[];
+  options?: ProductOption[];
+  sellingPlanGroups?: ShopifySellingPlanGroup[];
+  rawShopifyProduct?: ShopifyProduct;
+  collectionHandles?: string[];
 }
 
 export type AppView = 'home' | 'shop' | 'product-detail';
@@ -70,6 +84,9 @@ export interface CartItem {
   product: Product;
   quantity: number;
   selectedGrind?: GrindOption;
+  selectedVariantId?: string;
+  selectedVariantTitle?: string;
+  selectedOptions?: Record<string, string>;
   subscriptionPlan?: 'one-time' | 'every-2-weeks' | 'every-4-weeks';
 }
 
