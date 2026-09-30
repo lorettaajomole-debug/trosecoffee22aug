@@ -743,88 +743,117 @@ export function mapShopifyProductToProduct(
   const tagsLower = sp.tags.map((t) => t.toLowerCase());
   const titleLower = sp.title.toLowerCase();
   const typeLower = (sp.productType || '').toLowerCase();
+  const descLower = (sp.description || '').toLowerCase();
+
+  const isCoffeeItem =
+    tagsLower.some((t) =>
+      ['blend', 'single origin', 'single-origin', 'flavored', 'roast', 'espresso', 'sample pack', 'coffee bean', 'whole bean', 'ground coffee'].includes(t)
+    ) ||
+    titleLower.includes('blend') ||
+    titleLower.includes('roast') ||
+    titleLower.includes('single origin') ||
+    titleLower.includes('espresso') ||
+    titleLower.includes('capsules') ||
+    titleLower.includes('decaf') ||
+    typeLower === 'coffee' ||
+    typeLower === 'coffee beans';
 
   const isOrganic =
-    tagsLower.some((t) => t.includes('organic')) ||
+    tagsLower.some((t) => t.includes('organic') || t.includes('bio')) ||
     titleLower.includes('organic') ||
+    descLower.includes('organic') ||
     typeLower.includes('organic');
 
   const isBestSeller =
     tagsLower.some(
       (t) => t === 'bestseller' || t === 'best-seller' || t === 'popular' || t === 'top-pick'
-    );
+    ) ||
+    titleLower.includes('best seller') ||
+    titleLower.includes('bestseller') ||
+    titleLower.includes('favorite');
 
   const isNew =
     tagsLower.some(
       (t) => t === 'new' || t === 'new-arrival' || t === 'fresh-crop' || t === 'newest'
     );
 
-  // Category classification if not explicitly matched by collection
+  // Category classification following TROSE brand architecture:
+  // 1. Coffee, 2. Organic Coffee, 3. Beverages / Tea, 4. Coffee Machines,
+  // 5. Mugs & Flasks, 6. Accessories, 7. Snacks, 8. Coffee Tables, 9. Bundles / Other
   let category: ProductCategory = matchedCategory || 'coffee';
-  if (!matchedCategory) {
-    if (isOrganic) {
+
+  if (matchedCategory) {
+    if (matchedCategory === 'coffee' && isOrganic) {
       category = 'organic';
+    } else {
+      category = matchedCategory;
+    }
+  } else {
+    if (
+      typeLower.includes('furniture') ||
+      tagsLower.some((t) => t.includes('table') || t.includes('bedside')) ||
+      titleLower.includes('table') ||
+      titleLower.includes('bedside') ||
+      titleLower.includes('media unit')
+    ) {
+      category = 'tables';
     } else if (
       typeLower.includes('machine') ||
       tagsLower.some((t) => t.includes('machine') || t.includes('espresso-machine')) ||
       titleLower.includes('espresso machine') ||
-      titleLower.includes('dual boiler')
+      titleLower.includes('maker machine')
     ) {
       category = 'machines';
     } else if (
-      typeLower.includes('accessory') ||
-      tagsLower.some(
-        (t) =>
-          t.includes('accessory') ||
-          t.includes('barista') ||
-          t.includes('grinder') ||
-          t.includes('kettle')
-      ) ||
-      titleLower.includes('grinder') ||
-      titleLower.includes('kettle') ||
-      titleLower.includes('scale') ||
-      titleLower.includes('tamper')
-    ) {
-      category = 'accessories';
-    } else if (
-      typeLower.includes('mug') ||
-      typeLower.includes('flask') ||
       typeLower.includes('drinkware') ||
+      tagsLower.some((t) => t.includes('mug') || t.includes('flask') || t.includes('bottle') || t.includes('tumbler') || t.includes('cup')) ||
       titleLower.includes('mug') ||
-      titleLower.includes('tumbler') ||
-      titleLower.includes('flask')
+      titleLower.includes('flask') ||
+      titleLower.includes('bottle') ||
+      titleLower.includes('tumbler')
     ) {
       category = 'mugs-flasks';
     } else if (
-      typeLower.includes('beverage') ||
-      titleLower.includes('cold brew') ||
-      titleLower.includes('cascara') ||
-      titleLower.includes('concentrate')
+      typeLower.includes('kitchen') ||
+      typeLower.includes('apparel') ||
+      tagsLower.some((t) => t.includes('accessory') || t.includes('socks') || t.includes('pin') || t.includes('filter') || t.includes('mixer') || t.includes('grinder') || t.includes('scale') || t.includes('kettle') || t.includes('nuckees')) ||
+      titleLower.includes('pin') ||
+      titleLower.includes('socks') ||
+      titleLower.includes('filter') ||
+      titleLower.includes('mixer') ||
+      titleLower.includes('infuser')
+    ) {
+      category = 'accessories';
+    } else if (
+      tagsLower.some((t) => t.includes('tea') || t.includes('tisane') || t.includes('chai') || t.includes('matcha') || t.includes('mate') || t.includes('drink') || t.includes('beverage') || t.includes('saffron')) ||
+      titleLower.includes('tea') ||
+      titleLower.includes('chai') ||
+      titleLower.includes('mate') ||
+      titleLower.includes('sipkit') ||
+      titleLower.includes('saffron') ||
+      typeLower.includes('beverage')
     ) {
       category = 'beverages';
     } else if (
-      typeLower.includes('snack') ||
-      typeLower.includes('chocolate') ||
+      tagsLower.some((t) => t.includes('chocolate') || t.includes('truffle') || t.includes('snack') || t.includes('almond') || t.includes('raisin')) ||
       titleLower.includes('chocolate') ||
-      titleLower.includes('cantucci')
+      titleLower.includes('truffle') ||
+      titleLower.includes('bars') ||
+      titleLower.includes('patties') ||
+      typeLower.includes('snack')
     ) {
       category = 'snacks';
     } else if (
-      typeLower.includes('table') ||
-      typeLower.includes('furniture') ||
-      titleLower.includes('coffee table')
-    ) {
-      category = 'tables';
-    } else if (
-      typeLower.includes('bundle') ||
-      typeLower.includes('flight') ||
+      tagsLower.some((t) => t.includes('bundle') || t.includes('gift set') || t.includes('flight')) ||
       titleLower.includes('bundle') ||
-      titleLower.includes('flight') ||
-      titleLower.includes('gift set')
+      titleLower.includes('gift set') ||
+      titleLower.includes('flight')
     ) {
       category = 'bundles';
+    } else if (isCoffeeItem) {
+      category = isOrganic ? 'organic' : 'coffee';
     } else {
-      category = 'coffee';
+      category = isOrganic ? 'organic' : 'coffee';
     }
   }
 
@@ -952,6 +981,72 @@ export interface ShopifyCatalogueResult {
 }
 
 /**
+ * Strict TROSE Brand Merchandising Priority Hierarchy:
+ * 1. Coffee
+ * 2. Organic Coffee
+ * 3. Beverages / Tea
+ * 4. Coffee Machines
+ * 5. Mugs & Flasks
+ * 6. Accessories
+ * 7. Snacks
+ * 8. Coffee Tables
+ * 9. Bundles / Other
+ */
+export const TROSE_CATEGORY_ORDER: Record<ProductCategory, number> = {
+  coffee: 1,
+  organic: 2,
+  beverages: 3,
+  machines: 4,
+  'mugs-flasks': 5,
+  accessories: 6,
+  snacks: 7,
+  tables: 8,
+  bundles: 9,
+  all: 0,
+};
+
+/**
+ * Sorts products strictly by the TROSE brand merchandising hierarchy.
+ * Ensures Coffee and Organic Coffee appear before mugs, accessories, and tables.
+ */
+export function sortProductsByTrosePriority(products: Product[]): Product[] {
+  return [...products].sort((a, b) => {
+    const priorityA = TROSE_CATEGORY_ORDER[a.category] ?? 99;
+    const priorityB = TROSE_CATEGORY_ORDER[b.category] ?? 99;
+    if (priorityA !== priorityB) {
+      return priorityA - priorityB;
+    }
+
+    // Within Coffee & Organic Coffee, prioritize popular roasts, signature blends, and sample packs
+    if (a.category === 'coffee' || a.category === 'organic') {
+      const getCoffeeScore = (p: Product) => {
+        const nameLower = p.name.toLowerCase();
+        const rawTags = (p.rawShopifyProduct?.tags || []).map((t) => t.toLowerCase());
+        let score = 0;
+        if (p.isBestSeller || rawTags.includes('bestseller') || nameLower.includes('best seller')) score += 10;
+        if (rawTags.includes('sample pack') || nameLower.includes('sample pack')) score += 8;
+        if (rawTags.includes('blend') || nameLower.includes('blend')) score += 6;
+        if (rawTags.includes('single origin') || nameLower.includes('single origin')) score += 4;
+        return score;
+      };
+      const scoreDiff = getCoffeeScore(b) - getCoffeeScore(a);
+      if (scoreDiff !== 0) {
+        return scoreDiff;
+      }
+    }
+
+    // Within same category, in-stock products come first
+    if (a.inStock !== b.inStock) {
+      return a.inStock ? -1 : 1;
+    }
+    // Best sellers next
+    if (a.isBestSeller && !b.isBestSeller) return -1;
+    if (!a.isBestSeller && b.isBestSeller) return 1;
+    return 0;
+  });
+}
+
+/**
  * Fetches the entire live Shopify Storefront catalogue and maps it into
  * the TROSE storefront models. If credentials are unset or Shopify is unreachable,
  * gracefully returns empty list and isLive: false (triggering the local fallback).
@@ -970,8 +1065,8 @@ export async function fetchLiveShopifyCatalogue(): Promise<ShopifyCatalogueResul
 
   try {
     const [productsResult, collectionsResult] = await Promise.all([
-      getShopifyProducts({ first: 100 }),
-      getShopifyCollections({ first: 50, productsFirst: 50 }),
+      getShopifyProducts({ first: 250 }),
+      getShopifyCollections({ first: 50, productsFirst: 100 }),
     ]);
 
     if (!productsResult || productsResult.products.length === 0) {
@@ -1018,12 +1113,15 @@ export async function fetchLiveShopifyCatalogue(): Promise<ShopifyCatalogueResul
       return prod;
     });
 
+    // Apply TROSE brand merchandising hierarchy
+    const sortedProducts = sortProductsByTrosePriority(mappedProducts);
+
     console.log(
-      `[Shopify Storefront] Successfully loaded ${mappedProducts.length} live product(s) across ${collections.length} collection(s).`
+      `[Shopify Storefront] Successfully loaded ${sortedProducts.length} live product(s) across ${collections.length} collection(s) in TROSE merchandising order.`
     );
 
     return {
-      products: mappedProducts,
+      products: sortedProducts,
       rawShopifyProducts: rawProducts,
       collections,
       unmappedCollections: unmapped,

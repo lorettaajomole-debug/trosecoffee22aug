@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Filter, Check, SlidersHorizontal } from 'lucide-react';
 import { Product, ProductCategory, GrindOption } from '../types';
 import { ProductCard } from './ProductCard';
+import { TROSE_CATEGORY_ORDER } from '../services/shopify';
 
 interface FeaturedProductsProps {
   products: Product[];
@@ -26,12 +27,12 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
     { id: 'all', label: 'All Universe' },
     { id: 'coffee', label: 'Coffee' },
     { id: 'organic', label: 'Organic Coffee' },
-    { id: 'beverages', label: 'Beverages' },
+    { id: 'beverages', label: 'Beverages / Tea' },
+    { id: 'machines', label: 'Coffee Machines' },
+    { id: 'mugs-flasks', label: 'Mugs & Flasks' },
+    { id: 'accessories', label: 'Accessories' },
     { id: 'snacks', label: 'Snacks' },
     { id: 'tables', label: 'Coffee Tables' },
-    { id: 'mugs-flasks', label: 'Mugs & Flasks' },
-    { id: 'machines', label: 'Coffee Machines' },
-    { id: 'accessories', label: 'Accessories' },
     { id: 'bundles', label: 'Gift Flights' }
   ];
 
@@ -61,8 +62,18 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
     } else if (selectedSort === 'rating') {
       list.sort((a, b) => b.rating - a.rating);
     } else {
-      // featured
-      list.sort((a, b) => (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0));
+      // featured: prioritize Coffee and Organic Coffee before secondary merchandise
+      list.sort((a, b) => {
+        const priorityA = TROSE_CATEGORY_ORDER[a.category] ?? 99;
+        const priorityB = TROSE_CATEGORY_ORDER[b.category] ?? 99;
+        if (priorityA !== priorityB) {
+          return priorityA - priorityB;
+        }
+        if (a.inStock !== b.inStock) {
+          return a.inStock ? -1 : 1;
+        }
+        return (b.isBestSeller ? 1 : 0) - (a.isBestSeller ? 1 : 0);
+      });
     }
 
     return list;

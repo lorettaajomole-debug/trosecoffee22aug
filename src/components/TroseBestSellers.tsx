@@ -19,17 +19,23 @@ export const TroseBestSellers: React.FC<TroseBestSellersProps> = ({
   const [filter, setFilter] = useState<'all' | 'coffee' | 'gear-lifestyle'>('all');
 
   const bestSellerProducts = useMemo(() => {
-    const primary = products.filter((p) => p.isBestSeller);
-    const list = primary.length >= 8 ? primary.slice(0, 8) : products.slice(0, 8);
+    const coffeeItems = products.filter(
+      (p) => (p.category === 'coffee' || p.category === 'organic') && p.inStock
+    );
+    const gearItems = products.filter(
+      (p) => p.category !== 'coffee' && p.category !== 'organic' && p.inStock
+    );
 
     if (filter === 'coffee') {
-      return list.filter((p) => p.category === 'coffee' || p.category === 'organic');
+      return coffeeItems.slice(0, 8);
     }
     if (filter === 'gear-lifestyle') {
-      return list.filter((p) => p.category !== 'coffee' && p.category !== 'organic');
+      return gearItems.slice(0, 8);
     }
 
-    return list;
+    // Default 'all': Prioritize real coffee products where appropriate
+    const combined = [...coffeeItems, ...gearItems];
+    return combined.slice(0, 8);
   }, [products, filter]);
 
   return (

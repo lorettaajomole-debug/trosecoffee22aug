@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { Product, ProductCategory, SortOption, ShopFiltersState, GrindOption } from '../types';
 import { ProductCard } from './ProductCard';
+import { TROSE_CATEGORY_ORDER } from '../services/shopify';
 
 interface ShopPageProps {
   products: Product[];
@@ -29,13 +30,13 @@ const CATEGORY_TABS: { id: ProductCategory; label: string }[] = [
   { id: 'all', label: 'All Collections' },
   { id: 'coffee', label: 'Coffee' },
   { id: 'organic', label: 'Organic Coffee' },
-  { id: 'beverages', label: 'Beverages' },
-  { id: 'snacks', label: 'Snacks & Cacao' },
-  { id: 'tables', label: 'Coffee Tables' },
-  { id: 'mugs-flasks', label: 'Mugs & Flasks' },
+  { id: 'beverages', label: 'Beverages / Tea' },
   { id: 'machines', label: 'Coffee Machines' },
+  { id: 'mugs-flasks', label: 'Mugs & Flasks' },
   { id: 'accessories', label: 'Accessories' },
-  { id: 'bundles', label: 'Bundles & Flights' },
+  { id: 'snacks', label: 'Snacks' },
+  { id: 'tables', label: 'Coffee Tables' },
+  { id: 'bundles', label: 'Bundles / Other' },
 ];
 
 const ROAST_OPTIONS = ['all', 'Light', 'Medium', 'Medium-Dark', 'Dark', 'Espresso Roast'] as const;
@@ -191,6 +192,38 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
       return true;
     }).sort((a, b) => {
+      // 1. Explicit search query: Prioritize text relevance, do NOT force category order
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase().trim();
+        const aTitle = a.name.toLowerCase();
+        const bTitle = b.name.toLowerCase();
+
+        // Exact match
+        const aExact = aTitle === query;
+        const bExact = bTitle === query;
+        if (aExact && !bExact) return -1;
+        if (!aExact && bExact) return 1;
+
+        // Starts with query
+        const aStarts = aTitle.startsWith(query);
+        const bStarts = bTitle.startsWith(query);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+
+        // Contains in title
+        const aIncludes = aTitle.includes(query);
+        const bIncludes = bTitle.includes(query);
+        if (aIncludes && !bIncludes) return -1;
+        if (!aIncludes && bIncludes) return 1;
+
+        // In-stock next
+        if (a.inStock !== b.inStock) {
+          return a.inStock ? -1 : 1;
+        }
+        return 0;
+      }
+
+      // 2. Explicit sort options
       if (filters.sortBy === 'price-asc') return a.price - b.price;
       if (filters.sortBy === 'price-desc') return b.price - a.price;
       if (filters.sortBy === 'best-selling') {
@@ -203,7 +236,38 @@ export const ShopPage: React.FC<ShopPageProps> = ({
         if (!a.isNew && b.isNew) return 1;
         return 0;
       }
-      // 'featured' default
+
+      // 3. 'featured' default: strictly follow TROSE Merchandising Priority
+      // 1. Coffee, 2. Organic Coffee, 3. Beverages / Tea, 4. Coffee Machines,
+      // 5. Mugs & Flasks, 6. Accessories, 7. Snacks, 8. Coffee Tables, 9. Bundles / Other
+      const priorityA = TROSE_CATEGORY_ORDER[a.category] ?? 99;
+      const priorityB = TROSE_CATEGORY_ORDER[b.category] ?? 99;
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+
+      // Within Coffee & Organic Coffee, prioritize popular roasts, signature blends, and sample packs
+      if (a.category === 'coffee' || a.category === 'organic') {
+        const getCoffeeScore = (p: Product) => {
+          const nameLower = p.name.toLowerCase();
+          const rawTags = (p.rawShopifyProduct?.tags || []).map((t) => t.toLowerCase());
+          let score = 0;
+          if (p.isBestSeller || rawTags.includes('bestseller') || nameLower.includes('best seller')) score += 10;
+          if (rawTags.includes('sample pack') || nameLower.includes('sample pack')) score += 8;
+          if (rawTags.includes('blend') || nameLower.includes('blend')) score += 6;
+          if (rawTags.includes('single origin') || nameLower.includes('single origin')) score += 4;
+          return score;
+        };
+        const scoreDiff = getCoffeeScore(b) - getCoffeeScore(a);
+        if (scoreDiff !== 0) {
+          return scoreDiff;
+        }
+      }
+
+      // In-stock products first
+      if (a.inStock !== b.inStock) {
+        return a.inStock ? -1 : 1;
+      }
       if (a.isBestSeller && !b.isBestSeller) return -1;
       if (!a.isBestSeller && b.isBestSeller) return 1;
       return b.rating - a.rating;
