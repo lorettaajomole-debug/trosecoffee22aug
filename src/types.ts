@@ -1,14 +1,31 @@
+export type PrimaryDepartment =
+  | 'coffee'
+  | 'tea'
+  | 'mugs-drinkware'
+  | 'machines'
+  | 'accessories'
+  | 'home-lifestyle'
+  | 'apparel'
+  | 'other';
+
 export type ProductCategory = 
   | 'all' 
   | 'coffee' 
   | 'organic' 
   | 'beverages'
+  | 'tea'
   | 'snacks'
   | 'tables'
   | 'mugs-flasks'
+  | 'mugs-drinkware'
   | 'machines' 
   | 'accessories' 
-  | 'bundles';
+  | 'home-lifestyle'
+  | 'clothing'
+  | 'apparel'
+  | 'candles'
+  | 'bundles'
+  | 'other';
 
 export type RoastLevel = 'Light' | 'Medium' | 'Medium-Dark' | 'Dark' | 'Espresso Roast';
 
@@ -32,6 +49,11 @@ export interface Product {
   name: string;
   subtitle: string;
   category: ProductCategory;
+  department: PrimaryDepartment;
+  departmentLabel: string;
+  subcategory: string;
+  classificationReason?: string;
+  isAmbiguous?: boolean;
   price: number;
   originalPrice?: number;
   rating: number;
@@ -66,7 +88,20 @@ export interface Product {
   collectionHandles?: string[];
 }
 
-export type AppView = 'home' | 'shop' | 'product-detail';
+export type AppView = 
+  | 'home' 
+  | 'shop' 
+  | 'coffee' 
+  | 'tea' 
+  | 'mugs' 
+  | 'machines'
+  | 'accessories' 
+  | 'home-lifestyle'
+  | 'apparel'
+  | 'clothing' 
+  | 'candles' 
+  | 'other'
+  | 'product-detail';
 
 export type SortOption = 'featured' | 'best-selling' | 'price-asc' | 'price-desc' | 'newest';
 

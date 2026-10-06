@@ -1,4 +1,6 @@
 import { Product, CoffeeFinderAnswers, CoffeeFinderResult, CoffeeMatchScore, ShopifyCoffeeMetafields, CoffeeFlavourOption } from '../types';
+import { isCoffeeProduct } from './categoryManager';
+import { isStorefrontEligibleProduct } from './productClassification';
 
 /**
  * SHOPIFY PRODUCT METAFIELDS MAPPING SCHEMA
@@ -379,10 +381,8 @@ export function findPerfectCoffee(
   products: Product[],
   answers: CoffeeFinderAnswers
 ): CoffeeFinderResult {
-  // Only score coffees, organics, and bundles
-  const coffeeEligible = products.filter(
-    (p) => p.category === 'coffee' || p.category === 'organic' || p.id === 'trose-connoisseur-gift-flight' || p.id === 'trose-nitro-cold-brew-concentrate'
-  );
+  // CRITICAL: Strictly consumable coffee products only. No mugs, teas, machines or accessories.
+  const coffeeEligible = products.filter((p) => isCoffeeProduct(p) && isStorefrontEligibleProduct(p));
 
   // If buying a gift was explicitly chosen as mood, boost the flight bundle
   const scoredItems = coffeeEligible.map((product) => {

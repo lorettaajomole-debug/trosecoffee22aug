@@ -9,11 +9,16 @@ import {
 } from 'lucide-react';
 import { Product, ProductCategory, SortOption, ShopFiltersState, GrindOption } from '../types';
 import { ProductCard } from './ProductCard';
+import { Pagination } from './Pagination';
+import { useResponsivePageSize } from '../hooks/useResponsivePageSize';
 import { TROSE_CATEGORY_ORDER } from '../services/shopify';
+import { isStorefrontEligibleProduct } from '../services/productClassification';
 
 interface ShopPageProps {
   products: Product[];
   initialCategory?: ProductCategory;
+  initialPage?: number;
+  onPageChange?: (newPage: number) => void;
   onSelectProduct: (product: Product) => void;
   onAddToCart: (product: Product, grind?: GrindOption, quantity?: number) => void;
   onNavigateHome: () => void;
@@ -22,16 +27,15 @@ interface ShopPageProps {
 }
 
 const CATEGORY_TABS: { id: ProductCategory; label: string }[] = [
-  { id: 'all', label: 'All Collections' },
+  { id: 'all', label: 'All Products' },
   { id: 'coffee', label: 'Coffee' },
-  { id: 'organic', label: 'Organic Coffee' },
-  { id: 'beverages', label: 'Beverages / Tea' },
-  { id: 'machines', label: 'Coffee Machines' },
-  { id: 'mugs-flasks', label: 'Mugs & Flasks' },
+  { id: 'tea', label: 'Tea' },
+  { id: 'mugs-drinkware', label: 'Mugs & Drinkware' },
+  { id: 'machines', label: 'Machines' },
   { id: 'accessories', label: 'Accessories' },
-  { id: 'snacks', label: 'Snacks' },
-  { id: 'tables', label: 'Coffee Tables' },
-  { id: 'bundles', label: 'Bundles / Other' },
+  { id: 'home-lifestyle', label: 'Home & Lifestyle' },
+  { id: 'apparel', label: 'Apparel' },
+  { id: 'other', label: 'Other Collections' },
 ];
 
 const ROAST_OPTIONS = ['all', 'Light', 'Medium', 'Medium-Dark', 'Dark', 'Espresso Roast'] as const;
@@ -62,12 +66,17 @@ const PRICE_RANGES = [
 export const ShopPage: React.FC<ShopPageProps> = ({
   products,
   initialCategory = 'all',
+  initialPage = 1,
+  onPageChange,
   onSelectProduct,
   onAddToCart,
   onNavigateHome,
   isLoading = false,
   isShopifyLive = false,
 }) => {
+  // Responsive page size: 12 on desktop, 6 on mobile as requested
+  const pageSize = useResponsivePageSize(6, 12);
+
   const [filters, setFilters] = useState<ShopFiltersState>({
     category: initialCategory,
     priceRange: 'all',
@@ -80,6 +89,14 @@ export const ShopPage: React.FC<ShopPageProps> = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(initialPage);
+
+  // Sync initialPage if changed from outside
+  React.useEffect(() => {
+    if (initialPage && initialPage !== currentPage) {
+      setCurrentPage(initialPage);
+    }
+  }, [initialPage]);
 
   // Sync category if passed from outside
   React.useEffect(() => {
@@ -114,12 +131,51 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     setSearchQuery('');
   };
 
+  // Safe storefront eligible products (excludes placeholder records)
+  const eligibleProducts = useMemo(() => {
+    return products.filter(isStorefrontEligibleProduct);
+  }, [products]);
+
+  // Compute live product counts per department
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: eligibleProducts.length };
+    eligibleProducts.forEach((p) => {
+      const dept = p.department || p.category;
+      counts[dept] = (counts[dept] || 0) + 1;
+    });
+    return counts;
+  }, [eligibleProducts]);
+
+  const getCategoryCount = (tabId: ProductCategory) => {
+    if (tabId === 'all') return eligibleProducts.length;
+    if (tabId === 'coffee') return (categoryCounts['coffee'] || 0);
+    if (tabId === 'tea') return (categoryCounts['tea'] || 0);
+    if (tabId === 'mugs-drinkware') return (categoryCounts['mugs-drinkware'] || 0) + (categoryCounts['mugs-flasks'] || 0);
+    if (tabId === 'machines') return (categoryCounts['machines'] || 0);
+    if (tabId === 'accessories') return (categoryCounts['accessories'] || 0);
+    if (tabId === 'home-lifestyle') return (categoryCounts['home-lifestyle'] || 0);
+    if (tabId === 'apparel') return (categoryCounts['apparel'] || 0) + (categoryCounts['clothing'] || 0);
+    if (tabId === 'other') return (categoryCounts['other'] || 0);
+    return categoryCounts[tabId] || 0;
+  };
+
   // Filter and Sort Products
   const filteredProducts = useMemo(() => {
-    return products.filter((p) => {
-      // 1. Category Filter
-      if (filters.category !== 'all' && p.category !== filters.category) {
-        return false;
+    return eligibleProducts.filter((p) => {
+      // 1. Category / Department Filter
+      if (filters.category !== 'all') {
+        const matchesDept = p.department === filters.category;
+        const matchesLegacyCat = p.category === filters.category;
+        const matchesMugs = (filters.category === 'mugs-drinkware' || filters.category === 'mugs-flasks') && (p.department === 'mugs-drinkware' || p.category === 'mugs-flasks');
+        const matchesApparel = (filters.category === 'apparel' || filters.category === 'clothing') && (p.department === 'apparel' || p.category === 'clothing');
+        const matchesHome = (filters.category === 'home-lifestyle' || filters.category === 'tables' || filters.category === 'candles') && (p.department === 'home-lifestyle' || p.category === 'tables' || p.category === 'candles');
+        const matchesTea = (filters.category === 'tea' || filters.category === 'beverages') && (p.department === 'tea' || p.category === 'tea' || p.category === 'beverages');
+        const matchesCoffee = (filters.category === 'coffee' || filters.category === 'organic') && (p.department === 'coffee' || p.category === 'coffee' || p.category === 'organic');
+        const matchesOther = (filters.category === 'other' || filters.category === 'snacks' || filters.category === 'bundles') && (p.department === 'other' || p.category === 'snacks' || p.category === 'bundles');
+
+        if (!matchesDept && !matchesLegacyCat && !matchesMugs && !matchesApparel && !matchesHome && !matchesTea && !matchesCoffee && !matchesOther) {
+          return false;
+        }
       }
 
       // 2. Price Filter
@@ -232,6 +288,21 @@ export const ShopPage: React.FC<ShopPageProps> = ({
     });
   }, [products, filters, searchQuery]);
 
+  const handlePageSelect = (page: number) => {
+    setCurrentPage(page);
+    if (onPageChange) onPageChange(page);
+  };
+
+  React.useEffect(() => {
+    setCurrentPage(1);
+    if (onPageChange) onPageChange(1);
+  }, [filters, searchQuery]);
+
+  const paginatedProducts = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredProducts.slice(start, start + pageSize);
+  }, [filteredProducts, currentPage, pageSize]);
+
   return (
     <div id="trose-shop-page-view" className="bg-[#FAF7F2] min-h-screen py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
@@ -251,7 +322,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                 The Collection
               </h1>
               <p className="text-sm text-[#12100E]/75 max-w-xl mt-2 font-sans font-normal">
-                Curated specialty single-origins, certified organic roasts, espresso machinery, and barista gear.
+                Curated single-origins, certified organic roasts, espresso machinery, and barista gear.
               </p>
             </div>
 
@@ -291,7 +362,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                       : 'bg-[#FDFBF7] text-[#12100E]/75 border-[#12100E]/15 hover:border-[#12100E] hover:text-[#12100E]'
                   }`}
                 >
-                  {tab.label}
+                  <span>{tab.label}</span>
+                  <span className="text-[9px] opacity-60 ml-1.5 font-mono">({getCategoryCount(tab.id)})</span>
                 </button>
               );
             })}
@@ -446,7 +518,10 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                     }`}
                   >
                     <span>{tab.label}</span>
-                    {filters.category === tab.id && <Check className="w-3.5 h-3.5 text-[#C5A059]" />}
+                    <div className="flex items-center space-x-2">
+                      <span className="text-[10px] opacity-60 font-mono">({getCategoryCount(tab.id)})</span>
+                      {filters.category === tab.id && <Check className="w-3.5 h-3.5 text-[#C5A059]" />}
+                    </div>
                   </button>
                 ))}
               </div>
@@ -601,16 +676,27 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                {filteredProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    onViewProduct={onSelectProduct}
-                    onAddToCart={onAddToCart}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {paginatedProducts.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      onViewProduct={onSelectProduct}
+                      onAddToCart={onAddToCart}
+                    />
+                  ))}
+                </div>
+
+                <Pagination
+                  currentPage={currentPage}
+                  totalItems={filteredProducts.length}
+                  pageSize={pageSize}
+                  onPageChange={handlePageSelect}
+                  scrollTargetId="trose-shop-page-view"
+                  itemName="products"
+                />
+              </>
             )}
 
           </div>
@@ -663,7 +749,10 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                       }`}
                     >
                       <span>{tab.label}</span>
-                      {filters.category === tab.id && <Check className="w-3.5 h-3.5 text-[#C5A059]" />}
+                      <div className="flex items-center space-x-2">
+                        <span className="text-[10px] opacity-60 font-mono">({getCategoryCount(tab.id)})</span>
+                        {filters.category === tab.id && <Check className="w-3.5 h-3.5 text-[#C5A059]" />}
+                      </div>
                     </button>
                   ))}
                 </div>

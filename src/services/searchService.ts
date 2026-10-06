@@ -1,4 +1,5 @@
 import { Product, ProductCategory } from '../types';
+import { isStorefrontEligibleProduct } from './productClassification';
 
 export interface SearchResultItem {
   product: Product;
@@ -14,15 +15,22 @@ export interface SearchProvider {
 // Category display mapping
 export const CATEGORY_LABELS: Record<ProductCategory, string> = {
   all: 'All Collections',
-  coffee: 'Specialty Coffee',
+  coffee: 'Coffee',
   organic: 'Organic Coffee',
   beverages: 'Beverages & Elixirs',
+  tea: 'Artisan Tea & Botanicals',
   snacks: 'Snacks & Cacao',
   tables: 'Coffee Tables',
   'mugs-flasks': 'Mugs & Flasks',
+  'mugs-drinkware': 'Mugs & Drinkware',
   machines: 'Coffee Machines',
   accessories: 'Precision Accessories',
-  bundles: 'Bundles & Flights'
+  'home-lifestyle': 'Home & Lifestyle',
+  clothing: 'Apparel & Goods',
+  apparel: 'Apparel & Garments',
+  candles: 'Artisan Candles',
+  bundles: 'Bundles & Flights',
+  other: 'Other Curated'
 };
 
 // Region & Synonym Mappings for enhanced search experience
@@ -63,6 +71,7 @@ export class LocalSearchProvider implements SearchProvider {
     }
 
     for (const product of products) {
+      if (!isStorefrontEligibleProduct(product)) continue;
       let score = 0;
       const matchedFields: string[] = [];
 
@@ -72,21 +81,30 @@ export class LocalSearchProvider implements SearchProvider {
       const origin = (product.origin || '').toLowerCase();
       const country = (product.country || '').toLowerCase();
       const roastLevel = (product.roastLevel || '').toLowerCase();
-      const category = product.category.toLowerCase();
+      const category = (product.category || '').toLowerCase();
+      const department = (product.department || '').toLowerCase();
+      const departmentLabel = (product.departmentLabel || '').toLowerCase();
+      const subcategory = (product.subcategory || '').toLowerCase();
       const categoryLabel = (CATEGORY_LABELS[product.category] || '').toLowerCase();
       const notes = (product.tastingNotes || []).map(n => n.toLowerCase());
       const details = (product.details || []).map(d => d.toLowerCase());
       const formats = (product.formats || []).map(f => f.toLowerCase());
       const grinds = (product.availableGrinds || []).map(g => g.toLowerCase());
 
-      // 1. Direct whole phrase exact match in title or category
+      // 1. Direct whole phrase exact match in title or department/category
       if (name.includes(cleanQuery)) {
         score += 100;
         matchedFields.push('Title Exact');
       }
-      if (categoryLabel.includes(cleanQuery) || category.includes(cleanQuery)) {
+      if (
+        categoryLabel.includes(cleanQuery) ||
+        category.includes(cleanQuery) ||
+        department.includes(cleanQuery) ||
+        departmentLabel.includes(cleanQuery) ||
+        subcategory.includes(cleanQuery)
+      ) {
         score += 80;
-        matchedFields.push('Category Exact');
+        matchedFields.push('Department Exact');
       }
 
       // 2. Special Intent: "African coffee" / "African" / "Africa"
@@ -163,7 +181,7 @@ export class LocalSearchProvider implements SearchProvider {
         results.push({
           product,
           score,
-          matchedCategory: CATEGORY_LABELS[product.category] || 'Specialty Collection',
+          matchedCategory: product.departmentLabel || CATEGORY_LABELS[product.category] || 'Specialty Collection',
           matchedFields
         });
       }

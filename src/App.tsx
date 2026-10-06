@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { PRODUCTS, REVIEWS } from './data/products';
 import { Product, ProductCategory, CartItem, GrindOption, AppView } from './types';
 import { fetchLiveShopifyCatalogue, ShopifyCollection } from './services/shopify';
+import { getAvailableCategories, CoffeeSubcategory } from './services/categoryManager';
+import { isStorefrontEligibleProduct } from './services/productClassification';
 import { AnnouncementBar } from './components/AnnouncementBar';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
+import { CategoryDiscoveryBar } from './components/CategoryDiscoveryBar';
 import { EditorialImageStrip } from './components/EditorialImageStrip';
 import { ShopOurCollections } from './components/ShopOurCollections';
 import { ExploreTrose } from './components/ExploreTrose';
 import { TroseBestSellers } from './components/TroseBestSellers';
 import { CoffeeFinderSection } from './components/CoffeeFinderSection';
 import { FeaturedProducts } from './components/FeaturedProducts';
+import { CoffeePage } from './components/CoffeePage';
+import { CategoryPage } from './components/CategoryPage';
 import { OrganicSpotlight } from './components/OrganicSpotlight';
 import { MachinesAndAccessories } from './components/MachinesAndAccessories';
 import { SubscriptionClub } from './components/SubscriptionClub';
@@ -27,6 +32,7 @@ import { AboutModal } from './components/AboutModal';
 import { CoffeeQuizModal } from './components/CoffeeQuizModal';
 import { PolicyModal, PolicyTab } from './components/PolicyModal';
 import { Toast } from './components/Toast';
+import { MobileCheckoutBar } from './components/MobileCheckoutBar';
 
 export default function App() {
   const [currentView, setCurrentView] = useState<AppView>('home');
@@ -126,12 +132,174 @@ export default function App() {
     }, 4000);
   };
 
-  const handleNavigate = (view: AppView, category?: ProductCategory) => {
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [coffeeSubcategory, setCoffeeSubcategory] = useState<CoffeeSubcategory>('all');
+
+  // Helper to parse URL on load and on browser back/forward popstate
+  const parseUrlLocation = () => {
+    try {
+      const path = window.location.pathname.replace(/^\/+/, '').toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const urlPage = parseInt(params.get('page') || '1', 10);
+      const initialPageNum = isNaN(urlPage) || urlPage < 1 ? 1 : urlPage;
+      const urlCat = params.get('category') as ProductCategory;
+      const urlSubcat = params.get('subcategory') as CoffeeSubcategory;
+
+      if (path === 'coffee') {
+        return {
+          view: 'coffee' as AppView,
+          category: 'coffee' as ProductCategory,
+          page: initialPageNum,
+          subcategory: urlSubcat || 'all'
+        };
+      }
+      if (path === 'tea') {
+        return { view: 'tea' as AppView, category: 'beverages' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'mugs' || path === 'mugs-drinkware') {
+        return { view: 'mugs' as AppView, category: 'mugs-drinkware' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'machines') {
+        return { view: 'machines' as AppView, category: 'machines' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'accessories') {
+        return { view: 'accessories' as AppView, category: 'accessories' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'home-lifestyle') {
+        return { view: 'home-lifestyle' as AppView, category: 'home-lifestyle' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'apparel' || path === 'clothing') {
+        return { view: 'apparel' as AppView, category: 'apparel' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'candles') {
+        return { view: 'candles' as AppView, category: 'candles' as ProductCategory, page: initialPageNum };
+      }
+      if (path === 'shop') {
+        return { view: 'shop' as AppView, category: urlCat || 'all', page: initialPageNum };
+      }
+
+      // Query param fallback
+      const queryView = params.get('view') as AppView;
+      if (queryView && ['coffee', 'tea', 'mugs', 'machines', 'accessories', 'home-lifestyle', 'apparel', 'clothing', 'candles', 'shop'].includes(queryView)) {
+        return {
+          view: queryView,
+          category: urlCat || (queryView as any),
+          page: initialPageNum,
+          subcategory: urlSubcat || 'all'
+        };
+      }
+
+      return { view: 'home' as AppView, category: 'all' as ProductCategory, page: 1, subcategory: 'all' as CoffeeSubcategory };
+    } catch {
+      return { view: 'home' as AppView, category: 'all' as ProductCategory, page: 1, subcategory: 'all' as CoffeeSubcategory };
+    }
+  };
+
+  // Sync state to URL and history so back button and shareable links work
+  const updateUrlHistory = (
+    view: AppView,
+    page: number = 1,
+    category?: ProductCategory,
+    subcat?: CoffeeSubcategory
+  ) => {
+    try {
+      let path = '/';
+      const params = new URLSearchParams();
+
+      if (view === 'coffee') {
+        path = '/coffee';
+        if (subcat && subcat !== 'all') {
+          params.set('subcategory', subcat);
+        }
+      } else if (view === 'tea') {
+        path = '/tea';
+      } else if (view === 'mugs') {
+        path = '/mugs';
+      } else if (view === 'machines') {
+        path = '/machines';
+      } else if (view === 'accessories') {
+        path = '/accessories';
+      } else if (view === 'home-lifestyle') {
+        path = '/home-lifestyle';
+      } else if (view === 'apparel' || view === 'clothing') {
+        path = '/apparel';
+      } else if (view === 'candles') {
+        path = '/candles';
+      } else if (view === 'shop') {
+        path = '/shop';
+        if (category && category !== 'all') {
+          params.set('category', category);
+        }
+      }
+
+      if (page > 1 && view !== 'home') {
+        params.set('page', String(page));
+      }
+
+      const queryString = params.toString();
+      const newUrl = queryString ? `${path}?${queryString}` : path;
+
+      if (window.location.pathname + window.location.search !== newUrl) {
+        window.history.pushState({ view, page, category, subcat }, '', newUrl);
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  // Initialize from URL and listen to browser Back / Forward events
+  useEffect(() => {
+    const loc = parseUrlLocation();
+    if (loc.view !== 'home') {
+      setCurrentView(loc.view);
+      if (loc.category) setActiveCategory(loc.category);
+      setPageNumber(loc.page);
+    }
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.view) {
+        setCurrentView(e.state.view);
+        if (e.state.category) setActiveCategory(e.state.category);
+        if (e.state.subcat) setCoffeeSubcategory(e.state.subcat);
+        setPageNumber(e.state.page || 1);
+      } else {
+        const parsed = parseUrlLocation();
+        setCurrentView(parsed.view);
+        if (parsed.category) setActiveCategory(parsed.category);
+        if (parsed.subcategory) setCoffeeSubcategory(parsed.subcategory);
+        setPageNumber(parsed.page);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleShopCoffeeCollection = (subcat: CoffeeSubcategory) => {
+    setCoffeeSubcategory(subcat);
+    setPageNumber(1);
+    setCurrentView('coffee');
+    setActiveCategory('coffee');
+    updateUrlHistory('coffee', 1, 'coffee', subcat);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavigate = (view: AppView, category?: ProductCategory, page: number = 1) => {
     if (category) {
       setActiveCategory(category);
     }
+    if (view === 'coffee' && !category) {
+      setCoffeeSubcategory('all');
+    }
+    setPageNumber(page);
     setCurrentView(view);
+    updateUrlHistory(view, page, category, view === 'coffee' ? coffeeSubcategory : undefined);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setPageNumber(newPage);
+    updateUrlHistory(currentView, newPage, activeCategory);
   };
 
   const handleViewProductDetail = (product: Product) => {
@@ -212,13 +380,18 @@ export default function App() {
   const totalCartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const organicProducts = products.filter((p) => p.isOrganic || p.category === 'organic');
 
+  // Dynamic non-empty categories in strict brand priority order
+  const availableCategories = useMemo(() => {
+    return getAvailableCategories(products);
+  }, [products]);
+
   return (
-    <div id="trose-app-root" className="min-h-screen flex flex-col bg-[#FAF7F2] text-[#12100E] selection:bg-[#C5A059]/30 selection:text-[#12100E]">
+    <div id="trose-app-root" className={`min-h-screen flex flex-col bg-[#FAF7F2] text-[#12100E] selection:bg-[#C5A059]/30 selection:text-[#12100E] ${currentView !== 'home' ? 'pb-14 sm:pb-0' : ''}`}>
       
       {/* Top Announcement Bar */}
       <AnnouncementBar onOpenQuiz={() => setIsQuizOpen(true)} />
 
-      {/* Sticky Navigation Bar */}
+      {/* Sticky Navigation Bar with Priority Categories */}
       <Navbar
         activeCategory={activeCategory}
         currentView={currentView}
@@ -229,6 +402,7 @@ export default function App() {
         onOpenAbout={() => setIsAboutOpen(true)}
         onOpenQuiz={() => setIsQuizOpen(true)}
         cartCount={totalCartCount}
+        availableCategories={availableCategories}
       />
 
       {/* Dynamic View Rendering */}
@@ -239,16 +413,61 @@ export default function App() {
           <ProductDetailPage
             product={selectedProduct}
             allProducts={products}
-            onBackToShop={(cat) => handleNavigate('shop', cat || 'all')}
+            onBackToShop={(cat) => handleNavigate(cat === 'coffee' ? 'coffee' : 'shop', cat || 'all')}
             onSelectProduct={handleViewProductDetail}
             onAddToCart={handleAddToCart}
             onBuyNow={handleBuyNow}
           />
+        ) : currentView === 'coffee' ? (
+          /* VIEW 2: DEDICATED PRIMARY COFFEE STOREFRONT */
+          <CoffeePage
+            products={products}
+            initialPage={pageNumber}
+            initialSubcategory={coffeeSubcategory}
+            onPageChange={handlePageChange}
+            onSubcategoryChange={(sub) => {
+              setCoffeeSubcategory(sub);
+              updateUrlHistory('coffee', 1, 'coffee', sub);
+            }}
+            onSelectProduct={handleViewProductDetail}
+            onAddToCart={handleAddToCart}
+            onOpenQuiz={() => setIsQuizOpen(true)}
+            isLoading={isLoadingCatalogue}
+          />
+        ) : currentView === 'tea' || currentView === 'mugs' || currentView === 'machines' || currentView === 'accessories' || currentView === 'home-lifestyle' || currentView === 'apparel' || currentView === 'clothing' || currentView === 'candles' || currentView === 'other' ? (
+          /* VIEW 3: DEDICATED CATEGORY PAGES IN STRICT PRIORITY ORDER */
+          (() => {
+            const catInfo = availableCategories.find((c) => c.id === currentView || (currentView === 'clothing' && c.id === 'apparel')) || {
+              id: currentView as any,
+              label: currentView.toUpperCase(),
+              navLabel: currentView.toUpperCase(),
+              description: 'Exclusive artisanal creations and gear from the TROSE portfolio.',
+              heroHeadline: `${currentView.toUpperCase()} COLLECTION`,
+              heroSubheadline: 'Engineered with intention and craft.',
+              heroImage: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1200&q=85',
+              productCount: 0
+            };
+            return (
+              <CategoryPage
+                category={catInfo}
+                allProducts={products}
+                initialPage={pageNumber}
+                onPageChange={handlePageChange}
+                onSelectProduct={handleViewProductDetail}
+                onAddToCart={handleAddToCart}
+                onNavigateCategory={(catId) => handleNavigate(catId as AppView)}
+                onNavigateHome={() => handleNavigate('home')}
+                isLoading={isLoadingCatalogue}
+              />
+            );
+          })()
         ) : currentView === 'shop' ? (
-          /* VIEW 2: COMPLETE SHOP PAGE WITH FILTERS & SORTING */
+          /* VIEW 4: COMPLETE FILTERABLE CATALOGUE WITH PAGINATION */
           <ShopPage
             products={products}
             initialCategory={activeCategory}
+            initialPage={pageNumber}
+            onPageChange={handlePageChange}
             onSelectProduct={handleViewProductDetail}
             onAddToCart={handleAddToCart}
             onNavigateHome={() => handleNavigate('home')}
@@ -256,64 +475,69 @@ export default function App() {
             isShopifyLive={isShopifyLive}
           />
         ) : (
-          /* VIEW 3: EDITORIAL HOME PAGE */
+          /* VIEW 5: EDITORIAL HOME PAGE */
           <>
-            {/* 1. Master Reference Hero */}
+            {/* 1. P7.5 Hero (Left locked, Right rounded Bauhaus composition) */}
             <Hero
-              onShopClick={(cat) => handleNavigate('shop', cat || 'all')}
+              onShopClick={() => handleNavigate('coffee')}
               onDiscoverClick={() => setIsAboutOpen(true)}
               onOpenQuiz={() => setIsQuizOpen(true)}
-              featuredProduct={products.find((p) => p.category === 'coffee') || products[0]}
+              featuredProduct={products.find((p) => p.department === 'coffee' && isStorefrontEligibleProduct(p)) || products[0]}
             />
 
-            {/* 2. Master Reference Editorial Image Strip */}
-            <EditorialImageStrip onLearnMore={() => setIsAboutOpen(true)} />
-
-            {/* 3. Master Reference Shop Our Collections (5 Colored Arches) */}
+            {/* 1. Explore Coffee Collections (5 Bauhaus Coffee Arches) */}
             <ShopOurCollections
-              onShopCollection={(cat) => handleNavigate('shop', cat)}
+              products={products}
+              onShopCollection={handleShopCoffeeCollection}
+              onViewAllCoffee={() => {
+                handleShopCoffeeCollection('all');
+              }}
             />
 
-            {/* 4. Master Reference Coffee Finder Section */}
-            <CoffeeFinderSection
-              onOpenFinder={() => setIsQuizOpen(true)}
-            />
-
-            {/* 5. Real Shopify Best Sellers & Products */}
+            {/* 2. Featured Coffee Products — Maximum 4 Roasts */}
             <TroseBestSellers
               products={products}
               onQuickView={handleViewProductDetail}
               onAddToCart={handleAddToCart}
-              onExploreAll={() => handleNavigate('shop', 'all')}
+              onExploreCoffee={() => handleNavigate('coffee')}
             />
 
-            {/* 6. Filterable Products & Roasts Showcase */}
-            <FeaturedProducts
-              products={products}
-              activeCategory={activeCategory}
-              onSelectCategory={setActiveCategory}
-              onQuickView={handleViewProductDetail}
-              onAddToCart={handleAddToCart}
+            {/* 3. Find Your Trose Quiz Section */}
+            <CoffeeFinderSection
+              onOpenFinder={() => setIsQuizOpen(true)}
             />
 
-            {/* 7. Prosumer Espresso Machines & Precision Accessories */}
-            <MachinesAndAccessories
-              products={products}
-              onQuickView={handleViewProductDetail}
-              onAddToCart={(product) => handleAddToCart(product, undefined, 1)}
-              onExploreGear={() => handleNavigate('shop', 'machines')}
-            />
+            {/* 4. Explore Tea, Mugs and Accessories */}
+            <div id="explore-gear-and-departments">
+              {/* Category Quick Discovery Bar */}
+              <CategoryDiscoveryBar
+                categories={availableCategories}
+                onSelectCategory={(catId) => handleNavigate(catId as AppView)}
+                onOpenQuiz={() => setIsQuizOpen(true)}
+              />
 
-            {/* 8. Roaster's Club Subscription Tier (Editorial Discovery) */}
-            <SubscriptionClub
-              products={products}
-              onSubscribe={handleSubscribe}
-            />
+              {/* Department Products Showcase (Tea, Mugs, Gear, Accessories) */}
+              <FeaturedProducts
+                products={products}
+                onQuickView={handleViewProductDetail}
+                onAddToCart={handleAddToCart}
+                onNavigateToCategory={(catId) => handleNavigate(catId as AppView)}
+              />
+            </div>
 
-            {/* 9. Brand Philosophy & Heritage Section */}
+            {/* Desktop Subscription Tier & Editorial Imagery (hidden on mobile to prioritize shopping flow) */}
+            <div className="hidden lg:block">
+              <SubscriptionClub
+                products={products}
+                onSubscribe={handleSubscribe}
+              />
+              <EditorialImageStrip onLearnMore={() => setIsAboutOpen(true)} />
+            </div>
+
+            {/* 5. Short Our Story Preview (Mobile) / Full Collage (Desktop) */}
             <BrandStory
               onExploreStory={() => setIsAboutOpen(true)}
-              onShopCoffee={() => handleNavigate('shop', 'coffee')}
+              onShopCoffee={() => handleNavigate('coffee')}
             />
           </>
         )}
@@ -322,7 +546,13 @@ export default function App() {
 
       {/* Luxury Editorial Footer */}
       <Footer
-        onSelectCategory={(cat) => handleNavigate('shop', cat)}
+        onSelectCategory={(cat) => {
+          if (cat === 'coffee' || cat === 'organic') handleNavigate('coffee');
+          else if (cat === 'beverages') handleNavigate('tea');
+          else if (cat === 'mugs-flasks') handleNavigate('mugs');
+          else if (cat === 'accessories') handleNavigate('accessories');
+          else handleNavigate('shop', cat);
+        }}
         onOpenAbout={() => setIsAboutOpen(true)}
         onOpenQuiz={() => setIsQuizOpen(true)}
         onOpenPolicy={(tab) => setPolicyModal({ isOpen: true, tab })}
@@ -343,7 +573,7 @@ export default function App() {
         onUpdateQuantity={handleUpdateQuantity}
         onRemoveItem={handleRemoveFromCart}
         onClearCart={handleClearCart}
-        onExploreShop={() => handleNavigate('shop', 'all')}
+        onExploreShop={() => handleNavigate('coffee')}
       />
 
       <SearchModal
@@ -367,7 +597,7 @@ export default function App() {
         onClose={() => setIsAboutOpen(false)}
         onShopCoffee={() => {
           setIsAboutOpen(false);
-          handleNavigate('shop', 'coffee');
+          handleNavigate('coffee');
         }}
       />
 
@@ -387,6 +617,14 @@ export default function App() {
         initialTab={policyModal.tab}
         onClose={() => setPolicyModal((prev) => ({ ...prev, isOpen: false }))}
       />
+
+      {/* Sticky Mobile Checkout Access Bar (active on shop/product views, never obstructs mobile homepage) */}
+      {currentView !== 'home' && (
+        <MobileCheckoutBar
+          cart={cart}
+          onOpenCart={() => setIsCartOpen(true)}
+        />
+      )}
 
       {/* Global Toast Notification */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />

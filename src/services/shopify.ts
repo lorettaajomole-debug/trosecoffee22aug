@@ -9,6 +9,11 @@ import {
   RoastLevel,
   ProductOption,
 } from '../types';
+import {
+  classifyProduct,
+  TROSE_DEPARTMENT_ORDER,
+  isStorefrontEligibleProduct,
+} from './productClassification';
 
 export type {
   ShopifyProduct,
@@ -758,11 +763,18 @@ export function mapShopifyProductToProduct(
     typeLower === 'coffee' ||
     typeLower === 'coffee beans';
 
-  const isOrganic =
-    tagsLower.some((t) => t.includes('organic') || t.includes('bio')) ||
-    titleLower.includes('organic') ||
-    descLower.includes('organic') ||
-    typeLower.includes('organic');
+  const isSamplePack =
+    tagsLower.includes('sample pack') ||
+    titleLower.includes('sample pack') ||
+    titleLower.includes('flight');
+
+  // Rule: Sample packs do NOT inherit Organic Coffee unless the entire pack is explicitly verified as organic
+  const isOrganic = isSamplePack
+    ? (titleLower.includes('organic') || tagsLower.includes('organic') || descLower.includes('100% organic') || descLower.includes('all organic'))
+    : (tagsLower.some((t) => t.includes('organic') || t.includes('bio')) ||
+       titleLower.includes('organic') ||
+       descLower.includes('organic') ||
+       typeLower.includes('organic'));
 
   const isBestSeller =
     tagsLower.some(
@@ -777,84 +789,44 @@ export function mapShopifyProductToProduct(
       (t) => t === 'new' || t === 'new-arrival' || t === 'fresh-crop' || t === 'newest'
     );
 
-  // Category classification following TROSE brand architecture:
-  // 1. Coffee, 2. Organic Coffee, 3. Beverages / Tea, 4. Coffee Machines,
-  // 5. Mugs & Flasks, 6. Accessories, 7. Snacks, 8. Coffee Tables, 9. Bundles / Other
-  let category: ProductCategory = matchedCategory || 'coffee';
+  // Deterministic Central Classification
+  const classification = classifyProduct({
+    id: sp.id,
+    title: sp.title,
+    productType: sp.productType,
+    tags: sp.tags,
+    description: sp.description,
+    handle: sp.handle,
+  });
 
-  if (matchedCategory) {
-    if (matchedCategory === 'coffee' && isOrganic) {
-      category = 'organic';
-    } else {
-      category = matchedCategory;
-    }
-  } else {
-    if (
-      typeLower.includes('furniture') ||
-      tagsLower.some((t) => t.includes('table') || t.includes('bedside')) ||
-      titleLower.includes('table') ||
-      titleLower.includes('bedside') ||
-      titleLower.includes('media unit')
-    ) {
-      category = 'tables';
-    } else if (
-      typeLower.includes('machine') ||
-      tagsLower.some((t) => t.includes('machine') || t.includes('espresso-machine')) ||
-      titleLower.includes('espresso machine') ||
-      titleLower.includes('maker machine')
-    ) {
-      category = 'machines';
-    } else if (
-      typeLower.includes('drinkware') ||
-      tagsLower.some((t) => t.includes('mug') || t.includes('flask') || t.includes('bottle') || t.includes('tumbler') || t.includes('cup')) ||
-      titleLower.includes('mug') ||
-      titleLower.includes('flask') ||
-      titleLower.includes('bottle') ||
-      titleLower.includes('tumbler')
-    ) {
+  // Assign backward-compatible category based strictly on deterministic department
+  let category: ProductCategory = 'coffee';
+  switch (classification.department) {
+    case 'coffee':
+      category = isOrganic ? 'organic' : 'coffee';
+      break;
+    case 'tea':
+      category = 'tea';
+      break;
+    case 'mugs-drinkware':
       category = 'mugs-flasks';
-    } else if (
-      typeLower.includes('kitchen') ||
-      typeLower.includes('apparel') ||
-      tagsLower.some((t) => t.includes('accessory') || t.includes('socks') || t.includes('pin') || t.includes('filter') || t.includes('mixer') || t.includes('grinder') || t.includes('scale') || t.includes('kettle') || t.includes('nuckees')) ||
-      titleLower.includes('pin') ||
-      titleLower.includes('socks') ||
-      titleLower.includes('filter') ||
-      titleLower.includes('mixer') ||
-      titleLower.includes('infuser')
-    ) {
+      break;
+    case 'machines':
+      category = 'machines';
+      break;
+    case 'accessories':
       category = 'accessories';
-    } else if (
-      tagsLower.some((t) => t.includes('tea') || t.includes('tisane') || t.includes('chai') || t.includes('matcha') || t.includes('mate') || t.includes('drink') || t.includes('beverage') || t.includes('saffron')) ||
-      titleLower.includes('tea') ||
-      titleLower.includes('chai') ||
-      titleLower.includes('mate') ||
-      titleLower.includes('sipkit') ||
-      titleLower.includes('saffron') ||
-      typeLower.includes('beverage')
-    ) {
-      category = 'beverages';
-    } else if (
-      tagsLower.some((t) => t.includes('chocolate') || t.includes('truffle') || t.includes('snack') || t.includes('almond') || t.includes('raisin')) ||
-      titleLower.includes('chocolate') ||
-      titleLower.includes('truffle') ||
-      titleLower.includes('bars') ||
-      titleLower.includes('patties') ||
-      typeLower.includes('snack')
-    ) {
-      category = 'snacks';
-    } else if (
-      tagsLower.some((t) => t.includes('bundle') || t.includes('gift set') || t.includes('flight')) ||
-      titleLower.includes('bundle') ||
-      titleLower.includes('gift set') ||
-      titleLower.includes('flight')
-    ) {
-      category = 'bundles';
-    } else if (isCoffeeItem) {
-      category = isOrganic ? 'organic' : 'coffee';
-    } else {
-      category = isOrganic ? 'organic' : 'coffee';
-    }
+      break;
+    case 'home-lifestyle':
+      category = classification.subcategory.includes('Candle') ? 'candles' : 'tables';
+      break;
+    case 'apparel':
+      category = 'clothing';
+      break;
+    case 'other':
+    default:
+      category = classification.subcategory.includes('Snack') ? 'snacks' : 'bundles';
+      break;
   }
 
   // Extract roast level from tags or title if real data exists (never fabricate)
@@ -940,8 +912,13 @@ export function mapShopifyProductToProduct(
     shopifyId: sp.id,
     handle: sp.handle,
     name: sp.title,
-    subtitle: origin ? `${origin} • Single Origin` : sp.productType || 'Artisan Specialty Coffee',
+    subtitle: origin ? `${origin} • Single Origin` : classification.subcategory || sp.productType || 'Artisan Specialty Coffee',
     category,
+    department: classification.department,
+    departmentLabel: classification.departmentLabel,
+    subcategory: classification.subcategory,
+    classificationReason: classification.reason,
+    isAmbiguous: classification.isAmbiguous,
     price: minPrice,
     originalPrice: hasCompareAt ? compareAtMin : undefined,
     rating: 5.0,
@@ -959,7 +936,7 @@ export function mapShopifyProductToProduct(
     details:
       details.length > 0
         ? details
-        : ['Directly sourced specialty grade beans', 'Precision roast profile for peak sweetness'],
+        : ['Curated coffee beans', 'Precision roast profile for balanced flavor'],
     images,
     inStock: sp.availableForSale,
     variants,
@@ -994,14 +971,21 @@ export interface ShopifyCatalogueResult {
  */
 export const TROSE_CATEGORY_ORDER: Record<ProductCategory, number> = {
   coffee: 1,
-  organic: 2,
-  beverages: 3,
+  organic: 1,
+  tea: 2,
+  beverages: 2,
+  'mugs-flasks': 3,
+  'mugs-drinkware': 3,
+  accessories: 4,
   machines: 4,
-  'mugs-flasks': 5,
-  accessories: 6,
+  clothing: 5,
+  apparel: 5,
+  candles: 6,
+  'home-lifestyle': 6,
   snacks: 7,
   tables: 8,
   bundles: 9,
+  other: 9,
   all: 0,
 };
 
@@ -1011,14 +995,14 @@ export const TROSE_CATEGORY_ORDER: Record<ProductCategory, number> = {
  */
 export function sortProductsByTrosePriority(products: Product[]): Product[] {
   return [...products].sort((a, b) => {
-    const priorityA = TROSE_CATEGORY_ORDER[a.category] ?? 99;
-    const priorityB = TROSE_CATEGORY_ORDER[b.category] ?? 99;
+    const priorityA = (a.department && TROSE_DEPARTMENT_ORDER[a.department]) ?? TROSE_CATEGORY_ORDER[a.category] ?? 99;
+    const priorityB = (b.department && TROSE_DEPARTMENT_ORDER[b.department]) ?? TROSE_CATEGORY_ORDER[b.category] ?? 99;
     if (priorityA !== priorityB) {
       return priorityA - priorityB;
     }
 
     // Within Coffee & Organic Coffee, prioritize popular roasts, signature blends, and sample packs
-    if (a.category === 'coffee' || a.category === 'organic') {
+    if (a.department === 'coffee' || a.category === 'coffee' || a.category === 'organic') {
       const getCoffeeScore = (p: Product) => {
         const nameLower = p.name.toLowerCase();
         const rawTags = (p.rawShopifyProduct?.tags || []).map((t) => t.toLowerCase());
@@ -1107,14 +1091,18 @@ export async function fetchLiveShopifyCatalogue(): Promise<ShopifyCatalogueResul
     });
 
     const mappedProducts: Product[] = rawProducts.map((sp) => {
-      const matchedCat = productCategoryMap.get(sp.id);
-      const prod = mapShopifyProductToProduct(sp, matchedCat);
+      const prod = mapShopifyProductToProduct(sp);
       prod.collectionHandles = productCollectionsMap.get(sp.id) || [];
       return prod;
     });
 
+    // Safe storefront eligibility rule: Exclude incomplete/placeholder records
+    // (such as $0 placeholder "Coffee" with no images) from customer-facing merchandising
+    // while preserving all 49 legitimate coffees and rawShopifyProducts untouched.
+    const eligibleProducts = mappedProducts.filter(isStorefrontEligibleProduct);
+
     // Apply TROSE brand merchandising hierarchy
-    const sortedProducts = sortProductsByTrosePriority(mappedProducts);
+    const sortedProducts = sortProductsByTrosePriority(eligibleProducts);
 
     console.log(
       `[Shopify Storefront] Successfully loaded ${sortedProducts.length} live product(s) across ${collections.length} collection(s) in TROSE merchandising order.`

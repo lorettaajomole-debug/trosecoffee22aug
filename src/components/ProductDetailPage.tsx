@@ -17,6 +17,7 @@ import {
 import { Product, GrindOption, ProductCategory } from '../types';
 import { ProductCard } from './ProductCard';
 import { getMappedShopifyProductByHandle } from '../services/shopify';
+import { isStorefrontEligibleProduct } from '../services/productClassification';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -134,7 +135,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
   const relatedProducts = useMemo(() => {
     return allProducts
-      .filter((p) => p.id !== currentProduct.id && (p.category === currentProduct.category || p.category === 'coffee'))
+      .filter((p) => p.id !== currentProduct.id && isStorefrontEligibleProduct(p) && (p.department === currentProduct.department || p.category === currentProduct.category))
       .slice(0, 4);
   }, [allProducts, currentProduct]);
 
@@ -145,11 +146,11 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         {/* Breadcrumb Navigation (Zero pills, Space Mono) */}
         <nav className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-[0.24em] text-[#69574A] mb-8 pb-4 border-b border-[#12100E]/15 text-left">
           <button
-            onClick={() => onBackToShop(currentProduct.category)}
+            onClick={() => onBackToShop(currentProduct.department || currentProduct.category)}
             className="hover:text-[#12100E] flex items-center space-x-1 cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-            <span>BACK TO {currentProduct.category.toUpperCase().replace('-', ' ')}</span>
+            <span>BACK TO {(currentProduct.departmentLabel || currentProduct.category).toUpperCase()}</span>
           </button>
           <span>/</span>
           <span className="text-[#12100E] font-bold truncate max-w-xs">{currentProduct.name}</span>
@@ -232,8 +233,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px] text-[#12100E]">
                 <div>
-                  <span className="text-[#69574A] block text-[9px]">CATEGORY:</span>
-                  <span className="font-bold uppercase">{currentProduct.category}</span>
+                  <span className="text-[#69574A] block text-[9px]">DEPARTMENT:</span>
+                  <span className="font-bold uppercase">{currentProduct.departmentLabel || currentProduct.category}</span>
                 </div>
                 <div>
                   <span className="text-[#69574A] block text-[9px]">ORIGIN:</span>
@@ -665,7 +666,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 </button>
                 {openSections.shipping && (
                   <div className="pt-3 text-xs sm:text-sm text-[#12100E]/80 leading-relaxed space-y-2 font-normal">
-                    <p>{currentProduct.shippingInfo || 'All coffees are roasted fresh in weekly micro-batches. Orders placed before 1:00 PM are dispatched on the next roasting cycle.'}</p>
+                    <p>{currentProduct.shippingInfo || 'Orders placed before 1:00 PM are dispatched promptly on the next fulfillment cycle.'}</p>
                     <p className="text-xs text-[#69574A] font-mono">
                       Fresh Roast Guarantee: If your coffee does not exceed expectations, reach out within 30 days for a replacement or full refund.
                     </p>

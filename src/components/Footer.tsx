@@ -108,37 +108,37 @@ export const Footer: React.FC<FooterProps> = ({
             </p>
           </div>
 
-          {/* Essential Navigation Links */}
+          {/* Essential Navigation Links matching brand priority */}
           <nav className="flex flex-wrap justify-center md:justify-end items-center gap-x-6 gap-y-3 text-xs uppercase tracking-[0.14em] font-sans font-medium text-white/80">
             <button
-              onClick={() => onSelectCategory('all')}
-              className="hover:text-[#C88E38] transition-colors cursor-pointer"
-            >
-              Shop
-            </button>
-            <button
               onClick={() => onSelectCategory('coffee')}
-              className="hover:text-[#C88E38] transition-colors cursor-pointer"
+              className="text-[#C88E38] hover:text-white font-bold transition-colors cursor-pointer"
             >
-              Coffee
+              1. Coffee
             </button>
             <button
-              onClick={() => onSelectCategory('organic')}
+              onClick={() => onSelectCategory('beverages')}
               className="hover:text-[#C88E38] transition-colors cursor-pointer"
             >
-              Organic
+              2. Tea
             </button>
             <button
-              onClick={() => onSelectCategory('machines')}
+              onClick={() => onSelectCategory('mugs-flasks')}
               className="hover:text-[#C88E38] transition-colors cursor-pointer"
             >
-              Machines
+              3. Mugs
             </button>
             <button
               onClick={() => onSelectCategory('accessories')}
               className="hover:text-[#C88E38] transition-colors cursor-pointer"
             >
-              Mugs & Gear
+              4. Accessories
+            </button>
+            <button
+              onClick={() => onSelectCategory('all')}
+              className="hover:text-[#C88E38] transition-colors cursor-pointer"
+            >
+              All Collections
             </button>
             <button
               onClick={onOpenQuiz}

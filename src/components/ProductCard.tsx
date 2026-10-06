@@ -36,22 +36,24 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onViewProduct(product);
   };
 
-  // Determine real category label
-  const categoryLabel = product.category === 'organic'
-    ? 'Certified Organic'
-    : product.category === 'coffee'
-    ? 'Specialty Coffee'
-    : product.category === 'machines'
-    ? 'Espresso Machinery'
-    : product.category === 'mugs-flasks'
-    ? 'Drinkware'
-    : product.category === 'accessories'
-    ? 'Barista Gear'
-    : product.category === 'snacks'
-    ? 'Artisan Snacks'
-    : product.category === 'tables'
-    ? 'Living Furniture'
-    : 'Curated Item';
+  // Determine real department and category label
+  const departmentLabel = product.departmentLabel || (
+    product.department === 'coffee'
+      ? (product.isOrganic ? 'Certified Organic Coffee' : 'Artisan Coffee')
+      : product.department === 'tea'
+      ? 'Specialty Tea'
+      : product.department === 'mugs-drinkware'
+      ? 'Mugs & Drinkware'
+      : product.department === 'machines'
+      ? 'Machinery'
+      : product.department === 'accessories'
+      ? 'Barista Gear'
+      : product.department === 'home-lifestyle'
+      ? 'Home & Lifestyle'
+      : product.department === 'apparel'
+      ? 'Apparel'
+      : 'Curated Item'
+  );
 
   return (
     <div
@@ -117,7 +119,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           {/* Subtle Category & Origin Tag */}
           <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-[#69574A]">
             <span className="truncate max-w-[180px]">
-              {product.origin || categoryLabel}
+              {product.department === 'coffee' && product.origin
+                ? product.origin
+                : product.subcategory
+                ? `${departmentLabel} · ${product.subcategory}`
+                : departmentLabel}
             </span>
             {product.inStock && (
               <span className="text-[#CCA347] font-semibold text-[10px]">IN STOCK</span>

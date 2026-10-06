@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Search, X, ShoppingBag, Eye, Filter } from 'lucide-react';
-import { Product, ProductCategory } from '../types';
+import { Product, ProductCategory, PrimaryDepartment } from '../types';
 import { searchService, SearchResultItem, CATEGORY_LABELS } from '../services/searchService';
+import { DEPARTMENT_DEFINITIONS } from '../services/productClassification';
+import { Pagination } from './Pagination';
+import { useResponsivePageSize } from '../hooks/useResponsivePageSize';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -83,14 +86,26 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 
   const availableCategories = useMemo(() => {
     const cats = new Set<string>();
-    results.forEach(r => cats.add(r.product.category));
+    results.forEach(r => cats.add(r.product.department || r.product.category));
     return Array.from(cats);
   }, [results]);
 
   const filteredResults = useMemo(() => {
     if (selectedCategoryFilter === 'all') return results;
-    return results.filter(r => r.product.category === selectedCategoryFilter);
+    return results.filter(r => (r.product.department || r.product.category) === selectedCategoryFilter);
   }, [results, selectedCategoryFilter]);
+
+  const pageSize = useResponsivePageSize(4, 8);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, selectedCategoryFilter]);
+
+  const paginatedResults = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredResults.slice(start, start + pageSize);
+  }, [filteredResults, currentPage, pageSize]);
 
   if (!isOpen) return null;
 
@@ -194,7 +209,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             </button>
 
             {availableCategories.map((cat) => {
-              const count = results.filter(r => r.product.category === cat).length;
+              const count = results.filter(r => (r.product.department || r.product.category) === cat).length;
+              const label = DEPARTMENT_DEFINITIONS[cat as PrimaryDepartment]?.navLabel || CATEGORY_LABELS[cat as ProductCategory] || cat;
               return (
                 <button
                   key={cat}
@@ -205,7 +221,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                       : 'bg-white text-[#12100E] border-[#12100E]/20 hover:border-[#12100E]'
                   }`}
                 >
-                  {CATEGORY_LABELS[cat as ProductCategory] || cat} ({count})
+                  {label} ({count})
                 </button>
               );
             })}
@@ -273,8 +289,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#69574A] font-bold block mb-2">
                 FOUND {filteredResults.length} MATCHING PRODUCTS
               </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {filteredResults.map(({ product, highlightFields, score }) => (
+              <div id="search-results-top" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {paginatedResults.map(({ product, highlightFields, score }) => (
                   <div
                     key={product.id}
                     className="p-3 bg-[#FDFBF7] border border-[#12100E]/15 hover:border-[#12100E] transition-colors flex space-x-3 cursor-pointer group"
@@ -301,7 +317,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                         </div>
 
                         <span className="text-[9px] font-mono text-[#69574A] uppercase block mt-0.5">
-                          {product.origin || product.category}
+                          {product.departmentLabel
+                            ? (product.department === 'coffee' && product.origin ? `${product.departmentLabel} • ${product.origin}` : `${product.departmentLabel} • ${product.subcategory}`)
+                            : (product.origin || product.category)}
                         </span>
 
                         {product.tastingNotes && product.tastingNotes.length > 0 && (
@@ -322,7 +340,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                             onAddToCart(product);
                           }}
                           disabled={!product.inStock}
-                          className="px-2 py-0.5 bg-[#12100E] hover:bg-[#D62828] text-white uppercase tracking-wider font-bold transition-colors disabled:opacity-30"
+                          className="px-2 py-0.5 bg-[#12100E] hover:bg-[#D62828] text-white uppercase tracking-wider font-bold transition-colors disabled:opacity-30 cursor-pointer"
                         >
                           + ADD
                         </button>
@@ -331,6 +349,19 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                   </div>
                 ))}
               </div>
+
+              {/* Search Results Pagination */}
+              <Pagination
+                currentPage={currentPage}
+                totalItems={filteredResults.length}
+                pageSize={pageSize}
+                onPageChange={(page) => {
+                  setCurrentPage(page);
+                  const el = document.getElementById('search-overlay-container');
+                  if (el) el.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                itemName="matching items"
+              />
             </div>
           )}
         </div>

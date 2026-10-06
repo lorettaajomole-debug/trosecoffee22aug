@@ -1,6 +1,7 @@
 import { Product, CustomerReview } from '../types';
+import { classifyProduct } from '../services/productClassification';
 
-export const PRODUCTS: Product[] = [
+const RAW_PRODUCTS: Omit<Product, 'department' | 'departmentLabel' | 'subcategory' | 'classificationReason' | 'isAmbiguous'>[] = [
   // --- SIGNATURE SPECIALTY COFFEE ---
   {
     id: 'trose-reserve-ethiopia-yirgacheffe',
@@ -23,15 +24,15 @@ export const PRODUCTS: Product[] = [
     tastingNotes: ['Bergamot Blossom', 'White Peach', 'Wild Honey', 'Jasmine'],
     description: 'Our crown jewel single-origin. Sourced from smallholder heirloom gardens in southern Ethiopia, this cup offers a silken tea-like body, crystalline floral aromatics, and a luminous stone-fruit finish.',
     details: [
-      'Cupping Score: 89.5 SCAA Certified',
+      'Origin Cupping Score: 89.5',
       'Harvest Season: November – January',
       'Varietal: Indigenous Heirloom Cultivars',
       'Nitrogen-flushed valve packaging for peak freshness'
     ],
     formats: ['12 oz (340g)', '2 lb (908g)', '5 lb Roaster Bag'],
     brewingRecommendation: 'Pour-Over (V60 / Chemex): 1:16 brew ratio with 93°C (200°F) filtered water. Grind medium-fine. Total brew time: 3:00 to 3:30 minutes.',
-    ingredients: '100% Arabica Whole Specialty Coffee Beans. Single-origin Ethiopian heirloom. Zero additives or artificial flavorings.',
-    shippingInfo: 'Roasted in small batches weekly. Complimentary priority climate-neutral dispatch on orders over $50. Dispatched within 24 hours of roasting.',
+    ingredients: 'Whole Bean Coffee. Single-origin Ethiopian heirloom. Zero additives or artificial flavorings.',
+    shippingInfo: 'Sealed fresh in valved packaging. Complimentary priority climate-neutral dispatch on orders over $50.',
     images: [
       'https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=1000&q=85',
       'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1000&q=85',
@@ -62,13 +63,13 @@ export const PRODUCTS: Product[] = [
     description: 'Engineered specifically for prosumer lever and pump espresso extractions. Delivers a dense tiger-striped crema, viscous velvety mouthfeel, and rich dark chocolate sweetness that cuts effortlessly through steamed milk.',
     details: [
       'Optimized extraction ratio: 1:2 in 28-32 seconds',
-      'Roasted in small 15kg batches weekly',
+      'Calibrated batch roast profile',
       'Velvety, syrupy body with low acidity',
       'Ideal for straight shots, lattes, and flat whites'
     ],
     formats: ['12 oz (340g)', '2 lb (908g)', '5 lb Barista Pack'],
     brewingRecommendation: '9-Bar Espresso: 18g dose in, 36g liquid espresso out in 28-30 seconds at 93.5°C (200.3°F). Also exquisite on Moka Pot and French Press.',
-    ingredients: '100% Specialty Arabica Blend (Washed Colombia Huila & Wet-Hulled Sumatra Mandheling). No preservatives or additives.',
+    ingredients: 'Artisan Roast Blend (Washed Colombia Huila & Wet-Hulled Sumatra Mandheling). No preservatives or additives.',
     shippingInfo: 'Degassed for 48 hours post-roast for immediate optimal espresso extraction upon arrival. Ships in nitrogen-sealed valved foil pouches.',
     images: [
       'https://images.unsplash.com/photo-1610889556528-9a770e32642f?auto=format&fit=crop&w=1000&q=85',
@@ -143,8 +144,8 @@ export const PRODUCTS: Product[] = [
     ],
     formats: ['12 oz (340g)', '2 lb (908g)', '5 lb Roaster Sack'],
     brewingRecommendation: 'Pour-Over (Kalita Wave or V60): 1:16 ratio at 94°C. Brings forth sparkling blackcurrant and sweet floral honey.',
-    ingredients: '100% Arabica Single-Origin Kenyan Specialty Coffee Beans.',
-    shippingInfo: 'Roasted weekly in small batches. Ships with fresh roast certificate.',
+    ingredients: 'Single-Origin Kenyan Coffee Beans.',
+    shippingInfo: 'Sealed in valved packaging. Ships with fresh roast seal.',
     images: [
       'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1000&q=85',
       'https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=1000&q=85'
@@ -183,7 +184,7 @@ export const PRODUCTS: Product[] = [
     ],
     formats: ['12 oz (340g)', '2 lb (908g)', '5 lb Eco Sack'],
     brewingRecommendation: 'Chemex or Kalita Wave: 25g coffee to 400g water at 94°C. Highlight the crisp red apple sweetness and golden toffee finish.',
-    ingredients: '100% USDA Certified Organic Arabica Specialty Coffee (Catuai & Typica). 100% Fair Trade Certified.',
+    ingredients: 'USDA Certified Organic Coffee (Catuai & Typica). Certified Organic Harvest.',
     shippingInfo: '100% biodegradable, home-compostable outer pouch packaging with degas valve. Dispatched in recycled cardboard mailers.',
     images: [
       'https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=1000&q=85',
@@ -547,7 +548,7 @@ export const PRODUCTS: Product[] = [
     description: 'Crafted specifically to pair with our high-altitude single-origin coffees. Sourced from ancient Chuncho native cacao trees in Urubamba Valley with notes of roasted macadamia, dried plum, and wild honey.',
     details: [
       '74% Micro-Lot Native Chuncho Cacao',
-      'USDA Certified Organic & Direct Trade',
+      'USDA Certified Organic Harvest',
       'Formulated with organic cane sugar and single-estate cacao butter',
       'Net Wt: 2.8 oz (80g) Bar'
     ],
@@ -718,7 +719,7 @@ export const PRODUCTS: Product[] = [
     ],
     formats: ['3 x 6 oz Gift Trio', '3 x 12 oz Grand Flight'],
     brewingRecommendation: 'Follow the 3 included cupping cards to taste side-by-side: floral African notes vs. Honduran toffee vs. velvety espresso crema.',
-    ingredients: '100% Specialty Arabica Whole Bean Coffees. Single-origin micro-lots and artisan espresso blend.',
+    ingredients: 'Curated Whole Bean Coffees. Single-origin micro-lots and artisan espresso blend.',
     shippingInfo: 'Packed in gift-ready gold embossed rigid box with satin ribbon.',
     images: [
       'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?auto=format&fit=crop&w=1000&q=85',
@@ -729,6 +730,23 @@ export const PRODUCTS: Product[] = [
     availableGrinds: ['Whole Bean', 'Pour Over', 'Espresso', 'French Press']
   }
 ];
+
+export const PRODUCTS: Product[] = RAW_PRODUCTS.map((p) => {
+  const cl = classifyProduct({
+    id: p.id,
+    title: p.name,
+    productType: p.category,
+    description: p.description,
+  });
+  return {
+    ...p,
+    department: cl.department,
+    departmentLabel: cl.departmentLabel,
+    subcategory: cl.subcategory,
+    classificationReason: cl.reason,
+    isAmbiguous: cl.isAmbiguous,
+  };
+});
 
 export const REVIEWS: CustomerReview[] = [
   {

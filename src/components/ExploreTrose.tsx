@@ -108,7 +108,7 @@ export const ExploreTrose: React.FC<ExploreTroseProps> = ({ onShopCollection }) 
 
               <div className="relative z-10 pt-8 text-left">
                 <h4 className="text-xl font-editorial font-semibold uppercase text-[#12100E] group-hover:text-[#5C151E] transition-colors">
-                  Specialty Coffee
+                  Coffee Collections
                 </h4>
                 <p className="text-xs text-[#12100E]/70 font-sans font-normal mt-1 max-w-[200px]">
                   Signature roasts and single-origins with balanced aromatics.
