@@ -5,7 +5,8 @@ import {
   ChevronDown, 
   Search, 
   Check, 
-  RotateCcw
+  RotateCcw,
+  ArrowLeft
 } from 'lucide-react';
 import { Product, ProductCategory, SortOption, ShopFiltersState, GrindOption } from '../types';
 import { ProductCard } from './ProductCard';
@@ -74,8 +75,8 @@ export const ShopPage: React.FC<ShopPageProps> = ({
   isLoading = false,
   isShopifyLive = false,
 }) => {
-  // Responsive page size: 12 on desktop, 6 on mobile as requested
-  const pageSize = useResponsivePageSize(6, 12);
+  // 12 products per page (Mobile = 2 columns × 6 rows = 12)
+  const pageSize = useResponsivePageSize(12, 12);
 
   const [filters, setFilters] = useState<ShopFiltersState>({
     category: initialCategory,
@@ -308,21 +309,30 @@ export const ShopPage: React.FC<ShopPageProps> = ({
       <div className="max-w-7xl mx-auto px-6 sm:px-10">
         
         {/* Shop Page Banner / Header */}
-        <div className="border-b border-[#12100E]/15 pb-8 mb-8 text-left">
+        <div className="border-b border-[#12100E]/15 pb-6 mb-6 text-left">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
-              <nav className="flex items-center space-x-2 text-xs font-sans uppercase tracking-[0.16em] text-[#69574A] mb-2 font-medium">
-                <button onClick={onNavigateHome} className="hover:text-[#12100E] cursor-pointer">
-                  HOME
+              <div className="mb-3">
+                <button
+                  id="shop-back-btn"
+                  onClick={() => {
+                    if (window.history.length > 1) {
+                      window.history.back();
+                    } else {
+                      onNavigateHome();
+                    }
+                  }}
+                  className="inline-flex items-center space-x-2 text-xs font-mono uppercase tracking-[0.2em] font-bold text-[#12100E]/70 hover:text-[#12100E] transition-colors cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>BACK</span>
                 </button>
-                <span>/</span>
-                <span className="text-[#12100E] font-bold">STOREFRONT</span>
-              </nav>
+              </div>
               <h1 className="text-3xl sm:text-5xl font-editorial font-semibold text-[#12100E] tracking-tight uppercase">
-                The Collection
+                Shop
               </h1>
               <p className="text-sm text-[#12100E]/75 max-w-xl mt-2 font-sans font-normal">
-                Curated single-origins, certified organic roasts, espresso machinery, and barista gear.
+                Explore TROSE coffee, tea, drinkware, machines, accessories and more.
               </p>
             </div>
 
@@ -346,28 +356,6 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               )}
             </div>
           </div>
-
-          {/* Horizontal Category Bar (Bauhaus Zero-Pill Rectangular Tabs) */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pt-6 pb-2 scrollbar-none no-scrollbar">
-            {CATEGORY_TABS.map((tab) => {
-              const isSelected = filters.category === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  id={`shop-tab-${tab.id}`}
-                  onClick={() => setFilters(prev => ({ ...prev, category: tab.id }))}
-                  className={`px-4 py-2 text-[10px] font-mono uppercase tracking-[0.18em] whitespace-nowrap transition-all cursor-pointer border ${
-                    isSelected
-                      ? 'bg-[#12100E] text-white border-[#12100E] font-bold'
-                      : 'bg-[#FDFBF7] text-[#12100E]/75 border-[#12100E]/15 hover:border-[#12100E] hover:text-[#12100E]'
-                  }`}
-                >
-                  <span>{tab.label}</span>
-                  <span className="text-[9px] opacity-60 ml-1.5 font-mono">({getCategoryCount(tab.id)})</span>
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Action Bar: Mobile Filter Button, Sorting Dropdown & Results Counter */}
@@ -381,7 +369,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               className="lg:hidden flex items-center space-x-2 px-4 py-2.5 bg-[#FDFBF7] border border-[#12100E] text-[10px] font-mono font-bold uppercase tracking-wider text-[#12100E] cursor-pointer"
             >
               <SlidersHorizontal className="w-3.5 h-3.5 text-[#C5A059]" />
-              <span>FILTERS {activeFilterCount > 0 ? `(${activeFilterCount})` : ''}</span>
+              <span>FILTER & CATEGORIES {activeFilterCount > 0 ? `(${activeFilterCount})` : ''}</span>
             </button>
 
             {/* Results Count */}
@@ -635,17 +623,17 @@ export const ShopPage: React.FC<ShopPageProps> = ({
           </aside>
 
           {/* Product Grid Area (9 Columns) */}
-          <div className="lg:col-span-9">
+          <div id="shop-product-grid-start" className="lg:col-span-9">
             
             {isLoading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div
                     key={i}
                     className="bg-[#FDFBF7] border border-[#12100E]/15 animate-pulse flex flex-col aspect-[4/5]"
                   >
                     <div className="aspect-[4/3] bg-gray-200" />
-                    <div className="p-5 space-y-3 flex-1 flex flex-col justify-between">
+                    <div className="p-3 sm:p-5 space-y-3 flex-1 flex flex-col justify-between">
                       <div className="space-y-2">
                         <div className="h-3 bg-gray-200 w-1/3" />
                         <div className="h-5 bg-gray-200 w-3/4" />
@@ -677,7 +665,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
                   {paginatedProducts.map((product) => (
                     <ProductCard
                       key={product.id}
@@ -693,7 +681,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
                   totalItems={filteredProducts.length}
                   pageSize={pageSize}
                   onPageChange={handlePageSelect}
-                  scrollTargetId="trose-shop-page-view"
+                  scrollTargetId="shop-product-grid-start"
                   itemName="products"
                 />
               </>
@@ -722,7 +710,7 @@ export const ShopPage: React.FC<ShopPageProps> = ({
               <div className="flex items-center justify-between border-b border-[#12100E]/15 pb-4">
                 <div className="flex items-center space-x-2">
                   <SlidersHorizontal className="w-4 h-4 text-[#C5A059]" />
-                  <span className="font-editorial text-lg font-bold text-[#12100E] uppercase">Filters</span>
+                  <span className="font-editorial text-lg font-bold text-[#12100E] uppercase">Filters & Categories</span>
                 </div>
                 <button
                   onClick={() => setMobileFilterOpen(false)}

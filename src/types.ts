@@ -45,6 +45,7 @@ export interface ProductOption {
 export interface Product {
   id: string;
   handle?: string;
+  shopifyHandle?: string;
   shopifyId?: string;
   name: string;
   subtitle: string;
@@ -101,7 +102,8 @@ export type AppView =
   | 'clothing' 
   | 'candles' 
   | 'other'
-  | 'product-detail';
+  | 'product-detail'
+  | 'our-story';
 
 export type SortOption = 'featured' | 'best-selling' | 'price-asc' | 'price-desc' | 'newest';
 

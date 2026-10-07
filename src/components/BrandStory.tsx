@@ -30,21 +30,20 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
           </h2>
 
           <p className="text-sm text-[#0E0C0B]/80 font-sans leading-relaxed">
-            Coffee is more than a morning habit—it is a shared ritual, a moment to reset, and a celebration of human craft. We calibrate every roast for sweetness, nuance, and clean energy.
+            Coffee is more than a morning habit—it is a shared ritual, a moment to reset, and an intentional daily pleasure. We bring you quality ethical products with rich taste and balanced character.
           </p>
 
           <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
             <button
               onClick={onExploreStory}
-              className="py-3 px-5 bg-[#0E0C0B] text-white text-xs font-sans font-bold uppercase tracking-[0.16em] inline-flex items-center justify-center space-x-2 active:bg-[#221B16]"
+              className="py-3 px-5 bg-[#0E0C0B] text-white text-xs font-sans font-bold uppercase tracking-[0.16em] inline-flex items-center justify-center space-x-2 active:bg-[#221B16] cursor-pointer"
             >
-              <span>READ OUR FULL STORY</span>
-              <ArrowRight className="w-3.5 h-3.5 text-[#C88E38]" />
+              <span>READ OUR STORY →</span>
             </button>
 
             <button
               onClick={onShopCoffee}
-              className="py-3 px-5 border border-[#0E0C0B] text-[#0E0C0B] text-xs font-sans font-bold uppercase tracking-[0.16em] inline-flex items-center justify-center active:bg-[#0E0C0B]/5"
+              className="py-3 px-5 border border-[#0E0C0B] text-[#0E0C0B] text-xs font-sans font-bold uppercase tracking-[0.16em] inline-flex items-center justify-center active:bg-[#0E0C0B]/5 cursor-pointer"
             >
               <span>EXPLORE ALL ROASTS →</span>
             </button>
@@ -154,7 +153,7 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
 
                 <div className="space-y-3.5 text-sm text-[#0E0C0B]/80 leading-relaxed font-normal">
                   <p>
-                    At TROSE, we curate coffees that bring harmony between nuance and strength. Whether you seek the vibrant florals of a high-altitude single origin or the comforting richness of a smooth dark roast, each cup is an invitation to inhabit your day with purpose.
+                    At TROSE, we provide quality ethical products that bring harmony between nuance and strength. Whether you seek vibrant single origins, smooth blends, or specialty teas, each selection is crafted for delight and comfort.
                   </p>
                   <p>
                     From the aroma blooming in your kitchen to the first sip, our coffees and wares are designed to inspire moments of stillness, focus, and joy.
@@ -191,8 +190,7 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
                     onClick={onExploreStory}
                     className="px-8 py-3.5 bg-[#0E0C0B] hover:bg-[#221B16] text-white text-xs uppercase tracking-[0.18em] font-sans font-bold transition-all flex items-center space-x-3 cursor-pointer group active:translate-y-0.5 border border-[#0E0C0B]"
                   >
-                    <span>OUR PHILOSOPHY</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-[#C88E38] group-hover:translate-x-1 transition-transform" />
+                    <span>READ OUR STORY →</span>
                   </button>
 
                   <button
@@ -224,7 +222,7 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
                   Distinct Origins
                 </h3>
                 <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
-                  Carefully selected coffees chosen for distinct terroir, natural sweetness, and vibrant aromatics.
+                  Carefully selected coffees chosen for rich taste, natural sweetness, and vibrant aromatics.
                 </p>
               </div>
 
@@ -236,7 +234,7 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
                   Balanced Roasting
                 </h3>
                 <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
-                  Roast curves crafted to highlight origin complexity without excessive bitterness or acidity.
+                  Profiles crafted for balance and depth without excessive bitterness.
                 </p>
               </div>
 
@@ -248,7 +246,7 @@ export const BrandStory: React.FC<BrandStoryProps> = ({ onExploreStory, onShopCo
                   Organic Offerings
                 </h3>
                 <p className="text-xs text-[#0E0C0B]/70 leading-relaxed font-normal">
-                  Certified organic selections cultivated with care for the earth, clean soil, and sustainable farming.
+                  Organic coffee selections curated for clean character and rich, ethical quality.
                 </p>
               </div>
 

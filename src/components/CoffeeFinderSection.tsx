@@ -16,6 +16,9 @@ export const CoffeeFinderSection: React.FC<CoffeeFinderSectionProps> = ({ onOpen
         <div className="lg:col-span-5 bg-[#0E0C0B] p-8 sm:p-12 lg:p-16 flex flex-col justify-center text-left z-20 font-sans space-y-6">
           
           <div className="space-y-1 font-display">
+            <span className="text-xs uppercase tracking-[0.25em] font-sans text-[#C88E38] font-bold block mb-1">
+              NOT SURE WHICH COFFEE IS YOURS?
+            </span>
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[0.95] uppercase">
               <span className="block">FIND YOUR</span>
               <span className="block text-[#C88E38]">TROSE</span>
@@ -23,17 +26,16 @@ export const CoffeeFinderSection: React.FC<CoffeeFinderSectionProps> = ({ onOpen
           </div>
 
           <p className="text-sm sm:text-base text-white/80 font-normal leading-relaxed max-w-sm">
-            Take our quick coffee quiz and discover the blends that match your taste, lifestyle and every version of you.
+            Answer a few quick questions to match your roast, flavor, and brew method to the perfect TROSE coffee for you.
           </p>
 
           <div className="pt-2">
             <button
               id="homepage-find-my-coffee-btn"
               onClick={onOpenFinder}
-              className="px-7 py-3.5 border border-white hover:border-[#C88E38] hover:text-[#C88E38] text-white text-xs uppercase tracking-[0.2em] font-sans font-bold transition-all duration-200 inline-flex items-center space-x-2 cursor-pointer"
+              className="px-7 py-3.5 bg-[#C88E38] hover:bg-[#d99f48] text-[#0E0C0B] text-xs uppercase tracking-[0.2em] font-sans font-extrabold transition-all duration-200 inline-flex items-center space-x-2.5 cursor-pointer shadow-md active:translate-y-0.5"
             >
-              <span>TAKE THE QUIZ</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>FIND YOUR TROSE →</span>
             </button>
           </div>
 

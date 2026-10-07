@@ -150,7 +150,7 @@ export const Footer: React.FC<FooterProps> = ({
               onClick={onOpenAbout}
               className="hover:text-[#C88E38] transition-colors cursor-pointer"
             >
-              About
+              Our Story
             </button>
           </nav>
 

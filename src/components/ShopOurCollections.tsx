@@ -96,12 +96,12 @@ export const ShopOurCollections: React.FC<ShopOurCollectionsProps> = ({
     {
       subcategoryId: 'signature-blends',
       title: 'SIGNATURE BLENDS',
-      subtitle: 'Everyday greatness.',
+      subtitle: 'Everyday favorites.',
       archColor: '#C88E38', // Gold
       product: signatureProduct,
       pouchVariant: 'breakfast-blend',
       pouchCustomTitle: signatureProduct ? signatureProduct.name.toUpperCase() : 'BREAKFAST BLEND',
-      decorativeBadge: 'Whole Bean & Crema',
+      decorativeBadge: 'Signature Blends',
       actionLabel: 'EXPLORE COLLECTION',
       isAvailable: true
     },
@@ -113,43 +113,43 @@ export const ShopOurCollections: React.FC<ShopOurCollectionsProps> = ({
       product: flavoredProduct,
       pouchVariant: 'dubai-chocolate',
       pouchCustomTitle: flavoredProduct ? flavoredProduct.name.toUpperCase() : 'DUBAI CHOCOLATE',
-      decorativeBadge: 'Cacao & Spiced Notes',
+      decorativeBadge: 'Flavored Coffees',
       actionLabel: 'EXPLORE COLLECTION',
       isAvailable: true
     },
     {
       subcategoryId: 'single-origin',
       title: 'SINGLE ORIGIN',
-      subtitle: 'A taste of the world.',
+      subtitle: 'Explore coffees by origin.',
       archColor: '#162820', // Forest Green
       product: singleOriginProduct,
       pouchVariant: 'single-origin',
       pouchCustomTitle: singleOriginProduct ? singleOriginProduct.name.toUpperCase() : 'ETHIOPIA NATURAL',
-      decorativeBadge: 'High-Elevation Terroir',
+      decorativeBadge: 'Single Origin',
       actionLabel: 'EXPLORE COLLECTION',
       isAvailable: true
     },
     {
       subcategoryId: 'organic-coffee',
       title: 'ORGANIC COFFEE',
-      subtitle: 'Certified pure harvest.',
+      subtitle: 'Explore organic selections.',
       archColor: '#142233', // Navy
       product: organicProduct,
       pouchVariant: 'organic',
       pouchCustomTitle: organicProduct ? organicProduct.name.toUpperCase() : 'ORGANIC HARVEST',
-      decorativeBadge: 'Certified Organic Beans',
+      decorativeBadge: 'Organic Coffee',
       actionLabel: 'EXPLORE COLLECTION',
       isAvailable: true
     },
     {
       subcategoryId: 'capsules',
       title: 'CAPSULES',
-      subtitle: 'Precision single-serve ritual.',
+      subtitle: 'Coffee made convenient.',
       archColor: '#2A1D15', // Espresso Brown
       product: capsuleProduct,
       pouchVariant: 'capsules',
       pouchCustomTitle: capsuleProduct ? capsuleProduct.name.toUpperCase() : 'COFFEE CAPSULES',
-      decorativeBadge: 'Single-Serve Pods',
+      decorativeBadge: 'Capsules',
       actionLabel: 'EXPLORE COLLECTION',
       isAvailable: true
     }

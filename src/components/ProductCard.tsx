@@ -113,12 +113,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Card Body: Structured 3-Level Typography */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+      <div className="p-3 sm:p-5 flex-1 flex flex-col justify-between space-y-2 sm:space-y-3">
         
-        <div className="space-y-1.5 font-sans">
+        <div className="space-y-1 font-sans">
           {/* Subtle Category & Origin Tag */}
-          <div className="flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-[#69574A]">
-            <span className="truncate max-w-[180px]">
+          <div className="flex items-center justify-between text-[10px] sm:text-[11px] uppercase tracking-[0.14em] text-[#69574A]">
+            <span className="truncate max-w-[120px] sm:max-w-[180px]">
               {product.department === 'coffee' && product.origin
                 ? product.origin
                 : product.subcategory
@@ -126,40 +126,40 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 : departmentLabel}
             </span>
             {product.inStock && (
-              <span className="text-[#CCA347] font-semibold text-[10px]">IN STOCK</span>
+              <span className="text-[#CCA347] font-semibold text-[9px] sm:text-[10px] shrink-0 ml-1">IN STOCK</span>
             )}
           </div>
 
-          {/* Product Title: Refined Quieter Serif */}
+          {/* Product Title: Maximum 2 lines */}
           <h3
-            className="text-base sm:text-lg font-serif font-semibold text-[#12100E] group-hover:text-[#5C151E] transition-colors line-clamp-1 leading-snug"
+            className="text-sm sm:text-lg font-serif font-semibold text-[#12100E] group-hover:text-[#5C151E] transition-colors line-clamp-2 leading-snug min-h-[2.5rem] sm:min-h-0"
             title={product.name}
           >
             {product.name}
           </h3>
 
-          {/* Real Tasting Notes or Real Description (Only if data exists) */}
+          {/* Real Tasting Notes or Real Description (Only if data exists, hidden on tiny cards if crowded) */}
           {product.tastingNotes && product.tastingNotes.length > 0 ? (
-            <p className="text-xs text-[#69574A] truncate font-sans">
+            <p className="text-[11px] sm:text-xs text-[#69574A] truncate font-sans hidden sm:block">
               {product.tastingNotes.join(' · ')}
             </p>
           ) : product.subtitle && product.subtitle !== product.name ? (
-            <p className="text-xs text-[#69574A] truncate font-sans">
+            <p className="text-[11px] sm:text-xs text-[#69574A] truncate font-sans hidden sm:block">
               {product.subtitle}
             </p>
           ) : null}
         </div>
 
         {/* Card Pricing & Functional Action Footer */}
-        <div className="pt-3 border-t border-[#12100E]/10 flex items-center justify-between gap-3">
+        <div className="pt-2 sm:pt-3 border-t border-[#12100E]/10 flex items-center justify-between gap-1.5 sm:gap-3">
           
           {/* Price: Clean Sans-Serif */}
-          <div className="flex items-baseline space-x-1.5 font-sans">
-            <span className="text-base sm:text-lg font-bold text-[#12100E]">
+          <div className="flex items-baseline space-x-1 sm:space-x-1.5 font-sans">
+            <span className="text-sm sm:text-lg font-bold text-[#12100E]">
               ${product.price.toFixed(2)}
             </span>
             {hasCompareAtPrice && (
-              <span className="text-xs text-[#69574A] line-through">
+              <span className="text-[10px] sm:text-xs text-[#69574A] line-through">
                 ${product.originalPrice?.toFixed(2)}
               </span>
             )}
@@ -170,14 +170,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             id={`btn-add-bag-${product.id}`}
             onClick={handleAdd}
             disabled={isSoldOut}
-            className={`px-3 py-1.5 text-[11px] uppercase font-sans tracking-[0.14em] font-semibold transition-all flex items-center space-x-1.5 cursor-pointer active:scale-95 ${
+            className={`px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] uppercase font-sans tracking-[0.14em] font-semibold transition-all flex items-center space-x-1 sm:space-x-1.5 cursor-pointer active:scale-95 shrink-0 ${
               isSoldOut
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
                 : 'bg-[#12100E] hover:bg-[#5C151E] text-white shadow-2xs'
             }`}
             title={isSoldOut ? 'Product is sold out' : 'Add to Tasting Bag'}
           >
-            <ShoppingBag className="w-3.5 h-3.5 text-[#CCA347]" />
+            <ShoppingBag className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#CCA347]" />
             <span>{isSoldOut ? 'Sold Out' : 'Add'}</span>
           </button>
 

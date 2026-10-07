@@ -78,8 +78,12 @@ function isDevEnvironment(): boolean {
  * Strips protocol prefix and trailing slashes if present.
  */
 export function getShopifyStoreDomain(): string {
-  const raw = getEnvValue('VITE_SHOPIFY_STORE_DOMAIN');
-  return raw.replace(/^https?:\/\//, '').replace(/\/+$/, '').trim();
+  const direct =
+    typeof import.meta !== 'undefined' && import.meta.env
+      ? import.meta.env.VITE_SHOPIFY_STORE_DOMAIN
+      : '';
+  const raw = direct || getEnvValue('VITE_SHOPIFY_STORE_DOMAIN') || 'trose-coffee.myshopify.com';
+  return String(raw).replace(/^https?:\/\//, '').replace(/\/+$/, '').trim();
 }
 
 /**
@@ -87,7 +91,12 @@ export function getShopifyStoreDomain(): string {
  * Note: Never log or expose this value in errors or console logs.
  */
 export function getShopifyStorefrontToken(): string {
-  return getEnvValue('VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN').trim();
+  const direct =
+    typeof import.meta !== 'undefined' && import.meta.env
+      ? import.meta.env.VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN
+      : '';
+  const raw = direct || getEnvValue('VITE_SHOPIFY_STOREFRONT_ACCESS_TOKEN') || '9a58ae0c25a51947c82596fbf2a2d926';
+  return String(raw).trim();
 }
 
 /**
@@ -911,6 +920,7 @@ export function mapShopifyProductToProduct(
     id: sp.id,
     shopifyId: sp.id,
     handle: sp.handle,
+    shopifyHandle: sp.handle,
     name: sp.title,
     subtitle: origin ? `${origin} • Single Origin` : classification.subcategory || sp.productType || 'Artisan Specialty Coffee',
     category,

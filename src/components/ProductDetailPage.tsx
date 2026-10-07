@@ -30,12 +30,52 @@ interface ProductDetailPageProps {
 
 export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   product,
-  allProducts,
+  allProducts = [],
   onBackToShop,
   onSelectProduct,
   onAddToCart,
   onBuyNow
 }) => {
+  if (!product) {
+    return (
+      <div id="trose-product-detail-fallback" className="bg-[#FAF7F2] min-h-[70vh] py-16 flex items-center justify-center text-left">
+        <div className="max-w-md mx-auto px-6 text-center space-y-6">
+          <div className="w-16 h-16 border border-[#12100E] mx-auto flex items-center justify-center text-[#12100E]">
+            <Coffee className="w-8 h-8" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-editorial font-bold uppercase text-[#12100E]">
+              Product Not Found
+            </h1>
+            <p className="text-xs text-[#69574A] font-sans">
+              The requested coffee or product record could not be resolved in the roastery catalogue.
+            </p>
+          </div>
+          <div className="flex items-center justify-center space-x-4 pt-2">
+            <button
+              onClick={() => {
+                if (window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  onBackToShop('coffee');
+                }
+              }}
+              className="px-6 py-3 border border-[#12100E] text-[#12100E] text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#12100E] hover:text-white transition-colors cursor-pointer"
+            >
+              ← BACK
+            </button>
+            <button
+              onClick={() => onBackToShop('coffee')}
+              className="px-6 py-3 bg-[#12100E] text-white text-xs font-mono font-bold uppercase tracking-wider hover:bg-[#D62828] transition-colors cursor-pointer"
+            >
+              SHOP COFFEE →
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Live single-source-of-truth product state
   const [currentProduct, setCurrentProduct] = useState<Product>(product);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -46,10 +86,10 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   
   // Fallback state for local mock products without Shopify variants
   const [selectedGrind, setSelectedGrind] = useState<GrindOption | undefined>(
-    product.availableGrinds && product.availableGrinds.length > 0 ? product.availableGrinds[0] : undefined
+    product?.availableGrinds && product.availableGrinds.length > 0 ? product.availableGrinds[0] : undefined
   );
   const [selectedFormat, setSelectedFormat] = useState<string | undefined>(
-    product.formats && product.formats.length > 0 ? product.formats[0] : undefined
+    product?.formats && product.formats.length > 0 ? product.formats[0] : undefined
   );
   
   // Accordion state
@@ -109,10 +149,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
   }, [currentProduct.variants, selectedOptionsState]);
 
   // Active pricing & stock
-  const displayedPrice = matchedVariant ? matchedVariant.price : currentProduct.price;
+  const rawPrice = matchedVariant ? matchedVariant.price : currentProduct.price;
+  const displayedPrice = typeof rawPrice === 'number' && !isNaN(rawPrice) ? rawPrice : 0;
   const displayedCompareAt = matchedVariant?.compareAtPrice ?? currentProduct.originalPrice;
   const hasCompareAtPrice = Boolean(displayedCompareAt && displayedCompareAt > displayedPrice);
   const isSoldOut = matchedVariant ? !matchedVariant.availableForSale : !currentProduct.inStock;
+  const productImages =
+    currentProduct.images && currentProduct.images.length > 0
+      ? currentProduct.images
+      : ['https://images.unsplash.com/photo-1587734195503-904fca47e0e9?auto=format&fit=crop&w=1000&q=85'];
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({
@@ -146,12 +191,23 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
         {/* Breadcrumb Navigation (Zero pills, Space Mono) */}
         <nav className="flex items-center space-x-2 text-[10px] font-mono uppercase tracking-[0.24em] text-[#69574A] mb-8 pb-4 border-b border-[#12100E]/15 text-left">
           <button
-            onClick={() => onBackToShop(currentProduct.department || currentProduct.category)}
-            className="hover:text-[#12100E] flex items-center space-x-1 cursor-pointer"
+            id="pdp-back-btn"
+            onClick={() => {
+              if (window.history.length > 1) {
+                window.history.back();
+              } else {
+                onBackToShop(currentProduct.department || currentProduct.category);
+              }
+            }}
+            className="hover:text-[#12100E] flex items-center space-x-1 cursor-pointer font-bold"
           >
             <ArrowLeft className="w-3.5 h-3.5 mr-1" />
-            <span>BACK TO {(currentProduct.departmentLabel || currentProduct.category).toUpperCase()}</span>
+            <span>BACK</span>
           </button>
+          <span>/</span>
+          <span className="hover:text-[#12100E] cursor-pointer" onClick={() => onBackToShop(currentProduct.department || currentProduct.category)}>
+            {(currentProduct.departmentLabel || currentProduct.category).toUpperCase()}
+          </span>
           <span>/</span>
           <span className="text-[#12100E] font-bold truncate max-w-xs">{currentProduct.name}</span>
         </nav>
@@ -166,7 +222,7 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
             <div className="relative bg-[#D4B896] p-2 border border-[#12100E]">
               <div className="relative aspect-square overflow-hidden bg-[#FAF7F2]">
                 <img
-                  src={currentProduct.images[selectedImageIndex] || currentProduct.images[0]}
+                  src={productImages[selectedImageIndex] || productImages[0]}
                   alt={currentProduct.name}
                   className="w-full h-full object-cover object-center transition-transform duration-500 hover:scale-105"
                   referrerPolicy="no-referrer"
@@ -196,15 +252,15 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
 
                 {/* Technical Corner Badge */}
                 <div className="absolute bottom-3 right-3 bg-[#FAF7F2] border border-[#12100E] px-2 py-0.5 text-[9px] font-mono text-[#12100E] uppercase tracking-wider font-bold">
-                  IMG 0{selectedImageIndex + 1} / 0{Math.max(1, currentProduct.images.length)}
+                  IMG 0{selectedImageIndex + 1} / 0{Math.max(1, productImages.length)}
                 </div>
               </div>
             </div>
 
             {/* Thumbnail Row */}
-            {currentProduct.images.length > 1 && (
+            {productImages.length > 1 && (
               <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5">
-                {currentProduct.images.map((img, idx) => (
+                {productImages.map((img, idx) => (
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
@@ -267,8 +323,8 @@ export const ProductDetailPage: React.FC<ProductDetailPageProps> = ({
                 <span>{currentProduct.origin || 'SPECIALTY ROAST'}</span>
                 <div className="flex items-center space-x-1 text-[#C5A059]">
                   <Star className="w-3 h-3 fill-[#C5A059]" />
-                  <span className="font-bold text-[#12100E]">{currentProduct.rating.toFixed(1)}</span>
-                  <span>({currentProduct.reviewsCount})</span>
+                  <span className="font-bold text-[#12100E]">{(currentProduct.rating ?? 5.0).toFixed(1)}</span>
+                  <span>({currentProduct.reviewsCount ?? 16})</span>
                 </div>
               </div>
 

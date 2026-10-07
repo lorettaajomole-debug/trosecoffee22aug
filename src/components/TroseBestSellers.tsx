@@ -49,7 +49,7 @@ export const TroseBestSellers: React.FC<TroseBestSellersProps> = ({
               CELEBRATED ROASTS
             </h2>
             <p className="text-sm sm:text-base text-[#0E0C0B]/75 font-sans font-normal leading-relaxed">
-              Our community's most beloved single-origins, master espresso blends, and organic harvests.
+              Explore a selection of TROSE coffee favorites.
             </p>
           </div>
 

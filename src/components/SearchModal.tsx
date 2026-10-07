@@ -21,19 +21,47 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   onQuickView,
   onAddToCart
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState(() => {
+    try {
+      return (window.history.state && window.history.state.searchTerm) || '';
+    } catch {
+      return '';
+    }
+  });
   const [results, setResults] = useState<SearchResultItem[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>('all');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState<string>(() => {
+    try {
+      return (window.history.state && window.history.state.selectedCategoryFilter) || 'all';
+    } catch {
+      return 'all';
+    }
+  });
   const inputRef = useRef<HTMLInputElement>(null);
 
   const curatedSearches = [
-    { label: 'Espresso', query: 'espresso' },
-    { label: 'Organic Coffee', query: 'organic coffee' },
-    { label: 'Coffee Machine', query: 'coffee machine' },
-    { label: 'Mugs', query: 'mugs' },
-    { label: 'African Coffee', query: 'African coffee' }
+    { label: 'Coffee', query: 'coffee' },
+    { label: 'Tea', query: 'tea' },
+    { label: 'Drinkware', query: 'mugs' },
+    { label: 'Machines', query: 'machines' },
+    { label: 'Accessories', query: 'accessories' }
   ];
+
+  const handleExplicitClose = () => {
+    setSearchTerm('');
+    setResults([]);
+    setSelectedCategoryFilter('all');
+    try {
+      if (window.history.state && window.history.state.searchOpen) {
+        const cleanState = { ...(window.history.state || {}) };
+        delete cleanState.searchOpen;
+        delete cleanState.searchTerm;
+        delete cleanState.selectedCategoryFilter;
+        window.history.replaceState(cleanState, '', window.location.href);
+      }
+    } catch {}
+    onClose();
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -41,11 +69,19 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         inputRef.current?.focus();
       }, 100);
       document.body.style.overflow = 'hidden';
+
+      // Restore saved search term from history state on back-navigation
+      try {
+        const histState = window.history.state;
+        if (histState && histState.searchTerm) {
+          setSearchTerm(histState.searchTerm);
+          if (histState.selectedCategoryFilter) {
+            setSelectedCategoryFilter(histState.selectedCategoryFilter);
+          }
+        }
+      } catch {}
     } else {
       document.body.style.overflow = 'unset';
-      setSearchTerm('');
-      setResults([]);
-      setSelectedCategoryFilter('all');
     }
     return () => {
       document.body.style.overflow = 'unset';
@@ -55,12 +91,12 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
-        onClose();
+        handleExplicitClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!searchTerm.trim()) {
@@ -102,6 +138,17 @@ export const SearchModal: React.FC<SearchModalProps> = ({
     setCurrentPage(1);
   }, [searchTerm, selectedCategoryFilter]);
 
+  const handleSelectProduct = (product: Product) => {
+    try {
+      window.history.replaceState(
+        { ...(window.history.state || {}), searchOpen: true, searchTerm, selectedCategoryFilter },
+        '',
+        window.location.href
+      );
+    } catch {}
+    onQuickView(product);
+  };
+
   const paginatedResults = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filteredResults.slice(start, start + pageSize);
@@ -112,6 +159,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   return (
     <div 
       id="search-overlay-wrapper"
+      onClick={handleExplicitClose}
       className="fixed inset-0 z-50 overflow-y-auto bg-[#12100E]/75 backdrop-blur-xs flex flex-col items-center justify-start p-4 sm:p-6 md:p-10"
     >
       <div 
@@ -152,7 +200,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
 
           <button
             id="close-search-overlay-btn"
-            onClick={onClose}
+            onClick={handleExplicitClose}
             className="p-2 border border-[#12100E]/20 text-[#12100E] hover:border-[#12100E] hover:text-[#D62828] transition-colors cursor-pointer shrink-0"
             aria-label="Close search overlay"
           >
@@ -240,7 +288,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                   Catalogue Search
                 </h3>
                 <p className="text-xs text-[#69574A] font-sans leading-relaxed">
-                  Search across freshly roasted single-origin lots, certified organic beans, barista-grade tools, and drinkware.
+                  Search across TROSE coffee, tea, drinkware, machines, accessories and more.
                 </p>
               </div>
 
@@ -249,10 +297,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                 {products.slice(0, 4).map((p) => (
                   <div
                     key={p.id}
-                    onClick={() => {
-                      onQuickView(p);
-                      onClose();
-                    }}
+                    onClick={() => handleSelectProduct(p)}
                     className="p-2.5 bg-[#FDFBF7] border border-[#12100E]/15 hover:border-[#12100E] cursor-pointer transition-colors"
                   >
                     <img
@@ -289,48 +334,45 @@ export const SearchModal: React.FC<SearchModalProps> = ({
               <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#69574A] font-bold block mb-2">
                 FOUND {filteredResults.length} MATCHING PRODUCTS
               </span>
-              <div id="search-results-top" className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div id="search-results-top" className="grid grid-cols-2 gap-2 sm:gap-3">
                 {paginatedResults.map(({ product, highlightFields, score }) => (
                   <div
                     key={product.id}
-                    className="p-3 bg-[#FDFBF7] border border-[#12100E]/15 hover:border-[#12100E] transition-colors flex space-x-3 cursor-pointer group"
-                    onClick={() => {
-                      onQuickView(product);
-                      onClose();
-                    }}
+                    className="p-2 sm:p-3 bg-[#FDFBF7] border border-[#12100E]/15 hover:border-[#12100E] transition-colors flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 cursor-pointer group justify-between"
+                    onClick={() => handleSelectProduct(product)}
                   >
                     <img
                       src={product.images[0]}
                       alt={product.name}
-                      className="w-16 h-16 object-cover bg-[#F2E8DC] shrink-0 border border-[#12100E]/15"
+                      className="w-full sm:w-16 h-24 sm:h-16 object-cover bg-[#F2E8DC] shrink-0 border border-[#12100E]/15"
                     />
 
                     <div className="flex-1 flex flex-col justify-between min-w-0">
                       <div>
                         <div className="flex items-start justify-between">
-                          <h4 className="text-xs font-editorial font-bold text-[#12100E] group-hover:text-[#D62828] line-clamp-1 uppercase">
+                          <h4 className="text-xs font-editorial font-bold text-[#12100E] group-hover:text-[#D62828] line-clamp-2 sm:line-clamp-1 uppercase">
                             {product.name}
                           </h4>
-                          <span className="text-xs font-mono font-bold text-[#12100E] shrink-0 ml-2">
+                          <span className="text-xs font-mono font-bold text-[#12100E] shrink-0 ml-1.5 sm:ml-2">
                             ${product.price.toFixed(2)}
                           </span>
                         </div>
 
-                        <span className="text-[9px] font-mono text-[#69574A] uppercase block mt-0.5">
+                        <span className="text-[9px] font-mono text-[#69574A] uppercase block mt-0.5 truncate">
                           {product.departmentLabel
                             ? (product.department === 'coffee' && product.origin ? `${product.departmentLabel} • ${product.origin}` : `${product.departmentLabel} • ${product.subcategory}`)
                             : (product.origin || product.category)}
                         </span>
 
                         {product.tastingNotes && product.tastingNotes.length > 0 && (
-                          <span className="text-[9px] font-mono text-[#C5A059] block truncate mt-0.5">
+                          <span className="text-[9px] font-mono text-[#C5A059] block truncate mt-0.5 hidden sm:block">
                             {product.tastingNotes.slice(0, 3).join(' · ')}
                           </span>
                         )}
                       </div>
 
-                      <div className="flex items-center justify-between pt-1 mt-1 border-t border-[#12100E]/10 text-[9px] font-mono">
-                        <span className={product.inStock ? 'text-[#C5A059] font-bold' : 'text-[#D62828] font-bold'}>
+                      <div className="flex items-center justify-between pt-1.5 mt-1 border-t border-[#12100E]/10 text-[9px] font-mono">
+                        <span className={product.inStock ? 'text-[#C5A059] font-bold text-[8px] sm:text-[9px]' : 'text-[#D62828] font-bold text-[8px] sm:text-[9px]'}>
                           {product.inStock ? 'IN STOCK' : 'SOLD OUT'}
                         </span>
 
@@ -340,7 +382,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                             onAddToCart(product);
                           }}
                           disabled={!product.inStock}
-                          className="px-2 py-0.5 bg-[#12100E] hover:bg-[#D62828] text-white uppercase tracking-wider font-bold transition-colors disabled:opacity-30 cursor-pointer"
+                          className="px-2 py-0.5 bg-[#12100E] hover:bg-[#D62828] text-white uppercase tracking-wider font-bold transition-colors disabled:opacity-30 cursor-pointer text-[8px] sm:text-[9px]"
                         >
                           + ADD
                         </button>

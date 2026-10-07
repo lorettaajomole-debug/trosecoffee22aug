@@ -75,8 +75,21 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-10">
         <div className="flex items-center justify-between">
           
-          {/* LEFT: Brand Wordmark & Seal */}
-          <div className="flex items-center space-x-3">
+          {/* LEFT: Mobile Hamburger + Brand Wordmark & Seal */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Menu Hamburger Trigger for Mobile / Tablet (Left-aligned) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-1 sm:p-1.5 hover:text-[#C88E38] transition-colors cursor-pointer lg:hidden"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 stroke-[2]" />
+              ) : (
+                <Menu className="w-5 h-5 stroke-[2]" />
+              )}
+            </button>
+
             <a
               id="brand-logo-link"
               href="#home"
@@ -287,15 +300,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* 6. OUR STORY */}
             <button
-              onClick={onOpenAbout}
-              className="hover:text-[#C88E38] transition-colors cursor-pointer text-[11px] text-[#0E0C0B]/80 font-bold whitespace-nowrap"
+              onClick={() => onNavigate('our-story')}
+              className={`hover:text-[#C88E38] transition-colors cursor-pointer text-[11px] font-bold whitespace-nowrap ${
+                currentView === 'our-story' ? 'text-[#C88E38] font-black' : 'text-[#0E0C0B]/80'
+              }`}
             >
               <span>OUR STORY</span>
             </button>
 
           </nav>
 
-          {/* RIGHT: Action Icons (Search, Account, Cart, Mobile Menu) */}
+          {/* RIGHT: Action Icons (Search, Account, Cart) */}
           <div className="flex items-center space-x-2.5 sm:space-x-4 text-[#0E0C0B]">
             
             {/* Search */}
@@ -329,19 +344,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span className="text-[11px] sm:text-xs font-mono font-bold text-[#0E0C0B]">
                 {cartCount}
               </span>
-            </button>
-
-            {/* Menu Hamburger Trigger for Mobile / Tablet */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-1.5 hover:text-[#C88E38] transition-colors cursor-pointer lg:hidden"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? (
-                <X className="w-5 h-5 stroke-[2]" />
-              ) : (
-                <Menu className="w-5 h-5 stroke-[2]" />
-              )}
             </button>
 
           </div>
@@ -455,17 +457,17 @@ export const Navbar: React.FC<NavbarProps> = ({
                 className="w-full py-3 bg-[#0E0C0B] text-white text-xs uppercase tracking-widest font-black flex items-center justify-center space-x-2 shadow-sm"
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#C88E38]" />
-                <span>FIND YOUR TROSE ROAST MATCH</span>
+                <span>FIND YOUR TROSE</span>
               </button>
 
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  onOpenAbout();
+                  onNavigate('our-story');
                 }}
                 className="w-full py-2.5 text-center text-xs uppercase tracking-wider font-bold text-[#0E0C0B]/80 hover:text-[#0E0C0B]"
               >
-                OUR STORY & MISSION
+                OUR STORY
               </button>
             </div>
 

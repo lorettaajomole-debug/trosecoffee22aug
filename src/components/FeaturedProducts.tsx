@@ -50,7 +50,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
             <span>DISCOVER BY DEPARTMENT</span>
           </div>
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-display font-black text-[#0E0C0B] tracking-tight uppercase">
-            CHOOSE YOUR RITUAL
+            FEATURED COLLECTIONS
           </h2>
           <p className="text-sm sm:text-base text-[#0E0C0B]/75 font-sans font-normal leading-relaxed">
             Select a collection to preview, or jump directly into the full dedicated catalog.

@@ -29,8 +29,8 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
   onNavigateHome,
   isLoading = false
 }) => {
-  // Responsive page size: 12 on desktop, 6 on mobile
-  const pageSize = useResponsivePageSize(6, 12);
+  // 12 products per page (Mobile = 2 columns × 6 rows = 12)
+  const pageSize = useResponsivePageSize(12, 12);
 
   // Live products for this specific category
   const categoryProducts = useMemo(() => {
@@ -121,17 +121,34 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
       <section className="relative bg-[#F4EFEA] border-b border-[#0E0C0B]/10 overflow-hidden py-10 sm:py-14">
         <div className="max-w-7xl mx-auto px-6 sm:px-10">
           
-          {/* Breadcrumbs Navigation */}
-          <div className="flex items-center space-x-2 text-xs font-mono uppercase tracking-wider text-[#0E0C0B]/60 mb-6">
-            <button onClick={onNavigateHome} className="hover:text-[#0E0C0B] cursor-pointer">
-              HOME
+          {/* Breadcrumbs Navigation with BACK button */}
+          <div className="flex items-center space-x-3 mb-6">
+            <button
+              id={`category-back-btn-${category.id}`}
+              onClick={() => {
+                if (window.history.length > 1) {
+                  window.history.back();
+                } else {
+                  onNavigateHome();
+                }
+              }}
+              className="inline-flex items-center space-x-1.5 text-xs font-mono uppercase tracking-[0.2em] font-bold text-[#0E0C0B]/70 hover:text-[#0E0C0B] transition-colors cursor-pointer mr-2"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>BACK</span>
             </button>
-            <span>/</span>
-            <button onClick={() => onNavigateCategory('coffee')} className="hover:text-[#0E0C0B] cursor-pointer">
-              STORE
-            </button>
-            <span>/</span>
-            <span className="text-[#C88E38] font-bold">{category.navLabel}</span>
+            <span className="text-[#0E0C0B]/30">|</span>
+            <div className="flex items-center space-x-2 text-xs font-mono uppercase tracking-wider text-[#0E0C0B]/60">
+              <button onClick={onNavigateHome} className="hover:text-[#0E0C0B] cursor-pointer">
+                HOME
+              </button>
+              <span>/</span>
+              <button onClick={() => onNavigateCategory('coffee')} className="hover:text-[#0E0C0B] cursor-pointer">
+                STORE
+              </button>
+              <span>/</span>
+              <span className="text-[#C88E38] font-bold">{category.navLabel}</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
@@ -249,10 +266,11 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
         </div>
 
         {/* Product Grid */}
+        <div id="category-catalogue-grid">
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white border border-[#0E0C0B]/10 p-4 space-y-4 animate-pulse aspect-[3/4]" />
+              <div key={i} className="bg-white border border-[#0E0C0B]/10 p-3 sm:p-4 space-y-4 animate-pulse aspect-[3/4]" />
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
@@ -270,7 +288,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
               {paginatedProducts.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -292,6 +310,7 @@ export const CategoryPage: React.FC<CategoryPageProps> = ({
             />
           </>
         )}
+        </div>
 
       </section>
 

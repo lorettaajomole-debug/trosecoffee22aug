@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { ArrowDown, SlidersHorizontal, RotateCcw, Check, Sparkles, Filter, ChevronDown } from 'lucide-react';
+import { ArrowDown, ArrowLeft, SlidersHorizontal, RotateCcw, Check, Sparkles, Filter, ChevronDown } from 'lucide-react';
 import { Product, GrindOption } from '../types';
 import { ProductCard } from './ProductCard';
 import { Pagination } from './Pagination';
@@ -21,6 +21,7 @@ interface CoffeePageProps {
   onSelectProduct: (product: Product) => void;
   onAddToCart: (product: Product, grind?: GrindOption, quantity?: number) => void;
   onOpenQuiz?: () => void;
+  onNavigateHome?: () => void;
   isLoading?: boolean;
 }
 
@@ -35,10 +36,11 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
   onSelectProduct,
   onAddToCart,
   onOpenQuiz,
+  onNavigateHome,
   isLoading = false
 }) => {
-  // Responsive page size: 12 on desktop, 6 on mobile as requested
-  const pageSize = useResponsivePageSize(6, 12);
+  // 12 products per page (Mobile = 2 columns × 6 rows = 12)
+  const pageSize = useResponsivePageSize(12, 12);
 
   // Live coffee catalog filtered from master products
   const coffeeProducts = useMemo(() => {
@@ -190,6 +192,26 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
             {/* Left Column: Bold Bauhaus Typography & Supporting Copy */}
             <div className="lg:col-span-7 space-y-5 text-left z-10">
               
+              {/* Back Navigation Button */}
+              <div>
+                <button
+                  id="coffee-back-btn"
+                  onClick={() => {
+                    if (window.history.length > 1) {
+                      window.history.back();
+                    } else if (onNavigateHome) {
+                      onNavigateHome();
+                    } else {
+                      window.location.href = '/';
+                    }
+                  }}
+                  className="inline-flex items-center space-x-2 text-xs font-mono uppercase tracking-[0.2em] font-bold text-[#0E0C0B]/70 hover:text-[#0E0C0B] transition-colors cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  <span>BACK</span>
+                </button>
+              </div>
+
               {/* Category Kicker */}
               <div className="flex items-center space-x-2 text-xs font-sans font-bold tracking-[0.22em] text-[#C88E38] uppercase">
                 <span className="w-5 h-[1.5px] bg-[#C88E38]" />
@@ -207,7 +229,7 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
 
               {/* Supporting Copy */}
               <p className="text-sm sm:text-base text-[#0E0C0B]/80 font-sans font-medium max-w-xl leading-relaxed">
-                Different moods. Different moments. Same exceptional coffee. From single-origin estates to velvety espresso roasts, crafted for pure clarity and layered nuance.
+                Different moods. Different moments. Find the TROSE coffee that fits yours.
               </p>
 
               {/* Action Buttons: SHOP COFFEE ↓ and Quiz */}
@@ -226,7 +248,7 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
                     className="px-6 py-3.5 border border-[#0E0C0B]/30 hover:border-[#0E0C0B] text-[#0E0C0B] hover:bg-[#0E0C0B]/5 text-xs uppercase tracking-[0.16em] font-sans font-semibold inline-flex items-center space-x-2 transition-colors cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-[#C88E38]" />
-                    <span>FIND YOUR ROAST MATCH</span>
+                    <span>FIND YOUR TROSE</span>
                   </button>
                 )}
               </div>
@@ -438,10 +460,11 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
         </div>
 
         {/* Live Products Grid */}
+        <div id="coffee-product-grid-start">
         {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white border border-[#0E0C0B]/10 p-4 space-y-4 animate-pulse aspect-[3/4]" />
+              <div key={i} className="bg-white border border-[#0E0C0B]/10 p-3 sm:p-4 space-y-4 animate-pulse aspect-[3/4]" />
             ))}
           </div>
         ) : filteredCoffees.length === 0 ? (
@@ -459,7 +482,7 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
               {paginatedCoffees.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -476,11 +499,12 @@ export const CoffeePage: React.FC<CoffeePageProps> = ({
               totalItems={filteredCoffees.length}
               pageSize={pageSize}
               onPageChange={handlePageSelect}
-              scrollTargetId="coffee-catalogue"
+              scrollTargetId="coffee-product-grid-start"
               itemName="coffees"
             />
           </>
         )}
+        </div>
 
       </section>
 

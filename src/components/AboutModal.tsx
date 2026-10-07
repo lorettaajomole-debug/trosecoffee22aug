@@ -77,7 +77,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onShopC
               <ShieldCheck className="w-5 h-5 text-[#1E3A2F]" />
               <h4 className="text-xs font-mono font-bold uppercase text-[#12100E]">Organic Focus</h4>
               <p className="text-xs text-[#12100E]/70 leading-relaxed font-normal">
-                Certified organic selections grown in living soil, respecting farmers and natural ecosystems.
+                Organic selections chosen for clean character and rich, ethical quality.
               </p>
             </div>
 
@@ -99,7 +99,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, onShopC
               Harmonious Roasting Profiles
             </h4>
             <p className="text-xs text-[#12100E]/75 leading-relaxed font-normal">
-              Every coffee is roasted to showcase its natural terroir and intrinsic flavor characteristics. We seek the sweet spot where brightness, chocolate undertones, and smooth body unite in perfect harmony.
+              Every coffee is roasted to showcase balanced flavor characteristics, seeking the sweet spot where brightness, rich body, and smooth finish unite.
             </p>
           </div>
 
